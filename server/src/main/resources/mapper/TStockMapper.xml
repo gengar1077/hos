@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.hos.mapper.TStockMapper">
+  <resultMap id="BaseResultMap" type="com.example.hos.model.TStock">
+    <id column="STOCK_ID" jdbcType="DECIMAL" property="stockId" />
+    <result column="P_ID" jdbcType="DECIMAL" property="pId" />
+    <result column="P_NAME" jdbcType="VARCHAR" property="pName" />
+    <result column="P_NUM" jdbcType="DECIMAL" property="pNum" />
+    <result column="SEL_NUM" jdbcType="DECIMAL" property="selNum" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    STOCK_ID, P_ID, P_NAME, P_NUM, SEL_NUM, CREATETIME
+  </sql>
+  <select id="selectByExample" parameterType="com.example.hos.model.TStockExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from T_STOCK
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_STOCK
+    where STOCK_ID = #{stockId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from T_STOCK
+    where STOCK_ID = #{stockId,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.example.hos.model.TStockExample">
+    delete from T_STOCK
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.example.hos.model.TStock">
+    insert into T_STOCK (STOCK_ID, P_ID, P_NAME, 
+      P_NUM, SEL_NUM, CREATETIME
+      )
+    values (#{stockId,jdbcType=DECIMAL}, #{pId,jdbcType=DECIMAL}, #{pName,jdbcType=VARCHAR}, 
+      #{pNum,jdbcType=DECIMAL}, #{selNum,jdbcType=DECIMAL}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.hos.model.TStock">
+    insert into T_STOCK
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="stockId != null">
+        STOCK_ID,
+      </if>
+      <if test="pId != null">
+        P_ID,
+      </if>
+      <if test="pName != null">
+        P_NAME,
+      </if>
+      <if test="pNum != null">
+        P_NUM,
+      </if>
+      <if test="selNum != null">
+        SEL_NUM,
+      </if>
+      <if test="createtime != null">
+        CREATETIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="stockId != null">
+        #{stockId,jdbcType=DECIMAL},
+      </if>
+      <if test="pId != null">
+        #{pId,jdbcType=DECIMAL},
+      </if>
+      <if test="pName != null">
+        #{pName,jdbcType=VARCHAR},
+      </if>
+      <if test="pNum != null">
+        #{pNum,jdbcType=DECIMAL},
+      </if>
+      <if test="selNum != null">
+        #{selNum,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.example.hos.model.TStockExample" resultType="java.lang.Long">
+    select count(*) from T_STOCK
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update T_STOCK
+    <set>
+      <if test="record.stockId != null">
+        STOCK_ID = #{record.stockId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.pId != null">
+        P_ID = #{record.pId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.pName != null">
+        P_NAME = #{record.pName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pNum != null">
+        P_NUM = #{record.pNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.selNum != null">
+        SEL_NUM = #{record.selNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.createtime != null">
+        CREATETIME = #{record.createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update T_STOCK
+    set STOCK_ID = #{record.stockId,jdbcType=DECIMAL},
+      P_ID = #{record.pId,jdbcType=DECIMAL},
+      P_NAME = #{record.pName,jdbcType=VARCHAR},
+      P_NUM = #{record.pNum,jdbcType=DECIMAL},
+      SEL_NUM = #{record.selNum,jdbcType=DECIMAL},
+      CREATETIME = #{record.createtime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.hos.model.TStock">
+    update T_STOCK
+    <set>
+      <if test="pId != null">
+        P_ID = #{pId,jdbcType=DECIMAL},
+      </if>
+      <if test="pName != null">
+        P_NAME = #{pName,jdbcType=VARCHAR},
+      </if>
+      <if test="pNum != null">
+        P_NUM = #{pNum,jdbcType=DECIMAL},
+      </if>
+      <if test="selNum != null">
+        SEL_NUM = #{selNum,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null">
+        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where STOCK_ID = #{stockId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.hos.model.TStock">
+    update T_STOCK
+    set P_ID = #{pId,jdbcType=DECIMAL},
+      P_NAME = #{pName,jdbcType=VARCHAR},
+      P_NUM = #{pNum,jdbcType=DECIMAL},
+      SEL_NUM = #{selNum,jdbcType=DECIMAL},
+      CREATETIME = #{createtime,jdbcType=TIMESTAMP}
+    where STOCK_ID = #{stockId,jdbcType=DECIMAL}
+  </update>
+</mapper>
