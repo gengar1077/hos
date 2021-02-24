@@ -2,6 +2,7 @@ package com.example.hos.service;
 
 import com.example.hos.model.TUser;
 import com.example.hos.model.vo.UserVO;
+import com.github.pagehelper.PageInfo;
 
 /**
  * @Author: 吃面龙
@@ -25,4 +26,23 @@ public interface UserService {
      * @return
      **/
     String updateUser(UserVO userVo);
+
+    /**
+     * 删除用户
+     * @author changwei.zhong
+     * @date 2021/2/24
+     * @param id
+     * @return
+     **/
+    String deleteUser(Long id);
+
+    /**
+     * 分页查询
+     * @author changwei.zhong
+     * @date 2021/2/24
+     * @param pageNum
+     * @param pageSize
+     * @return
+     **/
+    PageInfo<TUser> selectByPage(Integer pageNum, Integer pageSize);
 }

@@ -4,14 +4,18 @@ import com.example.hos.mapper.TUserMapper;
 import com.example.hos.model.TUser;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -24,7 +28,6 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-
     private static final Logger LOG= LoggerFactory.getLogger(UserController.class);
 
     @Resource
@@ -33,8 +36,13 @@ public class UserController {
     @Resource
     private TUserMapper userMapper;
 
+    @GetMapping("/toLogin")
+    public String toLogin(){
+        return "login.html";
+    }
+
     @ApiOperation(value = "登录", produces = "application/json;charset=utf-8")
-    @PostMapping("/login")
+    @GetMapping("/login")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "用户名", required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "query", dataType = "string")
@@ -43,7 +51,7 @@ public class UserController {
         TUser tUser=userMapper.selectByName(username).orElse(null);
         if (tUser==null||!password.equals(tUser.getPassword())){
             LOG.warn("用户登陆失败！用户名：{}，密码：{}",username,password);
-            return "login";
+            return "login.html";
         }
         session.setAttribute("user",tUser);
         LOG.debug("用户登陆成功！");
@@ -58,7 +66,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "注册", produces = "application/json;charset=utf-8")
-    @PostMapping("/register")
+    @GetMapping("/register")
     public String register(TUser user) {
         TUser tUser = userMapper.selectByName(user.getUsername()).orElse(null);
         if (tUser!=null){
@@ -74,5 +82,23 @@ public class UserController {
     @PostMapping(value = "/updata")
     public String updataUser(UserVO userVo){
         return userService.updateUser(userVo);
+    }
+
+    @ApiOperation(value = "用户删除")
+    @PostMapping(value = "/delete")
+    @ApiImplicitParam(name = "id", value = "用户id", required = true, paramType = "query",dataType = "long")
+    public String deleteUser(Long id) {
+        userService.deleteUser(id);
+        return "userList";
+    }
+
+    @ApiOperation(value = "分页查询用户")
+    @PostMapping(value = "/findByPage")
+    public String pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
+                           @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
+        PageInfo<TUser> userPage =userService.selectByPage(pageNum,pageSize);
+        modelMap.put("userPage",userPage);
+
+        return "/userList";
     }
 }
