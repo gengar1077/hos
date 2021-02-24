@@ -1,6 +1,7 @@
 package com.example.hos.service;
 
 import com.example.hos.model.TUser;
+import com.example.hos.model.vo.UserVO;
 
 /**
  * @Author: 吃面龙
@@ -16,4 +17,12 @@ public interface UserService {
      * @return
      */
     String addUser(TUser user);
+
+    /**
+     * 更新用户
+     * @date: 2021/1/7
+     * @param userVo
+     * @return
+     **/
+    String updateUser(UserVO userVo);
 }

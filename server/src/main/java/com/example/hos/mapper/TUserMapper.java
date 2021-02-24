@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TUserMapper {
     long countByExample(TUserExample example);
@@ -29,7 +30,7 @@ public interface TUserMapper {
     TUser selectById(Long id);
 
     @Select("select * from t_user where username=#{username}")
-    TUser selectByName(String username);
+    Optional<TUser> selectByName(String username);
 
     @Delete("delete from t_user where id=#{id}")
     int delete(Long id);

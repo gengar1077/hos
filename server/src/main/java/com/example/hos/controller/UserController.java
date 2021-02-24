@@ -2,7 +2,10 @@ package com.example.hos.controller;
 
 import com.example.hos.mapper.TUserMapper;
 import com.example.hos.model.TUser;
+import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +35,12 @@ public class UserController {
 
     @ApiOperation(value = "登录", produces = "application/json;charset=utf-8")
     @PostMapping("/login")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "用户名", required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "query", dataType = "string")
+    })
     public String login(String username, String password, HttpSession session) {
-        TUser tUser=userMapper.selectByName(username);
+        TUser tUser=userMapper.selectByName(username).orElse(null);
         if (tUser==null||!password.equals(tUser.getPassword())){
             LOG.warn("用户登陆失败！用户名：{}，密码：{}",username,password);
             return "login";
@@ -53,7 +60,7 @@ public class UserController {
     @ApiOperation(value = "注册", produces = "application/json;charset=utf-8")
     @PostMapping("/register")
     public String register(TUser user) {
-        TUser tUser = userMapper.selectByName(user.getUsername());
+        TUser tUser = userMapper.selectByName(user.getUsername()).orElse(null);
         if (tUser!=null){
             LOG.warn("用户已存在");
             return "register";
@@ -63,4 +70,9 @@ public class UserController {
         return "index";
     }
 
+    @ApiOperation(value = "用户信息修改")
+    @PostMapping(value = "/updata")
+    public String updataUser(UserVO userVo){
+        return userService.updateUser(userVo);
+    }
 }
