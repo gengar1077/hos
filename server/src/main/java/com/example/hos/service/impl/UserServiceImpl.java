@@ -19,8 +19,8 @@ public class UserServiceImpl implements UserService {
     private TUserMapper userMapper;
 
     @Override
-    public boolean addUser(TUser user) {
+    public String addUser(TUser user) {
         int i = userMapper.insertSelective(user);
-        return true;
+        return null;
     }
 }

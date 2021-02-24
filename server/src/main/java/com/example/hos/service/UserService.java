@@ -9,11 +9,11 @@ import com.example.hos.model.TUser;
  */
 public interface UserService {
     /**
-     * @Desc: 注册
-     * @Author: 吃面龙
-     * @Date: 2021/2/13
-     * @Params * @param null
-
+     * 注册
+     * @author 吃面龙
+     * @date 2021/2/13
+     * @param user
+     * @return
      */
-    boolean addUser(TUser user);
+    String addUser(TUser user);
 }
