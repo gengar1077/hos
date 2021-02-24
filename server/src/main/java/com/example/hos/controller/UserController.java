@@ -38,11 +38,11 @@ public class UserController {
 
     @GetMapping("/toLogin")
     public String toLogin(){
-        return "login.html";
+        return "login";
     }
 
     @ApiOperation(value = "登录", produces = "application/json;charset=utf-8")
-    @GetMapping("/login")
+    @PostMapping("/login")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "用户名", required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "query", dataType = "string")
@@ -51,7 +51,7 @@ public class UserController {
         TUser tUser=userMapper.selectByName(username).orElse(null);
         if (tUser==null||!password.equals(tUser.getPassword())){
             LOG.warn("用户登陆失败！用户名：{}，密码：{}",username,password);
-            return "login.html";
+            return "login";
         }
         session.setAttribute("user",tUser);
         LOG.debug("用户登陆成功！");
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "注册", produces = "application/json;charset=utf-8")
-    @GetMapping("/register")
+    @PostMapping("/register")
     public String register(TUser user) {
         TUser tUser = userMapper.selectByName(user.getUsername()).orElse(null);
         if (tUser!=null){
@@ -80,7 +80,7 @@ public class UserController {
 
     @ApiOperation(value = "用户信息修改")
     @PostMapping(value = "/updata")
-    public String updataUser(UserVO userVo){
+    public String updateUser(UserVO userVo){
         return userService.updateUser(userVo);
     }
 
@@ -99,6 +99,6 @@ public class UserController {
         PageInfo<TUser> userPage =userService.selectByPage(pageNum,pageSize);
         modelMap.put("userPage",userPage);
 
-        return "/userList";
+        return "userList";
     }
 }
