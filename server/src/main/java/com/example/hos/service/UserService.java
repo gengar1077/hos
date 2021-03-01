@@ -19,6 +19,16 @@ public interface UserService {
      */
     String addUser(TUser user);
 
+//    /**
+//     * 登录
+//     * @author 吃面龙
+//     * @date 2021/2/13
+//     * @param username
+//     * @param password
+//     * @return
+//     */
+//    String login(String username,String password);
+
     /**
      * 更新用户
      * @date: 2021/1/7
