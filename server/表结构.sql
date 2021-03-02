@@ -4,6 +4,7 @@ create table t_user(
     u_id number(11) primary key,
     username varchar2(20),
     password varchar2(50),
+    phone varchar2(11),
     role_id number(11),
     photo varchar2(128),
     status char(1)

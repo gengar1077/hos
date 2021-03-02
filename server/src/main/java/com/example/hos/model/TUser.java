@@ -11,11 +11,9 @@ public class TUser implements Serializable {
 
     private String password;
 
-    private String salt;
+    private Long rid;
 
-    private Long classid;
-
-    private String headpic;
+    private String photo;
 
     private String status;
 
@@ -59,28 +57,20 @@ public class TUser implements Serializable {
         this.password = password == null ? null : password.trim();
     }
 
-    public String getSalt() {
-        return salt;
+    public Long getRid() {
+        return rid;
     }
 
-    public void setSalt(String salt) {
-        this.salt = salt == null ? null : salt.trim();
+    public void setRid(Long rid) {
+        this.rid = rid;
     }
 
-    public Long getClassid() {
-        return classid;
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setClassid(Long classid) {
-        this.classid = classid;
-    }
-
-    public String getHeadpic() {
-        return headpic;
-    }
-
-    public void setHeadpic(String headpic) {
-        this.headpic = headpic == null ? null : headpic.trim();
+    public void setPhoto(String photo) {
+        this.photo = photo == null ? null : photo.trim();
     }
 
     public String getStatus() {
@@ -125,9 +115,8 @@ public class TUser implements Serializable {
         sb.append(", phone=").append(phone);
         sb.append(", username=").append(username);
         sb.append(", password=").append(password);
-        sb.append(", salt=").append(salt);
-        sb.append(", classid=").append(classid);
-        sb.append(", headpic=").append(headpic);
+        sb.append(", rid=").append(rid);
+        sb.append(", photo=").append(photo);
         sb.append(", status=").append(status);
         sb.append(", bak1=").append(bak1);
         sb.append(", bak2=").append(bak2);
