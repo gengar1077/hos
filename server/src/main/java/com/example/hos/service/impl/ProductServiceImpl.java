@@ -2,7 +2,9 @@ package com.example.hos.service.impl;
 
 import com.example.hos.mapper.TProductMapper;
 import com.example.hos.model.TProduct;
+import com.example.hos.model.vo.ProductVO;
 import com.example.hos.service.ProductService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,6 +41,26 @@ public class ProductServiceImpl implements ProductService {
             return "index";
         }
         productMapper.deleteByPrimaryKey(pid);
+        return null;
+    }
+
+    @Override
+    public String updateProduct(ProductVO productVO) {
+        TProduct product = null;
+        if (StringUtils.isNotBlank(productVO.getPName())) {
+            product = productMapper.selectByName(productVO.getPName()).orElse(null);
+        }
+        if (Objects.isNull(product)){
+            return "药品不存在";
+        }
+        if (!product.getpName().equals(product.getpName())){
+            if (productMapper.selectByName(productVO.getPName()).isPresent()){
+                return "该药品名已经存在，修改失败！";
+            }
+        }
+        product.setpId(productVO.getPid());
+        product.setpName(productVO.getPName());
+        productMapper.updateByPrimaryKey(product);
         return null;
     }
 }

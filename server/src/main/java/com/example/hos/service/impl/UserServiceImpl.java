@@ -2,6 +2,7 @@ package com.example.hos.service.impl;
 
 import com.example.hos.mapper.TUserMapper;
 import com.example.hos.model.TUser;
+import com.example.hos.model.TUserExample;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
 import com.github.pagehelper.PageHelper;
@@ -47,6 +48,8 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userVo.getName());
         user.setPassword(userVo.getPassword());
         user.setPhone(userVo.getPhoto());
+        TUserExample tUserExample = new TUserExample();
+        userMapper.updateByExample(user,tUserExample);
         return "修改成功！";
     }
 

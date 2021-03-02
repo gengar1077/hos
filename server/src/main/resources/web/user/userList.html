@@ -24,7 +24,7 @@
             <td th:text="*{rid}">角色</td>
             <td th:text="*{status}">状态</td>
             <td>
-                <a th:href="@{/user/delete(id=*{id})}">删除</a>
+                <a th:href="@{/user/delete(id=*{id})}" οnclick="return confirm('确定要删除吗?')">删除</a>
                 <a th:href="@{/user/update}">修改</a>
             </td>
         </tr>

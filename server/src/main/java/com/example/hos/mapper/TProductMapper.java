@@ -2,8 +2,11 @@ package com.example.hos.mapper;
 
 import com.example.hos.model.TProduct;
 import com.example.hos.model.TProductExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface TProductMapper {
     long countByExample(TProductExample example);
@@ -27,4 +30,7 @@ public interface TProductMapper {
     int updateByPrimaryKeySelective(TProduct record);
 
     int updateByPrimaryKey(TProduct record);
+
+    @Select("select * from t_product where p_name=#{pName}")
+    Optional<TProduct> selectByName(String pName);
 }

@@ -1,9 +1,11 @@
 package com.example.hos.controller;
 
 import com.example.hos.model.TProduct;
+import com.example.hos.model.vo.ProductVO;
 import com.example.hos.service.ProductService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -32,5 +34,12 @@ public class ProductController {
     public String delProduct(Long pid) {
         productService.delProduct(pid);
         return "product/productList";
+    }
+
+    @ApiOperation(value = "药品信息修改")
+    @PostMapping(value = "/update")
+    public String updateProduct(ProductVO productVO){
+        productService.updateProduct(productVO);
+        return "user/userList";
     }
 }

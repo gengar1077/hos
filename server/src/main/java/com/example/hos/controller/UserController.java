@@ -89,8 +89,8 @@ public class UserController {
 
     @ApiOperation(value = "用户信息修改")
     @PostMapping(value = "/update")
-    public String updateUser(UserVO userVo){
-        userService.updateUser(userVo);
+    public String updateUser(UserVO userVO){
+        userService.updateUser(userVO);
         return "user/userList";
     }
 
