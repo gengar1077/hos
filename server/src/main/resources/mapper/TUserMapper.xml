@@ -2,17 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.hos.mapper.TUserMapper">
   <resultMap id="BaseResultMap" type="com.example.hos.model.TUser">
-    <result column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <id column="U_ID" jdbcType="DECIMAL" property="uId" />
     <result column="USERNAME" jdbcType="VARCHAR" property="username" />
     <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
-    <result column="SALT" jdbcType="VARCHAR" property="salt" />
-    <result column="CLASSID" jdbcType="DECIMAL" property="classid" />
-    <result column="HEADPIC" jdbcType="VARCHAR" property="headpic" />
+    <result column="ROLE_ID" jdbcType="DECIMAL" property="roleId" />
+    <result column="PHOTO" jdbcType="VARCHAR" property="photo" />
     <result column="STATUS" jdbcType="CHAR" property="status" />
-    <result column="BAK1" jdbcType="VARCHAR" property="bak1" />
-    <result column="BAK2" jdbcType="VARCHAR" property="bak2" />
-    <result column="BAK3" jdbcType="VARCHAR" property="bak3" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -73,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    ID, PHONE, USERNAME, PASSWORD, SALT, CLASSID, HEADPIC, STATUS, BAK1, BAK2, BAK3
+    U_ID, USERNAME, PASSWORD, ROLE_ID, PHOTO, STATUS, PHONE
   </sql>
   <select id="selectByExample" parameterType="com.example.hos.model.TUserExample" resultMap="BaseResultMap">
     select
@@ -89,6 +85,16 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_USER
+    where U_ID = #{uId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from T_USER
+    where U_ID = #{uId,jdbcType=DECIMAL}
+  </delete>
   <delete id="deleteByExample" parameterType="com.example.hos.model.TUserExample">
     delete from T_USER
     <if test="_parameter != null">
@@ -96,23 +102,21 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.example.hos.model.TUser">
-    insert into T_USER (ID, PHONE, USERNAME, 
-      PASSWORD, SALT, CLASSID, 
-      HEADPIC, STATUS, BAK1, 
-      BAK2, BAK3)
-    values (#{id,jdbcType=DECIMAL}, #{phone,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
-      #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, #{classid,jdbcType=DECIMAL}, 
-      #{headpic,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, #{bak1,jdbcType=VARCHAR}, 
-      #{bak2,jdbcType=VARCHAR}, #{bak3,jdbcType=VARCHAR})
+    insert into T_USER (U_ID, USERNAME, PASSWORD, 
+      ROLE_ID, PHOTO, STATUS, 
+      PHONE)
+    values (#{uId,jdbcType=DECIMAL}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{roleId,jdbcType=DECIMAL}, #{photo,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
+      #{phone,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.example.hos.model.TUser">
+    <selectKey keyProperty="uId" order="BEFORE" resultType="long">
+      select SEQ_USER.nextval from dual
+    </selectKey>
     insert into T_USER
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        ID,
-      </if>
-      <if test="phone != null">
-        PHONE,
+      <if test="uId != null">
+        U_ID,
       </if>
       <if test="username != null">
         USERNAME,
@@ -120,34 +124,22 @@
       <if test="password != null">
         PASSWORD,
       </if>
-      <if test="salt != null">
-        SALT,
+      <if test="roleId != null">
+        ROLE_ID,
       </if>
-      <if test="classid != null">
-        CLASSID,
-      </if>
-      <if test="headpic != null">
-        HEADPIC,
+      <if test="photo != null">
+        PHOTO,
       </if>
       <if test="status != null">
         STATUS,
       </if>
-      <if test="bak1 != null">
-        BAK1,
-      </if>
-      <if test="bak2 != null">
-        BAK2,
-      </if>
-      <if test="bak3 != null">
-        BAK3,
+      <if test="phone != null">
+        PHONE,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=DECIMAL},
-      </if>
-      <if test="phone != null">
-        #{phone,jdbcType=VARCHAR},
+      <if test="uId != null">
+        #{uId,jdbcType=DECIMAL},
       </if>
       <if test="username != null">
         #{username,jdbcType=VARCHAR},
@@ -155,26 +147,17 @@
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
-      <if test="salt != null">
-        #{salt,jdbcType=VARCHAR},
+      <if test="roleId != null">
+        #{roleId,jdbcType=DECIMAL},
       </if>
-      <if test="classid != null">
-        #{classid,jdbcType=DECIMAL},
-      </if>
-      <if test="headpic != null">
-        #{headpic,jdbcType=VARCHAR},
+      <if test="photo != null">
+        #{photo,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=CHAR},
       </if>
-      <if test="bak1 != null">
-        #{bak1,jdbcType=VARCHAR},
-      </if>
-      <if test="bak2 != null">
-        #{bak2,jdbcType=VARCHAR},
-      </if>
-      <if test="bak3 != null">
-        #{bak3,jdbcType=VARCHAR},
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -184,14 +167,14 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+  <select id="selectById" resultType="com.example.hos.model.TUser">
+    select * from t_user where id=#{id}
+  </select>
   <update id="updateByExampleSelective" parameterType="map">
     update T_USER
     <set>
-      <if test="record.id != null">
-        ID = #{record.id,jdbcType=DECIMAL},
-      </if>
-      <if test="record.phone != null">
-        PHONE = #{record.phone,jdbcType=VARCHAR},
+      <if test="record.uId != null">
+        U_ID = #{record.uId,jdbcType=DECIMAL},
       </if>
       <if test="record.username != null">
         USERNAME = #{record.username,jdbcType=VARCHAR},
@@ -199,26 +182,17 @@
       <if test="record.password != null">
         PASSWORD = #{record.password,jdbcType=VARCHAR},
       </if>
-      <if test="record.salt != null">
-        SALT = #{record.salt,jdbcType=VARCHAR},
+      <if test="record.roleId != null">
+        ROLE_ID = #{record.roleId,jdbcType=DECIMAL},
       </if>
-      <if test="record.classid != null">
-        CLASSID = #{record.classid,jdbcType=DECIMAL},
-      </if>
-      <if test="record.headpic != null">
-        HEADPIC = #{record.headpic,jdbcType=VARCHAR},
+      <if test="record.photo != null">
+        PHOTO = #{record.photo,jdbcType=VARCHAR},
       </if>
       <if test="record.status != null">
         STATUS = #{record.status,jdbcType=CHAR},
       </if>
-      <if test="record.bak1 != null">
-        BAK1 = #{record.bak1,jdbcType=VARCHAR},
-      </if>
-      <if test="record.bak2 != null">
-        BAK2 = #{record.bak2,jdbcType=VARCHAR},
-      </if>
-      <if test="record.bak3 != null">
-        BAK3 = #{record.bak3,jdbcType=VARCHAR},
+      <if test="record.phone != null">
+        PHONE = #{record.phone,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -227,19 +201,49 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update T_USER
-    set ID = #{record.id,jdbcType=DECIMAL},
-      PHONE = #{record.phone,jdbcType=VARCHAR},
+    set U_ID = #{record.uId,jdbcType=DECIMAL},
       USERNAME = #{record.username,jdbcType=VARCHAR},
       PASSWORD = #{record.password,jdbcType=VARCHAR},
-      SALT = #{record.salt,jdbcType=VARCHAR},
-      CLASSID = #{record.classid,jdbcType=DECIMAL},
-      HEADPIC = #{record.headpic,jdbcType=VARCHAR},
+      ROLE_ID = #{record.roleId,jdbcType=DECIMAL},
+      PHOTO = #{record.photo,jdbcType=VARCHAR},
       STATUS = #{record.status,jdbcType=CHAR},
-      BAK1 = #{record.bak1,jdbcType=VARCHAR},
-      BAK2 = #{record.bak2,jdbcType=VARCHAR},
-      BAK3 = #{record.bak3,jdbcType=VARCHAR}
+      PHONE = #{record.phone,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.hos.model.TUser">
+    update T_USER
+    <set>
+      <if test="username != null">
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        ROLE_ID = #{roleId,jdbcType=DECIMAL},
+      </if>
+      <if test="photo != null">
+        PHOTO = #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
+      <if test="phone != null">
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where U_ID = #{uId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.hos.model.TUser">
+    update T_USER
+    set USERNAME = #{username,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      ROLE_ID = #{roleId,jdbcType=DECIMAL},
+      PHOTO = #{photo,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR},
+      PHONE = #{phone,jdbcType=VARCHAR}
+    where U_ID = #{uId,jdbcType=DECIMAL}
   </update>
 </mapper>

@@ -70,6 +70,6 @@
 		<table tableName="t_stock"></table>
 		<table tableName="t_supplier"></table>
 		<table tableName="t_role"></table>
-		<table tableName="t_user"></table>
+<!--		<table tableName="t_users"></table>-->
 	</context>
 </generatorConfiguration>  
