@@ -16,15 +16,15 @@
             <td>状态</td>
             <td>操作</td>
         </tr>
-        <tr th:object="${session.user}" th:each="user">
-            <td th:text="*{id}">id</td>
+        <tr th:object="${session.user}" th:each="user:${session.user}">
+            <td th:text="*{uId}">id</td>
             <td th:text="*{username}">用户名</td>
             <td th:text="*{password}">密码</td>
             <td th:text="*{phone}">电话</td>
-            <td th:text="*{rid}">角色</td>
+            <td th:text="*{roleId}">角色</td>
             <td th:text="*{status}">状态</td>
             <td>
-                <a th:href="@{/user/delete(id=*{id})}" οnclick="return confirm('确定要删除吗?')">删除</a>
+                <a th:href="@{/user/delete(id=*{uId})}" οnclick="return confirm('确定要删除吗?')">删除</a>
                 <a th:href="@{/user/update}">修改</a>
             </td>
         </tr>
