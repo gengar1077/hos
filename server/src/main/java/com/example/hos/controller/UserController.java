@@ -50,7 +50,7 @@ public class UserController {
 
     @GetMapping("/toUpdate")
     public String toUpdate(){
-        return "user/userEdit";
+        return "userdit";
     }
 
     @GetMapping({"", "/", "/index", "/index.html"})
@@ -140,7 +140,7 @@ public class UserController {
         final String sub = filename.substring(filename.lastIndexOf("."));
 
         //创建一个File对象
-        final File file = new File("C://pic//user/photo/" + id + "//" + uuid + sub);
+        final File file = new File("D://pic//user/photo/" + id + "//" + uuid + sub);
         if (!file.getParentFile().exists()){
             file.getParentFile().mkdirs();//创建父目录
         }
@@ -154,6 +154,6 @@ public class UserController {
         userService.updateUser(user);
         session.setAttribute("user",userService.selectById(user.getId()));
         //返回用户列表页面
-        return "/user/userList";
+        return "user/userEdit";
     }
 }
