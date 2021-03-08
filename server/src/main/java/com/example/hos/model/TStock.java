@@ -14,7 +14,7 @@ public class TStock implements Serializable {
 
     private Integer selNum;
 
-    private Date createtime;
+    private Date createTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -58,12 +58,12 @@ public class TStock implements Serializable {
         this.selNum = selNum;
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class TStock implements Serializable {
         sb.append(", pName=").append(pName);
         sb.append(", pNum=").append(pNum);
         sb.append(", selNum=").append(selNum);
-        sb.append(", createtime=").append(createtime);
+        sb.append(", createtime=").append(createTime);
         sb.append("]");
         return sb.toString();
     }

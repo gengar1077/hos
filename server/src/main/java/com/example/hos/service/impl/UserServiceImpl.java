@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Author: 吃面龙
@@ -61,12 +62,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageInfo<TUser> selectByPage(Integer pageNum, Integer pageSize) {
+    public PageInfo<UserVO> selectByPage(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
-        final List<TUser> tusers = userMapper.selectByExample(null);
-        final PageInfo<TUser> userPage = new PageInfo<>(tusers);
+        List<UserVO> users = userMapper.selectByExample(null).stream().map(user -> {
+            UserVO userVO = new UserVO();
+            userVO.setName(user.getUsername());
+            userVO.setPhoto(user.getPhoto());
+            return userVO;
+        }).collect(Collectors.toList());
+        PageInfo<UserVO> userPage = new PageInfo<>(users);
         return userPage;
+    }
+
+    @Override
+    public TUser selectById(Long id) {
+        return userMapper.selectById(id);
     }
 }
