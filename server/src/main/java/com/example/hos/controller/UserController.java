@@ -44,6 +44,11 @@ public class UserController {
         return "user/register";
     }
 
+    @GetMapping("/toUpdate")
+    public String toUpdate(){
+        return "user/userEdit";
+    }
+
     @GetMapping({"", "/", "/index", "/index.html"})
     public String index(HttpServletRequest request) {
         request.setAttribute("path", "index");
@@ -103,12 +108,11 @@ public class UserController {
     }
 
     @ApiOperation(value = "分页查询用户")
-    @PostMapping(value = "/findByPage")
+    @GetMapping(value = "/findByPage")
     public String pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                            @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
-        PageInfo<TUser> userPage =userService.selectByPage(pageNum,pageSize);
+        PageInfo<TUser> userPage = userService.selectByPage(pageNum,pageSize);
         modelMap.put("userPage",userPage);
-
         return "user/userList";
     }
 }

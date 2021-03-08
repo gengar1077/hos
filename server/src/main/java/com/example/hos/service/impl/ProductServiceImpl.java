@@ -4,10 +4,13 @@ import com.example.hos.mapper.TProductMapper;
 import com.example.hos.model.TProduct;
 import com.example.hos.model.vo.ProductVO;
 import com.example.hos.service.ProductService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -62,5 +65,15 @@ public class ProductServiceImpl implements ProductService {
         product.setpName(productVO.getPName());
         productMapper.updateByPrimaryKey(product);
         return null;
+    }
+
+    @Override
+    public PageInfo<TProduct> selectByPage(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(
+                pageNum==null?1:pageNum,
+                pageSize==null?2:pageSize);
+        final List<TProduct> products = productMapper.selectByExample(null);
+        final PageInfo<TProduct> productPage = new PageInfo<>(products);
+        return productPage;
     }
 }
