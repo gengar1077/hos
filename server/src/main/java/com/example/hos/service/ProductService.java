@@ -46,5 +46,5 @@ public interface ProductService {
      * @param pageSize
      * @return
      **/
-    PageInfo<TProduct> selectByPage(Integer pageNum, Integer pageSize);
+    PageInfo<ProductVO> selectByPage(Integer pageNum, Integer pageSize);
 }

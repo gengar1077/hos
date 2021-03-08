@@ -1,8 +1,8 @@
 package com.example.hos.controller;
 
 import com.example.hos.model.TProduct;
-import com.example.hos.model.TStock;
 import com.example.hos.model.vo.ProductVO;
+import com.example.hos.model.vo.StockVO;
 import com.example.hos.service.ProductService;
 import com.example.hos.service.StockService;
 import com.github.pagehelper.PageInfo;
@@ -52,7 +52,7 @@ public class ProductController {
     @GetMapping(value = "/findByPage")
     public String pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                            @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
-        PageInfo<TProduct> productPage = productService.selectByPage(pageNum,pageSize);
+        PageInfo<ProductVO> productPage = productService.selectByPage(pageNum,pageSize);
         modelMap.put("productPage",productPage);
         return "product/productList";
     }
@@ -61,7 +61,7 @@ public class ProductController {
     @GetMapping(value = "/findStock")
     public String stockList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                            @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
-        PageInfo<TStock> stockPage = stockService.selectByPage(pageNum, pageSize);
+        PageInfo<StockVO> stockPage = stockService.selectByPage(pageNum, pageSize);
         modelMap.put("stockPage",stockPage);
         return "product/stockList";
     }

@@ -1,6 +1,6 @@
 package com.example.hos.service;
 
-import com.example.hos.model.TStock;
+import com.example.hos.model.vo.StockVO;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -28,5 +28,5 @@ public interface StockService {
      * @param pageSize
      * @return
      **/
-    PageInfo<TStock> selectByPage(Integer pageNum, Integer pageSize);
+    PageInfo<StockVO> selectByPage(Integer pageNum, Integer pageSize);
 }

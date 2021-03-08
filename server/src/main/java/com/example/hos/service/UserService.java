@@ -19,16 +19,6 @@ public interface UserService {
      */
     String addUser(TUser user);
 
-//    /**
-//     * 登录
-//     * @author 吃面龙
-//     * @date 2021/2/13
-//     * @param username
-//     * @param password
-//     * @return
-//     */
-//    String login(String username,String password);
-
     /**
      * 更新用户
      * @date: 2021/1/7
@@ -54,5 +44,14 @@ public interface UserService {
      * @param pageSize
      * @return
      **/
-    PageInfo<TUser> selectByPage(Integer pageNum, Integer pageSize);
+    PageInfo<UserVO> selectByPage(Integer pageNum, Integer pageSize);
+
+    /**
+     * 根据id查询用户
+     * @author changwei.zhong
+     * @date 2021/2/24
+     * @param id
+     * @return
+     **/
+    TUser selectById(Long id);
 }

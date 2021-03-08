@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author changwei.zhong
@@ -68,12 +69,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageInfo<TProduct> selectByPage(Integer pageNum, Integer pageSize) {
+    public PageInfo<ProductVO> selectByPage(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
-        final List<TProduct> products = productMapper.selectByExample(null);
-        final PageInfo<TProduct> productPage = new PageInfo<>(products);
+        List<ProductVO> products = productMapper.selectByExample(null).stream().map(product -> {
+            ProductVO productVO = new ProductVO();
+            productVO.setPName(product.getpName());
+            return productVO;
+        }).collect(Collectors.toList());
+        PageInfo<ProductVO> productPage = new PageInfo<>(products);
         return productPage;
     }
 }
