@@ -4,8 +4,16 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
-<script src="../static/assets/js/jquery-3.3.1.min.js"></script>
-<script src="../static/assets/js/include.js"></script>
+<script src="../../static/assets/js/jquery-3.3.1.min.js"></script>
+<script src="../../static/assets/js/include.js"></script>
+	<script src="../../static/assets/js/zepto.min.js"></script>
+	<script src="../../static/assets/js/amazeui.min.js"></script>
+	<script src="../../static/assets/js/app.js"></script>
+	<link rel="icon" type="image/png" href="../../static/assets/i/favicon.png">
+	<link rel="apple-touch-icon-precomposed" href="../../static/assets/i/app-icon72x72@2x.png">
+	<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+	<link rel="stylesheet" href="../../static/assets/css/amazeui.min.css"/>
+	<link rel="stylesheet" href="../../static/assets/css/admin.css">
 </head>
 <body>
 	<!-- <div th:replace="common/top::footer"></div> -->
@@ -51,13 +59,10 @@
 
 							<div class="am-form-group am-margin-left am-fl">
 								<select>
-									<option value="option1">所有类别</option>
-									<option value="option2">IT业界</option>
-									<option value="option3">数码产品</option>
-									<option value="option3">笔记本电脑</option>
-									<option value="option3">平板电脑</option>
-									<option value="option3">只能手机</option>
-									<option value="option3">超极本</option>
+									<option value="option1">所有用户</option>
+									<option value="option2">admin</option>
+									<option value="option3">pm</option>
+									<option value="option3">开发</option>
 								</select>
 							</div>
 						</div>
@@ -83,35 +88,39 @@
 							<thead>
 								<tr>
 									<th class="table-check"><input type="checkbox" /></th>
+									<th class="table-date">头像</th>
 									<th class="table-id">ID</th>
-									<th class="table-title">标题</th>
-									<th class="table-type">类别</th>
-									<th class="table-author">作者</th>
-									<th class="table-date">修改日期</th>
+									<th class="table-title">用户名</th>
+									<th class="table-author">密码</th>
+									<th class="table-type">电话</th>
 									<th class="table-set">操作</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="user,userStat:${userList}">
+								<tr th:object="${session.user}" th:each="user:${session.user}">
 									<th class="table-check"><input type="checkbox" /></th>
-									<td th:text="${user.id}">q</td>
-									<td th:text="${user.name}">q</td>
-									<td th:text="${user.password}">q</td>
-									<td th:text="'aaaaa'+${user.email}">q</td>
-									<td th:text="${user.email}">q</td>
+									<td>
+										<div style=" margin-top: 0px;margin-left:0px;width: 25px;height: 25px;display: flex;border-radius: 50%;align-items: center;justify-content: center;overflow: hidden;">
+											<img th:src="*{photo}">
+										</div>
+									</td>
+									<td th:text="*{uId}">id</td>
+									<td th:text="*{username}">用户名</td>
+									<td th:text="*{password}">密码</td>
+									<td th:text="*{phone}">电话</td>
 									<td>
 										<div class="am-btn-toolbar">
 											<div class="am-btn-group am-btn-group-xs">
 												<button
 													class="am-btn am-btn-default am-btn-xs am-text-secondary">
-													<span class="am-icon-pencil-square-o"></span> 编辑
+													<span class="am-icon-pencil-square-o" th:href="@{/user/toUpdate}"></span> 编辑
 												</button>
 												<button class="am-btn am-btn-default am-btn-xs">
 													<span class="am-icon-copy"></span> 复制
 												</button>
 												<button
 													class="am-btn am-btn-default am-btn-xs am-text-danger">
-													<span class="am-icon-trash-o"></span> 删除
+													<span class="am-icon-trash-o" th:href="@{/user/delete(id=*{uId})}"></span> 删除
 												</button>
 											</div>
 										</div>
@@ -121,7 +130,6 @@
 							</tbody>
 						</table>
 						<div class="am-cf">
-							共 15 条记录
 							<div class="am-fr">
 								<ul class="am-pagination">
 									<li class="am-disabled"><a href="#">«</a></li>

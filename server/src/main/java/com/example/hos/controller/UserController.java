@@ -56,7 +56,7 @@ public class UserController {
     @GetMapping({"", "/", "/index", "/index.html"})
     public String index(HttpServletRequest request) {
         request.setAttribute("path", "index");
-        return "index";
+        return "a-index";
     }
 
     @ApiOperation(value = "登录", produces = "application/json;charset=utf-8")
@@ -73,14 +73,14 @@ public class UserController {
         }
         session.setAttribute("user",tUser);
         LOG.debug("用户登陆成功！");
-        return "index";
+        return "a-index";
     }
 
     @ApiOperation(value = "登出", produces = "application/json;charset=utf-8")
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("user");
-        return "index";
+        return "a-index";
     }
 
     @ApiOperation(value = "注册", produces = "application/json;charset=utf-8")
