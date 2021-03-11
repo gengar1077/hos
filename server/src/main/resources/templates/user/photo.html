@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>上传头像</title>
+</head>
+<body>
+<div>
+    <img src="${user.photo}"
+         style="width: 100px;height: 100px;" alt="">
+</div>
+
+<form method="post" action="/user/upload" enctype="multipart/form-data">
+    <input type="hidden" value="${user.id}" name="id">
+    <input type="file" name="photo"><br>
+    <input type="submit" value="上传">
+</form>
+</body>
+</html>
