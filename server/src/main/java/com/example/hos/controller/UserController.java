@@ -56,7 +56,7 @@ public class UserController {
     @GetMapping({"", "/", "/index", "/index.html"})
     public String index(HttpServletRequest request) {
         request.setAttribute("path", "index");
-        return "a-index";
+        return "index";
     }
 
     @ApiOperation(value = "登录", produces = "application/json;charset=utf-8")
@@ -73,14 +73,14 @@ public class UserController {
         }
         session.setAttribute("user",tUser);
         LOG.debug("用户登陆成功！");
-        return "a-index";
+        return "index";
     }
 
     @ApiOperation(value = "登出", produces = "application/json;charset=utf-8")
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("user");
-        return "a-index";
+        return "index";
     }
 
     @ApiOperation(value = "注册", produces = "application/json;charset=utf-8")
@@ -100,7 +100,7 @@ public class UserController {
     @PostMapping(value = "/update")
     public String updateUser(UserVO userVO){
         userService.updateUser(userVO);
-        return "user/userList";
+        return "user/list";
     }
 
     @ApiOperation(value = "用户删除")
@@ -108,7 +108,7 @@ public class UserController {
     @PostMapping(value = "/delete")
     public String deleteUser(Long id) {
         userService.deleteUser(id);
-        return "user/userList";
+        return "user/list";
     }
 
     @ApiOperation(value = "分页查询用户")
@@ -117,7 +117,7 @@ public class UserController {
                            @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
         PageInfo<UserVO> userPage = userService.selectByPage(pageNum,pageSize);
         modelMap.put("userPage",userPage);
-        return "user/userList";
+        return "user/list";
     }
 
     @ApiOperation(value = "修改头像")
@@ -125,13 +125,13 @@ public class UserController {
     public String photo(Long id,ModelMap modelMap){
         final TUser tuser = userService.selectById(id);
         modelMap.put("user",tuser);
-        return "/user/photo";
+        return "/user/userInfo";
     }
 
     @PostMapping("/upload")
     public String upload(MultipartFile photo, Long id, HttpSession session) throws IOException {
         if (photo==null||photo.isEmpty()){
-            return "/user/photo";
+            return "/user/userInfo";
         }
         //获取到文件名
         final String filename = photo.getOriginalFilename();
@@ -154,6 +154,6 @@ public class UserController {
         userService.updateUser(user);
         session.setAttribute("user",userService.selectById(user.getId()));
         //返回用户列表页面
-        return "user/userEdit";
+        return "user/userInfo";
     }
 }
