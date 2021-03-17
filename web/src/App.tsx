@@ -12,9 +12,6 @@ import Dashboard from './pages/Dashboard';
 import Signin from './pages/Signin';
 
 export default function AuthExample() {
-  const onSubmit = (values) => {
-    console.log('onSubmit values of form: ', values);
-  };
   return (
     <ProvideAuth>
       <Router>
@@ -34,7 +31,7 @@ export default function AuthExample() {
 
           <Switch>
             <Route path="/signin">
-              <Signin onSubmit={onSubmit} />
+              <AuthSignin />
             </Route>
             <PrivateRoute path="/dashboard">
               <Dashboard />
@@ -48,11 +45,11 @@ export default function AuthExample() {
 
 const fakeAuth = {
   isAuthenticated: false,
-  signin(cb) {
+  signin(cb?) {
     fakeAuth.isAuthenticated = true;
     setTimeout(cb, 100); // fake async
   },
-  signout(cb) {
+  signout(cb?) {
     fakeAuth.isAuthenticated = false;
     setTimeout(cb, 100);
   },
@@ -64,8 +61,8 @@ const fakeAuth = {
  */
 const authContext = createContext<{
   user: string | null | undefined;
-  signin: (cb: any) => void;
-  signout: (cb: any) => void;
+  signin: (cb?: any) => void;
+  signout: (cb?: any) => void;
 }>({
   user: 'defaultuser',
   signin: () => {
@@ -107,6 +104,23 @@ function useProvideAuth() {
     signin,
     signout,
   };
+}
+
+function AuthSignin() {
+  const auth = useAuth();
+  const history = useHistory();
+  const onSubmit = (values: {
+    password: string;
+    remember: boolean;
+    username: string;
+  }) => {
+    console.log('onSubmit values: ', values);
+    auth.signin(() => {
+      history.push('/dashboard');
+    });
+  };
+
+  return <Signin onSubmit={onSubmit} />;
 }
 
 function AuthButton() {
