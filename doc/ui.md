@@ -2,8 +2,8 @@
 
 ## TODO
 
-- [ ] login page
-- [ ] dashboard layout
+- [x] login page
+- [x] dashboard layout
 - [ ] user list page
 - [ ] user detail page
 - [ ] role page
