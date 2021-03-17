@@ -52,8 +52,8 @@ public class ProductController {
     @GetMapping(value = "/findByPage")
     public String pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                            @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
-        PageInfo<ProductVO> productPage = productService.selectByPage(pageNum,pageSize);
-        modelMap.put("productPage",productPage);
+        PageInfo<ProductVO> productPage = productService.selectByPage(pageNum, pageSize);
+        modelMap.put("productPage", productPage);
         return "product/productList";
     }
 
@@ -62,14 +62,14 @@ public class ProductController {
     public String stockList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                            @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
         PageInfo<StockVO> stockPage = stockService.selectByPage(pageNum, pageSize);
-        modelMap.put("stockPage",stockPage);
+        modelMap.put("stockPage", stockPage);
         return "product/stockList";
     }
 
     @ApiOperation(value = "更改库存", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/editStock",method = RequestMethod.POST)
-    public String editStock(Long pid,int num) {
-        stockService.inStock(pid,num);
+    public String editStock(Long pid, int num) {
+        stockService.inStock(pid, num);
         return "product/stockList";
     }
 }

@@ -68,10 +68,10 @@ public class UserController {
     public String login(String username, String password, HttpSession session) {
         TUser tUser=userMapper.selectByName(username).orElse(null);
         if (tUser==null||!password.equals(tUser.getPassword())){
-            LOG.warn("用户登陆失败！用户名：{}，密码：{}",username,password);
+            LOG.warn("用户登陆失败！用户名：{}，密码：{}", username, password);
             return "user/login";
         }
-        session.setAttribute("user",tUser);
+        session.setAttribute("user", tUser);
         LOG.debug("用户登陆成功！");
         return "index";
     }
@@ -115,8 +115,8 @@ public class UserController {
     @GetMapping(value = "/findByPage")
     public String pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                            @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
-        PageInfo<UserVO> userPage = userService.selectByPage(pageNum,pageSize);
-        modelMap.put("userPage",userPage);
+        PageInfo<UserVO> userPage = userService.selectByPage(pageNum, pageSize);
+        modelMap.put("userPage", userPage);
         return "user/list";
     }
 
