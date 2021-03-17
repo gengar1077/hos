@@ -12,12 +12,15 @@ import Dashboard from './pages/Dashboard';
 import Signin from './pages/Signin';
 
 export default function AuthExample() {
+  const onSubmit = (values) => {
+    console.log('onSubmit values of form: ', values);
+  };
   return (
     <ProvideAuth>
       <Router>
         <div>
-          <AuthButton />
-          <ul>
+          {/* <AuthButton /> */}
+          {/* <ul>
             <li>
               <Link to="/dashboard">dashboard</Link>
             </li>
@@ -27,14 +30,11 @@ export default function AuthExample() {
             <li>
               <Link to="/public">public</Link>
             </li>
-          </ul>
+          </ul> */}
 
           <Switch>
-            <Route path="/public">
-              <PublicPage />
-            </Route>
             <Route path="/signin">
-              <Signin />
+              <Signin onSubmit={onSubmit} />
             </Route>
             <PrivateRoute path="/dashboard">
               <Dashboard />
@@ -149,29 +149,5 @@ function PrivateRoute({ children, ...rest }) {
         )
       }
     />
-  );
-}
-
-function PublicPage() {
-  return <h3>Public</h3>;
-}
-
-function LoginPage() {
-  let history = useHistory();
-  let location = useLocation();
-  let auth = useAuth();
-
-  let { from } = location.state || { from: { pathname: '/' } };
-  let login = () => {
-    auth.signin(() => {
-      history.replace(from);
-    });
-  };
-
-  return (
-    <div>
-      <p>You must log in to view the page at {from.pathname}</p>
-      <button onClick={login}>Log in</button>
-    </div>
   );
 }
