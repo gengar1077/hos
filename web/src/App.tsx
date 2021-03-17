@@ -33,9 +33,12 @@ export default function AuthExample() {
             <Route path="/signin">
               <AuthSignin />
             </Route>
-            <PrivateRoute path="/dashboard">
+            {/* <PrivateRoute path="/dashboard">
               <Dashboard />
-            </PrivateRoute>
+            </PrivateRoute> */}
+            <Route path="/dashboard">
+              <Dashboard />
+            </Route>
           </Switch>
         </div>
       </Router>
