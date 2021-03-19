@@ -13,4 +13,6 @@ public interface SellService {
 
 
     PageInfo<TSell> selectByPage(Integer pageNum, Integer pageSize);
+
+    String addSell();
 }
