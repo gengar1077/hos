@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.hos.mapper.TUserMapper">
-  <resultMap id="BaseResultMap" type="com.example.hos.model.TUser">
-    <id column="U_ID" jdbcType="VARCHAR" property="uId" />
-    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
-    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
-    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
-    <result column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
-    <result column="PHOTO" jdbcType="VARCHAR" property="photo" />
+<mapper namespace="com.example.hos.mapper.TOrderMapper">
+  <resultMap id="BaseResultMap" type="com.example.hos.model.TOrder">
+    <id column="O_ID" jdbcType="VARCHAR" property="oId" />
+    <result column="MONEY" jdbcType="DECIMAL" property="money" />
+    <result column="P_NUM" jdbcType="DECIMAL" property="pNum" />
+    <result column="PAY_TYPE" jdbcType="DECIMAL" property="payType" />
+    <result column="OPERATOR" jdbcType="VARCHAR" property="operator" />
     <result column="REMARK" jdbcType="VARCHAR" property="remark" />
-    <result column="WEI" jdbcType="VARCHAR" property="wei" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
     <result column="STATUS" jdbcType="CHAR" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -71,15 +70,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    U_ID, USERNAME, PASSWORD, PHONE, ROLE_ID, PHOTO, REMARK, WEI, STATUS
+    O_ID, MONEY, P_NUM, PAY_TYPE, OPERATOR, REMARK, CREATETIME, STATUS
   </sql>
-  <select id="selectByExample" parameterType="com.example.hos.model.TUserExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.example.hos.model.TOrderExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from T_USER
+    from T_ORDER
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -90,123 +89,111 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from T_USER
-    where U_ID = #{uId,jdbcType=VARCHAR}
+    from T_ORDER
+    where O_ID = #{oId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from T_USER
-    where U_ID = #{uId,jdbcType=VARCHAR}
+    delete from T_ORDER
+    where O_ID = #{oId,jdbcType=VARCHAR}
   </delete>
-  <delete id="deleteByExample" parameterType="com.example.hos.model.TUserExample">
-    delete from T_USER
+  <delete id="deleteByExample" parameterType="com.example.hos.model.TOrderExample">
+    delete from T_ORDER
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.example.hos.model.TUser">
-    insert into T_USER (U_ID, USERNAME, PASSWORD, 
-      PHONE, ROLE_ID, PHOTO, 
-      REMARK, WEI, STATUS)
-    values (#{uId,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{wei,jdbcType=VARCHAR}, #{status,jdbcType=CHAR})
+  <insert id="insert" parameterType="com.example.hos.model.TOrder">
+    insert into T_ORDER (O_ID, MONEY, P_NUM, 
+      PAY_TYPE, OPERATOR, REMARK, 
+      CREATETIME, STATUS)
+    values (#{oId,jdbcType=VARCHAR}, #{money,jdbcType=DECIMAL}, #{pNum,jdbcType=DECIMAL}, 
+      #{payType,jdbcType=DECIMAL}, #{operator,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=CHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.example.hos.model.TUser">
-    <selectKey keyProperty="uId" order="BEFORE" resultType="string">
-      select SEQ_USER.nextval from dual
-    </selectKey>
-    insert into T_USER
+  <insert id="insertSelective" parameterType="com.example.hos.model.TOrder">
+    insert into T_ORDER
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="uId != null">
-        U_ID,
+      <if test="oId != null">
+        O_ID,
       </if>
-      <if test="username != null">
-        USERNAME,
+      <if test="money != null">
+        MONEY,
       </if>
-      <if test="password != null">
-        PASSWORD,
+      <if test="pNum != null">
+        P_NUM,
       </if>
-      <if test="phone != null">
-        PHONE,
+      <if test="payType != null">
+        PAY_TYPE,
       </if>
-      <if test="roleId != null">
-        ROLE_ID,
-      </if>
-      <if test="photo != null">
-        PHOTO,
+      <if test="operator != null">
+        OPERATOR,
       </if>
       <if test="remark != null">
         REMARK,
       </if>
-      <if test="wei != null">
-        WEI,
+      <if test="createtime != null">
+        CREATETIME,
       </if>
       <if test="status != null">
         STATUS,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="uId != null">
-        #{uId,jdbcType=VARCHAR},
+      <if test="oId != null">
+        #{oId,jdbcType=VARCHAR},
       </if>
-      <if test="username != null">
-        #{username,jdbcType=VARCHAR},
+      <if test="money != null">
+        #{money,jdbcType=DECIMAL},
       </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
+      <if test="pNum != null">
+        #{pNum,jdbcType=DECIMAL},
       </if>
-      <if test="phone != null">
-        #{phone,jdbcType=VARCHAR},
+      <if test="payType != null">
+        #{payType,jdbcType=DECIMAL},
       </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=VARCHAR},
-      </if>
-      <if test="photo != null">
-        #{photo,jdbcType=VARCHAR},
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="wei != null">
-        #{wei,jdbcType=VARCHAR},
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         #{status,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.example.hos.model.TUserExample" resultType="java.lang.Long">
-    select count(*) from T_USER
+  <select id="countByExample" parameterType="com.example.hos.model.TOrderExample" resultType="java.lang.Long">
+    select count(*) from T_ORDER
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update T_USER
+    update T_ORDER
     <set>
-      <if test="record.uId != null">
-        U_ID = #{record.uId,jdbcType=VARCHAR},
+      <if test="record.oId != null">
+        O_ID = #{record.oId,jdbcType=VARCHAR},
       </if>
-      <if test="record.username != null">
-        USERNAME = #{record.username,jdbcType=VARCHAR},
+      <if test="record.money != null">
+        MONEY = #{record.money,jdbcType=DECIMAL},
       </if>
-      <if test="record.password != null">
-        PASSWORD = #{record.password,jdbcType=VARCHAR},
+      <if test="record.pNum != null">
+        P_NUM = #{record.pNum,jdbcType=DECIMAL},
       </if>
-      <if test="record.phone != null">
-        PHONE = #{record.phone,jdbcType=VARCHAR},
+      <if test="record.payType != null">
+        PAY_TYPE = #{record.payType,jdbcType=DECIMAL},
       </if>
-      <if test="record.roleId != null">
-        ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
-      </if>
-      <if test="record.photo != null">
-        PHOTO = #{record.photo,jdbcType=VARCHAR},
+      <if test="record.operator != null">
+        OPERATOR = #{record.operator,jdbcType=VARCHAR},
       </if>
       <if test="record.remark != null">
         REMARK = #{record.remark,jdbcType=VARCHAR},
       </if>
-      <if test="record.wei != null">
-        WEI = #{record.wei,jdbcType=VARCHAR},
+      <if test="record.createtime != null">
+        CREATETIME = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.status != null">
         STATUS = #{record.status,jdbcType=CHAR},
@@ -217,60 +204,55 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update T_USER
-    set U_ID = #{record.uId,jdbcType=VARCHAR},
-      USERNAME = #{record.username,jdbcType=VARCHAR},
-      PASSWORD = #{record.password,jdbcType=VARCHAR},
-      PHONE = #{record.phone,jdbcType=VARCHAR},
-      ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
-      PHOTO = #{record.photo,jdbcType=VARCHAR},
+    update T_ORDER
+    set O_ID = #{record.oId,jdbcType=VARCHAR},
+      MONEY = #{record.money,jdbcType=DECIMAL},
+      P_NUM = #{record.pNum,jdbcType=DECIMAL},
+      PAY_TYPE = #{record.payType,jdbcType=DECIMAL},
+      OPERATOR = #{record.operator,jdbcType=VARCHAR},
       REMARK = #{record.remark,jdbcType=VARCHAR},
-      WEI = #{record.wei,jdbcType=VARCHAR},
+      CREATETIME = #{record.createtime,jdbcType=TIMESTAMP},
       STATUS = #{record.status,jdbcType=CHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.hos.model.TUser">
-    update T_USER
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.hos.model.TOrder">
+    update T_ORDER
     <set>
-      <if test="username != null">
-        USERNAME = #{username,jdbcType=VARCHAR},
+      <if test="money != null">
+        MONEY = #{money,jdbcType=DECIMAL},
       </if>
-      <if test="password != null">
-        PASSWORD = #{password,jdbcType=VARCHAR},
+      <if test="pNum != null">
+        P_NUM = #{pNum,jdbcType=DECIMAL},
       </if>
-      <if test="phone != null">
-        PHONE = #{phone,jdbcType=VARCHAR},
+      <if test="payType != null">
+        PAY_TYPE = #{payType,jdbcType=DECIMAL},
       </if>
-      <if test="roleId != null">
-        ROLE_ID = #{roleId,jdbcType=VARCHAR},
-      </if>
-      <if test="photo != null">
-        PHOTO = #{photo,jdbcType=VARCHAR},
+      <if test="operator != null">
+        OPERATOR = #{operator,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         REMARK = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="wei != null">
-        WEI = #{wei,jdbcType=VARCHAR},
+      <if test="createtime != null">
+        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         STATUS = #{status,jdbcType=CHAR},
       </if>
     </set>
-    where U_ID = #{uId,jdbcType=VARCHAR}
+    where O_ID = #{oId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.example.hos.model.TUser">
-    update T_USER
-    set USERNAME = #{username,jdbcType=VARCHAR},
-      PASSWORD = #{password,jdbcType=VARCHAR},
-      PHONE = #{phone,jdbcType=VARCHAR},
-      ROLE_ID = #{roleId,jdbcType=VARCHAR},
-      PHOTO = #{photo,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.example.hos.model.TOrder">
+    update T_ORDER
+    set MONEY = #{money,jdbcType=DECIMAL},
+      P_NUM = #{pNum,jdbcType=DECIMAL},
+      PAY_TYPE = #{payType,jdbcType=DECIMAL},
+      OPERATOR = #{operator,jdbcType=VARCHAR},
       REMARK = #{remark,jdbcType=VARCHAR},
-      WEI = #{wei,jdbcType=VARCHAR},
+      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
       STATUS = #{status,jdbcType=CHAR}
-    where U_ID = #{uId,jdbcType=VARCHAR}
+    where O_ID = #{oId,jdbcType=VARCHAR}
   </update>
 </mapper>
