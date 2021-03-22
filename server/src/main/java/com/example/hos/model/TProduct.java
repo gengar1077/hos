@@ -3,9 +3,9 @@ package com.example.hos.model;
 import java.io.Serializable;
 
 public class TProduct implements Serializable {
-    private Long pId;
+    private String pId;
 
-    private Long sId;
+    private String sId;
 
     private String pName;
 
@@ -17,22 +17,24 @@ public class TProduct implements Serializable {
 
     private String remark;
 
+    private String status;
+
     private static final long serialVersionUID = 1L;
 
-    public Long getpId() {
+    public String getpId() {
         return pId;
     }
 
-    public void setpId(Long pId) {
-        this.pId = pId;
+    public void setpId(String pId) {
+        this.pId = pId == null ? null : pId.trim();
     }
 
-    public Long getsId() {
+    public String getsId() {
         return sId;
     }
 
-    public void setsId(Long sId) {
-        this.sId = sId;
+    public void setsId(String sId) {
+        this.sId = sId == null ? null : sId.trim();
     }
 
     public String getpName() {
@@ -75,6 +77,14 @@ public class TProduct implements Serializable {
         this.remark = remark == null ? null : remark.trim();
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -88,6 +98,7 @@ public class TProduct implements Serializable {
         sb.append(", spec=").append(spec);
         sb.append(", price=").append(price);
         sb.append(", remark=").append(remark);
+        sb.append(", status=").append(status);
         sb.append("]");
         return sb.toString();
     }

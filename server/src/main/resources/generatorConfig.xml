@@ -63,10 +63,13 @@
 		<!-- 需要逆向 enableCountByExample="false" enableUpdateByExample="false"
 		  enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"
 		 -->
-		<table tableName="t_permission"></table>
-		<table tableName="t_product"></table>
-		<table tableName="t_stock"></table>
-		<table tableName="t_role"></table>
-<!--		<table tableName="t_users"></table>-->
+<!--		<table tableName="t_permission"></table>-->
+<!--		<table tableName="t_product"></table>-->
+<!--		<table tableName="t_stock"></table>-->
+<!--		<table tableName="t_role"></table>-->
+<!--		<table tableName="t_sell"></table>-->
+<!--		<table tableName="t_supplier"></table>-->
+<!--		<table tableName="t_order"></table>-->
+		<table tableName="t_users"></table>
 	</context>
 </generatorConfiguration>  

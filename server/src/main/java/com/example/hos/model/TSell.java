@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TSell implements Serializable {
-    private Long sellId;
+    private String sellId;
 
     private Long money;
 
@@ -12,22 +12,22 @@ public class TSell implements Serializable {
 
     private Short payType;
 
-    private Short status;
-
     private String operator;
 
     private String remark;
 
     private Date createtime;
 
+    private String status;
+
     private static final long serialVersionUID = 1L;
 
-    public Long getSellId() {
+    public String getSellId() {
         return sellId;
     }
 
-    public void setSellId(Long sellId) {
-        this.sellId = sellId;
+    public void setSellId(String sellId) {
+        this.sellId = sellId == null ? null : sellId.trim();
     }
 
     public Long getMoney() {
@@ -54,14 +54,6 @@ public class TSell implements Serializable {
         this.payType = payType;
     }
 
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
-
     public String getOperator() {
         return operator;
     }
@@ -86,6 +78,14 @@ public class TSell implements Serializable {
         this.createtime = createtime;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -96,10 +96,10 @@ public class TSell implements Serializable {
         sb.append(", money=").append(money);
         sb.append(", pNum=").append(pNum);
         sb.append(", payType=").append(payType);
-        sb.append(", status=").append(status);
         sb.append(", operator=").append(operator);
         sb.append(", remark=").append(remark);
         sb.append(", createtime=").append(createtime);
+        sb.append(", status=").append(status);
         sb.append("]");
         return sb.toString();
     }

@@ -13,7 +13,7 @@ public interface TProductMapper {
 
     int deleteByExample(TProductExample example);
 
-    int deleteByPrimaryKey(Long pId);
+    int deleteByPrimaryKey(String pId);
 
     int insert(TProduct record);
 
@@ -21,7 +21,7 @@ public interface TProductMapper {
 
     List<TProduct> selectByExample(TProductExample example);
 
-    TProduct selectByPrimaryKey(Long pId);
+    TProduct selectByPrimaryKey(String pId);
 
     int updateByExampleSelective(@Param("record") TProduct record, @Param("example") TProductExample example);
 

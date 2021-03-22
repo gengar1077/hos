@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TStock implements Serializable {
-    private Long stockId;
+    private String stockId;
 
-    private Long pId;
+    private String pId;
 
     private String pName;
 
@@ -14,24 +14,26 @@ public class TStock implements Serializable {
 
     private Integer selNum;
 
-    private Date createTime;
+    private Date createtime;
+
+    private String status;
 
     private static final long serialVersionUID = 1L;
 
-    public Long getStockId() {
+    public String getStockId() {
         return stockId;
     }
 
-    public void setStockId(Long stockId) {
-        this.stockId = stockId;
+    public void setStockId(String stockId) {
+        this.stockId = stockId == null ? null : stockId.trim();
     }
 
-    public Long getpId() {
+    public String getpId() {
         return pId;
     }
 
-    public void setpId(Long pId) {
-        this.pId = pId;
+    public void setpId(String pId) {
+        this.pId = pId == null ? null : pId.trim();
     }
 
     public String getpName() {
@@ -58,12 +60,20 @@ public class TStock implements Serializable {
         this.selNum = selNum;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public Date getCreatetime() {
+        return createtime;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 
     @Override
@@ -77,7 +87,8 @@ public class TStock implements Serializable {
         sb.append(", pName=").append(pName);
         sb.append(", pNum=").append(pNum);
         sb.append(", selNum=").append(selNum);
-        sb.append(", createtime=").append(createTime);
+        sb.append(", createtime=").append(createtime);
+        sb.append(", status=").append(status);
         sb.append("]");
         return sb.toString();
     }

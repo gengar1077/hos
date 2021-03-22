@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String deleteUser(Long id) {
+    public String deleteUser(String id) {
         TUser tUser = userMapper.selectById(id);
         tUser.setStatus("0");
         return "删除成功";
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TUser selectById(Long id) {
+    public TUser selectById(String id) {
         return userMapper.selectById(id);
     }
 }

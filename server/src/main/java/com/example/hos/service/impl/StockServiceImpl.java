@@ -13,7 +13,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,14 +34,14 @@ public class StockServiceImpl implements StockService {
     private TProductMapper productMapper;
 
     @Override
-    public String inStock(Long pid,int num) {
+    public String inStock(String pid,int num) {
         TProduct product = productMapper.selectByPrimaryKey(pid);
         if (Objects.isNull(product)){
             TStock stock = new TStock();
             stock.setpId(pid);
             stock.setpName(product.getpName());
             stock.setpNum(num);
-            stock.setCreateTime(new Date());
+            stock.setCreatetime(new Date());
         }
         TStock stock = stockMapper.selectByPrimaryKey(pid);
         stock.setpNum(num);

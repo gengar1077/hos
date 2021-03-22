@@ -2,13 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.hos.mapper.TUserMapper">
   <resultMap id="BaseResultMap" type="com.example.hos.model.TUser">
-    <id column="U_ID" jdbcType="DECIMAL" property="uId" />
+    <id column="U_ID" jdbcType="VARCHAR" property="uId" />
     <result column="USERNAME" jdbcType="VARCHAR" property="username" />
     <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
-    <result column="ROLE_ID" jdbcType="DECIMAL" property="roleId" />
-    <result column="PHOTO" jdbcType="VARCHAR" property="photo" />
-    <result column="STATUS" jdbcType="CHAR" property="status" />
     <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
+    <result column="PHOTO" jdbcType="VARCHAR" property="photo" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="WEI" jdbcType="VARCHAR" property="wei" />
+    <result column="STATUS" jdbcType="CHAR" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,7 +71,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    U_ID, USERNAME, PASSWORD, ROLE_ID, PHOTO, STATUS, PHONE
+    U_ID, USERNAME, PASSWORD, PHONE, ROLE_ID, PHOTO, REMARK, WEI, STATUS
   </sql>
   <select id="selectByExample" parameterType="com.example.hos.model.TUserExample" resultMap="BaseResultMap">
     select
@@ -77,7 +79,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from T_USER
+    from T_USERS
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -85,32 +87,32 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from T_USER
-    where U_ID = #{uId,jdbcType=DECIMAL}
+    from T_USERS
+    where U_ID = #{uId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from T_USER
-    where U_ID = #{uId,jdbcType=DECIMAL}
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from T_USERS
+    where U_ID = #{uId,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="com.example.hos.model.TUserExample">
-    delete from T_USER
+    delete from T_USERS
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.example.hos.model.TUser">
-    insert into T_USER (U_ID, USERNAME, PASSWORD, 
-      ROLE_ID, PHOTO, STATUS, 
-      PHONE)
-    values (#{uId,jdbcType=DECIMAL}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{roleId,jdbcType=DECIMAL}, #{photo,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
-      #{phone,jdbcType=VARCHAR})
+    insert into T_USERS (U_ID, USERNAME, PASSWORD, 
+      PHONE, ROLE_ID, PHOTO, 
+      REMARK, WEI, STATUS)
+    values (#{uId,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{wei,jdbcType=VARCHAR}, #{status,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.example.hos.model.TUser">
-    <selectKey keyProperty="uId" order="BEFORE" resultType="long">
+    <selectKey keyProperty="uId" order="BEFORE" resultType="string">
       select SEQ_USER.nextval from dual
     </selectKey>
     insert into T_USER
@@ -124,22 +126,28 @@
       <if test="password != null">
         PASSWORD,
       </if>
+      <if test="phone != null">
+        PHONE,
+      </if>
       <if test="roleId != null">
         ROLE_ID,
       </if>
       <if test="photo != null">
         PHOTO,
       </if>
+      <if test="remark != null">
+        REMARK,
+      </if>
+      <if test="wei != null">
+        WEI,
+      </if>
       <if test="status != null">
         STATUS,
-      </if>
-      <if test="phone != null">
-        PHONE,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="uId != null">
-        #{uId,jdbcType=DECIMAL},
+        #{uId,jdbcType=VARCHAR},
       </if>
       <if test="username != null">
         #{username,jdbcType=VARCHAR},
@@ -147,34 +155,37 @@
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
       <if test="roleId != null">
-        #{roleId,jdbcType=DECIMAL},
+        #{roleId,jdbcType=VARCHAR},
       </if>
       <if test="photo != null">
         #{photo,jdbcType=VARCHAR},
       </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="wei != null">
+        #{wei,jdbcType=VARCHAR},
+      </if>
       <if test="status != null">
         #{status,jdbcType=CHAR},
-      </if>
-      <if test="phone != null">
-        #{phone,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.example.hos.model.TUserExample" resultType="java.lang.Long">
-    select count(*) from T_USER
+    select count(*) from T_USERS
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <select id="selectById" resultType="com.example.hos.model.TUser">
-    select * from t_user where id=#{id}
-  </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update T_USER
+    update T_USERS
     <set>
       <if test="record.uId != null">
-        U_ID = #{record.uId,jdbcType=DECIMAL},
+        U_ID = #{record.uId,jdbcType=VARCHAR},
       </if>
       <if test="record.username != null">
         USERNAME = #{record.username,jdbcType=VARCHAR},
@@ -182,17 +193,23 @@
       <if test="record.password != null">
         PASSWORD = #{record.password,jdbcType=VARCHAR},
       </if>
+      <if test="record.phone != null">
+        PHONE = #{record.phone,jdbcType=VARCHAR},
+      </if>
       <if test="record.roleId != null">
-        ROLE_ID = #{record.roleId,jdbcType=DECIMAL},
+        ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
       </if>
       <if test="record.photo != null">
         PHOTO = #{record.photo,jdbcType=VARCHAR},
       </if>
+      <if test="record.remark != null">
+        REMARK = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.wei != null">
+        WEI = #{record.wei,jdbcType=VARCHAR},
+      </if>
       <if test="record.status != null">
         STATUS = #{record.status,jdbcType=CHAR},
-      </if>
-      <if test="record.phone != null">
-        PHONE = #{record.phone,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -200,20 +217,22 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update T_USER
-    set U_ID = #{record.uId,jdbcType=DECIMAL},
+    update T_USERS
+    set U_ID = #{record.uId,jdbcType=VARCHAR},
       USERNAME = #{record.username,jdbcType=VARCHAR},
       PASSWORD = #{record.password,jdbcType=VARCHAR},
-      ROLE_ID = #{record.roleId,jdbcType=DECIMAL},
+      PHONE = #{record.phone,jdbcType=VARCHAR},
+      ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
       PHOTO = #{record.photo,jdbcType=VARCHAR},
-      STATUS = #{record.status,jdbcType=CHAR},
-      PHONE = #{record.phone,jdbcType=VARCHAR}
+      REMARK = #{record.remark,jdbcType=VARCHAR},
+      WEI = #{record.wei,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=CHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.example.hos.model.TUser">
-    update T_USER
+    update T_USERS
     <set>
       <if test="username != null">
         USERNAME = #{username,jdbcType=VARCHAR},
@@ -221,29 +240,37 @@
       <if test="password != null">
         PASSWORD = #{password,jdbcType=VARCHAR},
       </if>
+      <if test="phone != null">
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
       <if test="roleId != null">
-        ROLE_ID = #{roleId,jdbcType=DECIMAL},
+        ROLE_ID = #{roleId,jdbcType=VARCHAR},
       </if>
       <if test="photo != null">
         PHOTO = #{photo,jdbcType=VARCHAR},
       </if>
+      <if test="remark != null">
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="wei != null">
+        WEI = #{wei,jdbcType=VARCHAR},
+      </if>
       <if test="status != null">
         STATUS = #{status,jdbcType=CHAR},
       </if>
-      <if test="phone != null">
-        PHONE = #{phone,jdbcType=VARCHAR},
-      </if>
     </set>
-    where U_ID = #{uId,jdbcType=DECIMAL}
+    where U_ID = #{uId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.example.hos.model.TUser">
-    update T_USER
+    update T_USERS
     set USERNAME = #{username,jdbcType=VARCHAR},
       PASSWORD = #{password,jdbcType=VARCHAR},
-      ROLE_ID = #{roleId,jdbcType=DECIMAL},
+      PHONE = #{phone,jdbcType=VARCHAR},
+      ROLE_ID = #{roleId,jdbcType=VARCHAR},
       PHOTO = #{photo,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=CHAR},
-      PHONE = #{phone,jdbcType=VARCHAR}
-    where U_ID = #{uId,jdbcType=DECIMAL}
+      REMARK = #{remark,jdbcType=VARCHAR},
+      WEI = #{wei,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR}
+    where U_ID = #{uId,jdbcType=VARCHAR}
   </update>
 </mapper>

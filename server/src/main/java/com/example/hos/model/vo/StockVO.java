@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class StockVO {
     @ApiModelProperty(value = "药品id")
-    private Long pid;
+    private String pid;
 
     @ApiModelProperty(value = "药品名")
     private String pName;

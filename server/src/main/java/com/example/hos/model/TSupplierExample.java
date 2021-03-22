@@ -114,52 +114,62 @@ public class TSupplierExample {
             return (Criteria) this;
         }
 
-        public Criteria andSIdEqualTo(Long value) {
+        public Criteria andSIdEqualTo(String value) {
             addCriterion("S_ID =", value, "sId");
             return (Criteria) this;
         }
 
-        public Criteria andSIdNotEqualTo(Long value) {
+        public Criteria andSIdNotEqualTo(String value) {
             addCriterion("S_ID <>", value, "sId");
             return (Criteria) this;
         }
 
-        public Criteria andSIdGreaterThan(Long value) {
+        public Criteria andSIdGreaterThan(String value) {
             addCriterion("S_ID >", value, "sId");
             return (Criteria) this;
         }
 
-        public Criteria andSIdGreaterThanOrEqualTo(Long value) {
+        public Criteria andSIdGreaterThanOrEqualTo(String value) {
             addCriterion("S_ID >=", value, "sId");
             return (Criteria) this;
         }
 
-        public Criteria andSIdLessThan(Long value) {
+        public Criteria andSIdLessThan(String value) {
             addCriterion("S_ID <", value, "sId");
             return (Criteria) this;
         }
 
-        public Criteria andSIdLessThanOrEqualTo(Long value) {
+        public Criteria andSIdLessThanOrEqualTo(String value) {
             addCriterion("S_ID <=", value, "sId");
             return (Criteria) this;
         }
 
-        public Criteria andSIdIn(List<Long> values) {
+        public Criteria andSIdLike(String value) {
+            addCriterion("S_ID like", value, "sId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSIdNotLike(String value) {
+            addCriterion("S_ID not like", value, "sId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSIdIn(List<String> values) {
             addCriterion("S_ID in", values, "sId");
             return (Criteria) this;
         }
 
-        public Criteria andSIdNotIn(List<Long> values) {
+        public Criteria andSIdNotIn(List<String> values) {
             addCriterion("S_ID not in", values, "sId");
             return (Criteria) this;
         }
 
-        public Criteria andSIdBetween(Long value1, Long value2) {
+        public Criteria andSIdBetween(String value1, String value2) {
             addCriterion("S_ID between", value1, value2, "sId");
             return (Criteria) this;
         }
 
-        public Criteria andSIdNotBetween(Long value1, Long value2) {
+        public Criteria andSIdNotBetween(String value1, String value2) {
             addCriterion("S_ID not between", value1, value2, "sId");
             return (Criteria) this;
         }
@@ -371,6 +381,76 @@ public class TSupplierExample {
 
         public Criteria andAddressNotBetween(String value1, String value2) {
             addCriterion("ADDRESS not between", value1, value2, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIsNull() {
+            addCriterion("STATUS is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIsNotNull() {
+            addCriterion("STATUS is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusEqualTo(String value) {
+            addCriterion("STATUS =", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotEqualTo(String value) {
+            addCriterion("STATUS <>", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusGreaterThan(String value) {
+            addCriterion("STATUS >", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusGreaterThanOrEqualTo(String value) {
+            addCriterion("STATUS >=", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLessThan(String value) {
+            addCriterion("STATUS <", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLessThanOrEqualTo(String value) {
+            addCriterion("STATUS <=", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLike(String value) {
+            addCriterion("STATUS like", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotLike(String value) {
+            addCriterion("STATUS not like", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIn(List<String> values) {
+            addCriterion("STATUS in", values, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotIn(List<String> values) {
+            addCriterion("STATUS not in", values, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusBetween(String value1, String value2) {
+            addCriterion("STATUS between", value1, value2, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotBetween(String value1, String value2) {
+            addCriterion("STATUS not between", value1, value2, "status");
             return (Criteria) this;
         }
     }

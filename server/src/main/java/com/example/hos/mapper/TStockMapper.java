@@ -10,7 +10,7 @@ public interface TStockMapper {
 
     int deleteByExample(TStockExample example);
 
-    int deleteByPrimaryKey(Long stockId);
+    int deleteByPrimaryKey(String stockId);
 
     int insert(TStock record);
 
@@ -18,7 +18,7 @@ public interface TStockMapper {
 
     List<TStock> selectByExample(TStockExample example);
 
-    TStock selectByPrimaryKey(Long stockId);
+    TStock selectByPrimaryKey(String stockId);
 
     int updateByExampleSelective(@Param("record") TStock record, @Param("example") TStockExample example);
 

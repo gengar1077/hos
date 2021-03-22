@@ -3,7 +3,7 @@ package com.example.hos.model;
 import java.io.Serializable;
 
 public class TSupplier implements Serializable {
-    private Long sId;
+    private String sId;
 
     private String pName;
 
@@ -11,14 +11,16 @@ public class TSupplier implements Serializable {
 
     private String address;
 
+    private String status;
+
     private static final long serialVersionUID = 1L;
 
-    public Long getsId() {
+    public String getsId() {
         return sId;
     }
 
-    public void setsId(Long sId) {
-        this.sId = sId;
+    public void setsId(String sId) {
+        this.sId = sId == null ? null : sId.trim();
     }
 
     public String getpName() {
@@ -45,6 +47,14 @@ public class TSupplier implements Serializable {
         this.address = address == null ? null : address.trim();
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -55,6 +65,7 @@ public class TSupplier implements Serializable {
         sb.append(", pName=").append(pName);
         sb.append(", tel=").append(tel);
         sb.append(", address=").append(address);
+        sb.append(", status=").append(status);
         sb.append("]");
         return sb.toString();
     }

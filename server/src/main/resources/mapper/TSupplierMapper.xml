@@ -2,10 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.hos.mapper.TSupplierMapper">
   <resultMap id="BaseResultMap" type="com.example.hos.model.TSupplier">
-    <id column="S_ID" jdbcType="DECIMAL" property="sId" />
+    <id column="S_ID" jdbcType="VARCHAR" property="sId" />
     <result column="P_NAME" jdbcType="VARCHAR" property="pName" />
     <result column="TEL" jdbcType="VARCHAR" property="tel" />
     <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="STATUS" jdbcType="CHAR" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -66,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    S_ID, P_NAME, TEL, ADDRESS
+    S_ID, P_NAME, TEL, ADDRESS, STATUS
   </sql>
   <select id="selectByExample" parameterType="com.example.hos.model.TSupplierExample" resultMap="BaseResultMap">
     select
@@ -82,15 +83,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from T_SUPPLIER
-    where S_ID = #{sId,jdbcType=DECIMAL}
+    where S_ID = #{sId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from T_SUPPLIER
-    where S_ID = #{sId,jdbcType=DECIMAL}
+    where S_ID = #{sId,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="com.example.hos.model.TSupplierExample">
     delete from T_SUPPLIER
@@ -100,9 +101,9 @@
   </delete>
   <insert id="insert" parameterType="com.example.hos.model.TSupplier">
     insert into T_SUPPLIER (S_ID, P_NAME, TEL, 
-      ADDRESS)
-    values (#{sId,jdbcType=DECIMAL}, #{pName,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, 
-      #{address,jdbcType=VARCHAR})
+      ADDRESS, STATUS)
+    values (#{sId,jdbcType=VARCHAR}, #{pName,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{status,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.example.hos.model.TSupplier">
     insert into T_SUPPLIER
@@ -119,10 +120,13 @@
       <if test="address != null">
         ADDRESS,
       </if>
+      <if test="status != null">
+        STATUS,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="sId != null">
-        #{sId,jdbcType=DECIMAL},
+        #{sId,jdbcType=VARCHAR},
       </if>
       <if test="pName != null">
         #{pName,jdbcType=VARCHAR},
@@ -132,6 +136,9 @@
       </if>
       <if test="address != null">
         #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
@@ -145,7 +152,7 @@
     update T_SUPPLIER
     <set>
       <if test="record.sId != null">
-        S_ID = #{record.sId,jdbcType=DECIMAL},
+        S_ID = #{record.sId,jdbcType=VARCHAR},
       </if>
       <if test="record.pName != null">
         P_NAME = #{record.pName,jdbcType=VARCHAR},
@@ -156,6 +163,9 @@
       <if test="record.address != null">
         ADDRESS = #{record.address,jdbcType=VARCHAR},
       </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=CHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -163,10 +173,11 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update T_SUPPLIER
-    set S_ID = #{record.sId,jdbcType=DECIMAL},
+    set S_ID = #{record.sId,jdbcType=VARCHAR},
       P_NAME = #{record.pName,jdbcType=VARCHAR},
       TEL = #{record.tel,jdbcType=VARCHAR},
-      ADDRESS = #{record.address,jdbcType=VARCHAR}
+      ADDRESS = #{record.address,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=CHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -183,14 +194,18 @@
       <if test="address != null">
         ADDRESS = #{address,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
     </set>
-    where S_ID = #{sId,jdbcType=DECIMAL}
+    where S_ID = #{sId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.example.hos.model.TSupplier">
     update T_SUPPLIER
     set P_NAME = #{pName,jdbcType=VARCHAR},
       TEL = #{tel,jdbcType=VARCHAR},
-      ADDRESS = #{address,jdbcType=VARCHAR}
-    where S_ID = #{sId,jdbcType=DECIMAL}
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR}
+    where S_ID = #{sId,jdbcType=VARCHAR}
   </update>
 </mapper>

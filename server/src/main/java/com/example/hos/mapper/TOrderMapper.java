@@ -10,7 +10,7 @@ public interface TOrderMapper {
 
     int deleteByExample(TOrderExample example);
 
-    int deleteByPrimaryKey(Long oId);
+    int deleteByPrimaryKey(String oId);
 
     int insert(TOrder record);
 
@@ -18,7 +18,7 @@ public interface TOrderMapper {
 
     List<TOrder> selectByExample(TOrderExample example);
 
-    TOrder selectByPrimaryKey(Long oId);
+    TOrder selectByPrimaryKey(String oId);
 
     int updateByExampleSelective(@Param("record") TOrder record, @Param("example") TOrderExample example);
 

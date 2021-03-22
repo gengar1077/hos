@@ -10,7 +10,7 @@ public interface TRoleMapper {
 
     int deleteByExample(TRoleExample example);
 
-    int deleteByPrimaryKey(Long rId);
+    int deleteByPrimaryKey(String rId);
 
     int insert(TRole record);
 
@@ -18,7 +18,7 @@ public interface TRoleMapper {
 
     List<TRole> selectByExample(TRoleExample example);
 
-    TRole selectByPrimaryKey(Long rId);
+    TRole selectByPrimaryKey(String rId);
 
     int updateByExampleSelective(@Param("record") TRole record, @Param("example") TRoleExample example);
 

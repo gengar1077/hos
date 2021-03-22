@@ -34,7 +34,7 @@ public interface UserService {
      * @param id
      * @return
      **/
-    String deleteUser(Long id);
+    String deleteUser(String id);
 
     /**
      * 分页查询
@@ -53,5 +53,5 @@ public interface UserService {
      * @param id
      * @return
      **/
-    TUser selectById(Long id);
+    TUser selectById(String id);
 }

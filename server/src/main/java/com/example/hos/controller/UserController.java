@@ -106,7 +106,7 @@ public class UserController {
     @ApiOperation(value = "用户删除")
     @ApiImplicitParam(name = "id", value = "用户id", required = true, paramType = "query",dataType = "long")
     @PostMapping(value = "/delete")
-    public String deleteUser(Long id) {
+    public String deleteUser(String id) {
         userService.deleteUser(id);
         return "user/list";
     }
@@ -122,14 +122,14 @@ public class UserController {
 
     @ApiOperation(value = "修改头像")
     @GetMapping("/photo")
-    public String photo(Long id,ModelMap modelMap){
+    public String photo(String id,ModelMap modelMap){
         final TUser tuser = userService.selectById(id);
         modelMap.put("user",tuser);
         return "/user/userInfo";
     }
 
     @PostMapping("/upload")
-    public String upload(MultipartFile photo, Long id, HttpSession session) throws IOException {
+    public String upload(MultipartFile photo, String id, HttpSession session) throws IOException {
         if (photo==null||photo.isEmpty()){
             return "/user/userInfo";
         }

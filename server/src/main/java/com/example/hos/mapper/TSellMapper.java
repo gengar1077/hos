@@ -10,7 +10,7 @@ public interface TSellMapper {
 
     int deleteByExample(TSellExample example);
 
-    int deleteByPrimaryKey(Long sellId);
+    int deleteByPrimaryKey(String sellId);
 
     int insert(TSell record);
 
@@ -18,7 +18,7 @@ public interface TSellMapper {
 
     List<TSell> selectByExample(TSellExample example);
 
-    TSell selectByPrimaryKey(Long sellId);
+    TSell selectByPrimaryKey(String sellId);
 
     int updateByExampleSelective(@Param("record") TSell record, @Param("example") TSellExample example);
 

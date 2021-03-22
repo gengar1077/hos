@@ -14,7 +14,7 @@ import org.springframework.beans.BeanUtils;
 @ApiModel(description = "用户信息")
 public class UserVO {
     @ApiModelProperty(value = "用户id")
-    private Long id;
+    private String id;
 
     @ApiModelProperty(value = "用户名")
     private String name;

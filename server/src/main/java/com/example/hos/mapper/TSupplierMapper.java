@@ -10,7 +10,7 @@ public interface TSupplierMapper {
 
     int deleteByExample(TSupplierExample example);
 
-    int deleteByPrimaryKey(Long sId);
+    int deleteByPrimaryKey(String sId);
 
     int insert(TSupplier record);
 
@@ -18,7 +18,7 @@ public interface TSupplierMapper {
 
     List<TSupplier> selectByExample(TSupplierExample example);
 
-    TSupplier selectByPrimaryKey(Long sId);
+    TSupplier selectByPrimaryKey(String sId);
 
     int updateByExampleSelective(@Param("record") TSupplier record, @Param("example") TSupplierExample example);
 

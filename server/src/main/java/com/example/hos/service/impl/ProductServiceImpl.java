@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String delProduct(Long pid) {
+    public String delProduct(String pid) {
         if (productMapper.selectByPrimaryKey(pid)!=null){
             System.out.println("请填写正确的药品序号!");
             return "index";

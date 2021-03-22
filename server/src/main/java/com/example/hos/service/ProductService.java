@@ -27,7 +27,7 @@ public interface ProductService {
      * @author changwei.zhong
      * @date 2021/3/2
      **/
-    String delProduct(Long pid);
+    String delProduct(String pid);
 
     /**
      * 修改药品

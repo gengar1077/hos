@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.hos.mapper.TSellMapper">
   <resultMap id="BaseResultMap" type="com.example.hos.model.TSell">
-    <id column="SELL_ID" jdbcType="DECIMAL" property="sellId" />
+    <id column="SELL_ID" jdbcType="VARCHAR" property="sellId" />
     <result column="MONEY" jdbcType="DECIMAL" property="money" />
     <result column="P_NUM" jdbcType="DECIMAL" property="pNum" />
     <result column="PAY_TYPE" jdbcType="DECIMAL" property="payType" />
-    <result column="STATUS" jdbcType="DECIMAL" property="status" />
     <result column="OPERATOR" jdbcType="VARCHAR" property="operator" />
     <result column="REMARK" jdbcType="VARCHAR" property="remark" />
     <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="STATUS" jdbcType="CHAR" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    SELL_ID, MONEY, P_NUM, PAY_TYPE, STATUS, OPERATOR, REMARK, CREATETIME
+    SELL_ID, MONEY, P_NUM, PAY_TYPE, OPERATOR, REMARK, CREATETIME, STATUS
   </sql>
   <select id="selectByExample" parameterType="com.example.hos.model.TSellExample" resultMap="BaseResultMap">
     select
@@ -86,15 +86,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from T_SELL
-    where SELL_ID = #{sellId,jdbcType=DECIMAL}
+    where SELL_ID = #{sellId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from T_SELL
-    where SELL_ID = #{sellId,jdbcType=DECIMAL}
+    where SELL_ID = #{sellId,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="com.example.hos.model.TSellExample">
     delete from T_SELL
@@ -104,11 +104,11 @@
   </delete>
   <insert id="insert" parameterType="com.example.hos.model.TSell">
     insert into T_SELL (SELL_ID, MONEY, P_NUM, 
-      PAY_TYPE, STATUS, OPERATOR, 
-      REMARK, CREATETIME)
-    values (#{sellId,jdbcType=DECIMAL}, #{money,jdbcType=DECIMAL}, #{pNum,jdbcType=DECIMAL}, 
-      #{payType,jdbcType=DECIMAL}, #{status,jdbcType=DECIMAL}, #{operator,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP})
+      PAY_TYPE, OPERATOR, REMARK, 
+      CREATETIME, STATUS)
+    values (#{sellId,jdbcType=VARCHAR}, #{money,jdbcType=DECIMAL}, #{pNum,jdbcType=DECIMAL}, 
+      #{payType,jdbcType=DECIMAL}, #{operator,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.example.hos.model.TSell">
     insert into T_SELL
@@ -125,9 +125,6 @@
       <if test="payType != null">
         PAY_TYPE,
       </if>
-      <if test="status != null">
-        STATUS,
-      </if>
       <if test="operator != null">
         OPERATOR,
       </if>
@@ -137,10 +134,13 @@
       <if test="createtime != null">
         CREATETIME,
       </if>
+      <if test="status != null">
+        STATUS,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="sellId != null">
-        #{sellId,jdbcType=DECIMAL},
+        #{sellId,jdbcType=VARCHAR},
       </if>
       <if test="money != null">
         #{money,jdbcType=DECIMAL},
@@ -151,9 +151,6 @@
       <if test="payType != null">
         #{payType,jdbcType=DECIMAL},
       </if>
-      <if test="status != null">
-        #{status,jdbcType=DECIMAL},
-      </if>
       <if test="operator != null">
         #{operator,jdbcType=VARCHAR},
       </if>
@@ -162,6 +159,9 @@
       </if>
       <if test="createtime != null">
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
@@ -175,7 +175,7 @@
     update T_SELL
     <set>
       <if test="record.sellId != null">
-        SELL_ID = #{record.sellId,jdbcType=DECIMAL},
+        SELL_ID = #{record.sellId,jdbcType=VARCHAR},
       </if>
       <if test="record.money != null">
         MONEY = #{record.money,jdbcType=DECIMAL},
@@ -186,9 +186,6 @@
       <if test="record.payType != null">
         PAY_TYPE = #{record.payType,jdbcType=DECIMAL},
       </if>
-      <if test="record.status != null">
-        STATUS = #{record.status,jdbcType=DECIMAL},
-      </if>
       <if test="record.operator != null">
         OPERATOR = #{record.operator,jdbcType=VARCHAR},
       </if>
@@ -198,6 +195,9 @@
       <if test="record.createtime != null">
         CREATETIME = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=CHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -205,14 +205,14 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update T_SELL
-    set SELL_ID = #{record.sellId,jdbcType=DECIMAL},
+    set SELL_ID = #{record.sellId,jdbcType=VARCHAR},
       MONEY = #{record.money,jdbcType=DECIMAL},
       P_NUM = #{record.pNum,jdbcType=DECIMAL},
       PAY_TYPE = #{record.payType,jdbcType=DECIMAL},
-      STATUS = #{record.status,jdbcType=DECIMAL},
       OPERATOR = #{record.operator,jdbcType=VARCHAR},
       REMARK = #{record.remark,jdbcType=VARCHAR},
-      CREATETIME = #{record.createtime,jdbcType=TIMESTAMP}
+      CREATETIME = #{record.createtime,jdbcType=TIMESTAMP},
+      STATUS = #{record.status,jdbcType=CHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -229,9 +229,6 @@
       <if test="payType != null">
         PAY_TYPE = #{payType,jdbcType=DECIMAL},
       </if>
-      <if test="status != null">
-        STATUS = #{status,jdbcType=DECIMAL},
-      </if>
       <if test="operator != null">
         OPERATOR = #{operator,jdbcType=VARCHAR},
       </if>
@@ -241,18 +238,21 @@
       <if test="createtime != null">
         CREATETIME = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
     </set>
-    where SELL_ID = #{sellId,jdbcType=DECIMAL}
+    where SELL_ID = #{sellId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.example.hos.model.TSell">
     update T_SELL
     set MONEY = #{money,jdbcType=DECIMAL},
       P_NUM = #{pNum,jdbcType=DECIMAL},
       PAY_TYPE = #{payType,jdbcType=DECIMAL},
-      STATUS = #{status,jdbcType=DECIMAL},
       OPERATOR = #{operator,jdbcType=VARCHAR},
       REMARK = #{remark,jdbcType=VARCHAR},
-      CREATETIME = #{createtime,jdbcType=TIMESTAMP}
-    where SELL_ID = #{sellId,jdbcType=DECIMAL}
+      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=CHAR}
+    where SELL_ID = #{sellId,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -3,7 +3,7 @@ package com.example.hos.model;
 import java.io.Serializable;
 
 public class TRole implements Serializable {
-    private Long rId;
+    private String rId;
 
     private String rName;
 
@@ -13,12 +13,12 @@ public class TRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getrId() {
+    public String getrId() {
         return rId;
     }
 
-    public void setrId(Long rId) {
-        this.rId = rId;
+    public void setrId(String rId) {
+        this.rId = rId == null ? null : rId.trim();
     }
 
     public String getrName() {

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TOrder implements Serializable {
-    private Long oId;
+    private String oId;
 
     private Long money;
 
@@ -12,22 +12,22 @@ public class TOrder implements Serializable {
 
     private Short payType;
 
-    private Short status;
-
     private String operator;
 
     private String remark;
 
     private Date createtime;
 
+    private String status;
+
     private static final long serialVersionUID = 1L;
 
-    public Long getoId() {
+    public String getoId() {
         return oId;
     }
 
-    public void setoId(Long oId) {
-        this.oId = oId;
+    public void setoId(String oId) {
+        this.oId = oId == null ? null : oId.trim();
     }
 
     public Long getMoney() {
@@ -54,14 +54,6 @@ public class TOrder implements Serializable {
         this.payType = payType;
     }
 
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
-
     public String getOperator() {
         return operator;
     }
@@ -86,6 +78,14 @@ public class TOrder implements Serializable {
         this.createtime = createtime;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -96,10 +96,10 @@ public class TOrder implements Serializable {
         sb.append(", money=").append(money);
         sb.append(", pNum=").append(pNum);
         sb.append(", payType=").append(payType);
-        sb.append(", status=").append(status);
         sb.append(", operator=").append(operator);
         sb.append(", remark=").append(remark);
         sb.append(", createtime=").append(createtime);
+        sb.append(", status=").append(status);
         sb.append("]");
         return sb.toString();
     }

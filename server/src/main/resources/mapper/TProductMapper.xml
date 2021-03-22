@@ -2,13 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.hos.mapper.TProductMapper">
   <resultMap id="BaseResultMap" type="com.example.hos.model.TProduct">
-    <id column="P_ID" jdbcType="DECIMAL" property="pId" />
-    <result column="S_ID" jdbcType="DECIMAL" property="sId" />
+    <id column="P_ID" jdbcType="VARCHAR" property="pId" />
+    <result column="S_ID" jdbcType="VARCHAR" property="sId" />
     <result column="P_NAME" jdbcType="VARCHAR" property="pName" />
     <result column="PLACE" jdbcType="VARCHAR" property="place" />
     <result column="SPEC" jdbcType="VARCHAR" property="spec" />
     <result column="PRICE" jdbcType="DECIMAL" property="price" />
     <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="STATUS" jdbcType="CHAR" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    P_ID, S_ID, P_NAME, PLACE, SPEC, PRICE, REMARK
+    P_ID, S_ID, P_NAME, PLACE, SPEC, PRICE, REMARK, STATUS
   </sql>
   <select id="selectByExample" parameterType="com.example.hos.model.TProductExample" resultMap="BaseResultMap">
     select
@@ -85,15 +86,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from T_PRODUCT
-    where P_ID = #{pId,jdbcType=DECIMAL}
+    where P_ID = #{pId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from T_PRODUCT
-    where P_ID = #{pId,jdbcType=DECIMAL}
+    where P_ID = #{pId,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="com.example.hos.model.TProductExample">
     delete from T_PRODUCT
@@ -104,10 +105,10 @@
   <insert id="insert" parameterType="com.example.hos.model.TProduct">
     insert into T_PRODUCT (P_ID, S_ID, P_NAME, 
       PLACE, SPEC, PRICE, 
-      REMARK)
-    values (#{pId,jdbcType=DECIMAL}, #{sId,jdbcType=DECIMAL}, #{pName,jdbcType=VARCHAR}, 
+      REMARK, STATUS)
+    values (#{pId,jdbcType=VARCHAR}, #{sId,jdbcType=VARCHAR}, #{pName,jdbcType=VARCHAR}, 
       #{place,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
-      #{remark,jdbcType=VARCHAR})
+      #{remark,jdbcType=VARCHAR}, #{status,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.example.hos.model.TProduct">
     insert into T_PRODUCT
@@ -133,13 +134,16 @@
       <if test="remark != null">
         REMARK,
       </if>
+      <if test="status != null">
+        STATUS,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="pId != null">
-        #{pId,jdbcType=DECIMAL},
+        #{pId,jdbcType=VARCHAR},
       </if>
       <if test="sId != null">
-        #{sId,jdbcType=DECIMAL},
+        #{sId,jdbcType=VARCHAR},
       </if>
       <if test="pName != null">
         #{pName,jdbcType=VARCHAR},
@@ -156,6 +160,9 @@
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.example.hos.model.TProductExample" resultType="java.lang.Long">
@@ -168,10 +175,10 @@
     update T_PRODUCT
     <set>
       <if test="record.pId != null">
-        P_ID = #{record.pId,jdbcType=DECIMAL},
+        P_ID = #{record.pId,jdbcType=VARCHAR},
       </if>
       <if test="record.sId != null">
-        S_ID = #{record.sId,jdbcType=DECIMAL},
+        S_ID = #{record.sId,jdbcType=VARCHAR},
       </if>
       <if test="record.pName != null">
         P_NAME = #{record.pName,jdbcType=VARCHAR},
@@ -188,6 +195,9 @@
       <if test="record.remark != null">
         REMARK = #{record.remark,jdbcType=VARCHAR},
       </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=CHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -195,13 +205,14 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update T_PRODUCT
-    set P_ID = #{record.pId,jdbcType=DECIMAL},
-      S_ID = #{record.sId,jdbcType=DECIMAL},
+    set P_ID = #{record.pId,jdbcType=VARCHAR},
+      S_ID = #{record.sId,jdbcType=VARCHAR},
       P_NAME = #{record.pName,jdbcType=VARCHAR},
       PLACE = #{record.place,jdbcType=VARCHAR},
       SPEC = #{record.spec,jdbcType=VARCHAR},
       PRICE = #{record.price,jdbcType=DECIMAL},
-      REMARK = #{record.remark,jdbcType=VARCHAR}
+      REMARK = #{record.remark,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=CHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -210,7 +221,7 @@
     update T_PRODUCT
     <set>
       <if test="sId != null">
-        S_ID = #{sId,jdbcType=DECIMAL},
+        S_ID = #{sId,jdbcType=VARCHAR},
       </if>
       <if test="pName != null">
         P_NAME = #{pName,jdbcType=VARCHAR},
@@ -227,17 +238,21 @@
       <if test="remark != null">
         REMARK = #{remark,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
     </set>
-    where P_ID = #{pId,jdbcType=DECIMAL}
+    where P_ID = #{pId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.example.hos.model.TProduct">
     update T_PRODUCT
-    set S_ID = #{sId,jdbcType=DECIMAL},
+    set S_ID = #{sId,jdbcType=VARCHAR},
       P_NAME = #{pName,jdbcType=VARCHAR},
       PLACE = #{place,jdbcType=VARCHAR},
       SPEC = #{spec,jdbcType=VARCHAR},
       PRICE = #{price,jdbcType=DECIMAL},
-      REMARK = #{remark,jdbcType=VARCHAR}
-    where P_ID = #{pId,jdbcType=DECIMAL}
+      REMARK = #{remark,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR}
+    where P_ID = #{pId,jdbcType=VARCHAR}
   </update>
 </mapper>

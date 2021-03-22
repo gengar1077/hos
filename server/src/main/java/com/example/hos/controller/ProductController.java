@@ -36,7 +36,7 @@ public class ProductController {
 
     @ApiOperation(value = "删除", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/del",method = RequestMethod.POST)
-    public String delProduct(Long pid) {
+    public String delProduct(String pid) {
         productService.delProduct(pid);
         return "product/productList";
     }
@@ -68,7 +68,7 @@ public class ProductController {
 
     @ApiOperation(value = "更改库存", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/editStock",method = RequestMethod.POST)
-    public String editStock(Long pid, int num) {
+    public String editStock(String pid, int num) {
         stockService.inStock(pid, num);
         return "product/stockList";
     }

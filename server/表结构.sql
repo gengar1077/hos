@@ -8,6 +8,7 @@ create table t_user(
     role_id varchar2(11),
     photo varchar2(128),
     remark varchar2(128),
+    wei varchar2(128),
     status char(1)
 );
 comment on table t_user is '用户表';
