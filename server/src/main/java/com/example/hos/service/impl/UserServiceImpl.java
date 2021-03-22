@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String addUser(TUser user) {
-        int i = userMapper.insertSelective(user);
+        userMapper.insertSelective(user);
         return null;
     }
 
@@ -72,8 +72,7 @@ public class UserServiceImpl implements UserService {
             userVO.setPhoto(user.getPhoto());
             return userVO;
         }).collect(Collectors.toList());
-        PageInfo<UserVO> userPage = new PageInfo<>(users);
-        return userPage;
+        return new PageInfo<>(users);
     }
 
     @Override

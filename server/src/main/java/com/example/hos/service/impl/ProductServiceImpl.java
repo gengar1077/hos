@@ -78,7 +78,6 @@ public class ProductServiceImpl implements ProductService {
             productVO.setPName(product.getpName());
             return productVO;
         }).collect(Collectors.toList());
-        PageInfo<ProductVO> productPage = new PageInfo<>(products);
-        return productPage;
+        return new PageInfo<>(products);
     }
 }

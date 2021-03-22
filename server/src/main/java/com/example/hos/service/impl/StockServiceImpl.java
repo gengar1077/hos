@@ -8,12 +8,13 @@ import com.example.hos.model.vo.StockVO;
 import com.example.hos.service.StockService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -49,12 +50,16 @@ public class StockServiceImpl implements StockService {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
-        List<StockVO> stocks = productMapper.selectByExample(null).stream().map(product -> {
+        List<TStock> tStocks = stockMapper.selectByExample(null);
+        Map<String, TStock> productMap = tStocks.stream().collect(Collectors.toMap(TStock::getpName, Function.identity()));
+        List<TProduct> tProducts = productMapper.selectByExample(null);
+        List<StockVO> stockVOList = Lists.newArrayList();
+        tProducts.forEach(product -> {
+            TStock stock = productMap.get(product.getpName());
             StockVO stockVO = new StockVO();
-            stockVO.setPName(product.getpName());
-            return stockVO;
-        }).collect(Collectors.toList());
-        PageInfo<StockVO> stockPage = new PageInfo<>(stocks);
-        return stockPage;
+            BeanUtils.copyProperties(stockVO,stock);
+            stockVOList.add(stockVO);
+        });
+        return new PageInfo<>(stockVOList);
     }
 }
