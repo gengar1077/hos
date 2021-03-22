@@ -66,6 +66,8 @@ public class UserServiceImpl implements UserService {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
+        TUserExample tUserExample = new TUserExample();
+        tUserExample.createCriteria().andStatusEqualTo("1");
         List<UserVO> users = userMapper.selectByExample(null).stream().map(user -> {
             UserVO userVO = new UserVO();
             userVO.setName(user.getUsername());

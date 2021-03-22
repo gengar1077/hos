@@ -2,6 +2,7 @@ package com.example.hos.service.impl;
 
 import com.example.hos.mapper.TProductMapper;
 import com.example.hos.model.TProduct;
+import com.example.hos.model.TProductExample;
 import com.example.hos.model.vo.ProductVO;
 import com.example.hos.service.ProductService;
 import com.github.pagehelper.PageHelper;
@@ -73,6 +74,7 @@ public class ProductServiceImpl implements ProductService {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
+        TProductExample tProductExample = new TProductExample();
         List<ProductVO> products = productMapper.selectByExample(null).stream().map(product -> {
             ProductVO productVO = new ProductVO();
             productVO.setPName(product.getpName());
