@@ -34,7 +34,7 @@ public class StockServiceImpl implements StockService {
     private TProductMapper productMapper;
 
     @Override
-    public String inStock(String pid,int num) {
+    public String inStock(String pid, int num) {
         TProduct product = productMapper.selectByPrimaryKey(pid);
         if (Objects.isNull(product)){
             TStock stock = new TStock();

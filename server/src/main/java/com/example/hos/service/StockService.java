@@ -18,7 +18,7 @@ public interface StockService {
      * @author changwei.zhong
      * @date 2021/3/8
      **/
-    String inStock(String pid,int num);
+    String inStock(String pid, int num);
 
     /**
      * 分页查询库存

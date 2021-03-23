@@ -1,6 +1,7 @@
 package com.example.hos.service;
 
 import com.example.hos.model.TUser;
+import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import com.github.pagehelper.PageInfo;
 
@@ -14,10 +15,20 @@ public interface UserService {
      * 注册
      * @author 吃面龙
      * @date 2021/2/13
-     * @param user
+     * @param userVO
      * @return
      */
-    String addUser(TUser user);
+    ResultResponse addUser(UserVO userVO);
+
+    /**
+     * 登录
+     * @author 吃面龙
+     * @date 2021/2/13
+     * @param username
+     * @param password
+     * @return
+     */
+    ResultResponse login(String username, String password);
 
     /**
      * 更新用户
@@ -25,7 +36,7 @@ public interface UserService {
      * @param userVo
      * @return
      **/
-    String updateUser(UserVO userVo);
+    ResultResponse updateUser(UserVO userVo);
 
     /**
      * 删除用户
@@ -34,7 +45,7 @@ public interface UserService {
      * @param id
      * @return
      **/
-    String deleteUser(String id);
+    ResultResponse deleteUser(String id);
 
     /**
      * 分页查询

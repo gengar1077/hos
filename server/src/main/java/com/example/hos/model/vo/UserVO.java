@@ -25,8 +25,14 @@ public class UserVO {
     @ApiModelProperty(value = "用户头像")
     private String photo;
 
+    @ApiModelProperty(value = "用户微博")
+    private String wei;
+
     @ApiModelProperty(value = "用户角色")
     private String roleName;
+
+    @ApiModelProperty(value = "用户简介")
+    private String remark;
 
     /**
      * user转vo
@@ -35,7 +41,7 @@ public class UserVO {
      * @param user 用户
      * @return userVo
      **/
-    public static UserVO of(TUser user) {
+    public static UserVO makeVO(TUser user) {
         UserVO userVo = new UserVO();
         BeanUtils.copyProperties(user,userVo);
         return userVo;

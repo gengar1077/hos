@@ -3,11 +3,16 @@ package com.example.hos.service.impl;
 import com.example.hos.mapper.TUserMapper;
 import com.example.hos.model.TUser;
 import com.example.hos.model.TUserExample;
+import com.example.hos.model.vo.LoginInfoVO;
+import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
+import com.example.hos.service.JwtService;
+import com.example.hos.service.ResponseService;
 import com.example.hos.service.UserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -26,24 +31,66 @@ public class UserServiceImpl implements UserService {
     @Resource
     private TUserMapper userMapper;
 
+    @Resource
+    private ResponseService responseService;
+
+    @Resource
+    private JwtService jwtService;
+
     @Override
-    public String addUser(TUser user) {
-        userMapper.insertSelective(user);
-        return null;
+    public ResultResponse addUser(UserVO userVO) {
+        ResultResponse resultResponse = new ResultResponse();
+        TUser tUser = userMapper.selectByName(userVO.getName()).orElse(null);
+        if (tUser!=null){
+            String message = responseService.message(ResultResponse.Code.ACCOUNT_IS_BLOCK);
+            resultResponse.miniCodeError(message);
+        }
+        TUser tUser1 = new TUser();
+        BeanUtils.copyProperties(tUser1, userVO);
+        userMapper.insertSelective(tUser1);
+        String message = responseService.message(ResultResponse.Code.SUCCESS);
+        resultResponse.success(message);
+        return resultResponse;
     }
 
     @Override
-    public String updateUser(UserVO userVo) {
+    public ResultResponse login(String username, String password) {
+        ResultResponse resultResponse = new ResultResponse();
+        TUser tUser=userMapper.selectByName(username).orElse(null);
+        if (tUser==null){
+            responseService.fail(ResultResponse.Code.ACCOUNT_NOT_FOUND);
+        }
+        if (tUser!=null&&!password.equals(tUser.getPassword())){
+            String message = responseService.message(ResultResponse.Code.ACCOUNT_PASS_ERROR);
+            resultResponse.miniCodeError(message);
+        }
+        LoginInfoVO loginInfoVO = new LoginInfoVO();
+        assert tUser != null;
+        BeanUtils.copyProperties(loginInfoVO, tUser);
+        String message = responseService.message(ResultResponse.Code.SUCCESS);
+        resultResponse.success(message);
+        resultResponse.setReturnData(loginInfoVO);
+        String token = jwtService.unSign(tUser.getuId());
+        loginInfoVO.setToken(token);
+        return resultResponse;
+    }
+
+    @Override
+    public ResultResponse updateUser(UserVO userVo) {
+        ResultResponse resultResponse = new ResultResponse();
         TUser user = null;
         if (StringUtils.isNotBlank(userVo.getName())) {
             user = userMapper.selectByName(userVo.getName()).orElse(null);
         }
         if (Objects.isNull(user)){
-            return "该用户不存在";
+            String message = responseService.message(ResultResponse.Code.ACCOUNT_NOT_FOUND);
+            resultResponse.miniCodeError(message);
         }
+        assert user != null;
         if (!user.getUsername().equals(userVo.getName())){
             if (userMapper.selectByName(userVo.getName()).isPresent()){
-                return "该用户名已经存在，修改失败！";
+                String message = responseService.message(ResultResponse.Code.ACCOUNT_IS_BLOCK);
+                resultResponse.miniCodeError(message);
             }
         }
         user.setUsername(userVo.getName());
@@ -51,14 +98,17 @@ public class UserServiceImpl implements UserService {
         user.setPhone(userVo.getPhoto());
         TUserExample tUserExample = new TUserExample();
         userMapper.updateByExample(user,tUserExample);
-        return "修改成功！";
+        String message = responseService.message(ResultResponse.Code.SUCCESS);
+        resultResponse.success(message);
+        return resultResponse;
     }
 
     @Override
-    public String deleteUser(String id) {
-        TUser tUser = userMapper.selectById(id);
+    public ResultResponse deleteUser(String id) {
+        ResultResponse resultResponse = new ResultResponse();
+        TUser tUser = userMapper.selectById(id, "1");
         tUser.setStatus("0");
-        return "删除成功";
+        return resultResponse.success(responseService.message(ResultResponse.Code.SUCCESS));
     }
 
     @Override
@@ -79,6 +129,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TUser selectById(String id) {
-        return userMapper.selectById(id);
+        return userMapper.selectById(id, "1");
     }
 }

@@ -1,5 +1,6 @@
 package com.example.hos.controller;
 
+import com.example.hos.interceptor.Authorization;
 import com.example.hos.model.TSell;
 import com.example.hos.service.SellService;
 import com.github.pagehelper.PageInfo;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
  * @author changwei.zhong
  * @date create by 2021/3/17
  */
+@Authorization
 @Controller
 @RequestMapping("/sell")
 public class SellController {
