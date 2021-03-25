@@ -59,9 +59,9 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "修改头像")
     @GetMapping("/photo")
-    public String photo(String id,ModelMap modelMap){
+    public String photo(String id, ModelMap modelMap){
         final TUser tuser = userService.selectById(id);
-        modelMap.put("user",tuser);
+        modelMap.put("user", tuser);
         return "/user/userInfo";
     }
 

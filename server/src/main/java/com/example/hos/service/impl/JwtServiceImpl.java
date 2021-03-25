@@ -34,10 +34,8 @@ public class JwtServiceImpl implements JwtService {
      * @vision V1.0
      */
     @Override
-    public String unSign(String userId)
-    {
-        try
-        {
+    public String unSign(String userId) {
+        try {
             Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(JWT_KEY);
             // 设置头部信息
@@ -52,8 +50,7 @@ public class JwtServiceImpl implements JwtService {
                     .withExpiresAt(date)
                     // 签名
                     .sign(algorithm);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return null;
         }
@@ -68,24 +65,18 @@ public class JwtServiceImpl implements JwtService {
      * @vision V1.0
      */
     @Override
-    public int checkToken(String token)
-    {
+    public int checkToken(String token) {
         int flag;
-        try
-        {
+        try {
             Algorithm algorithm = Algorithm.HMAC256(JWT_KEY);
             JWT.require(algorithm).build().verify(token);
             // 校验通过
             flag = 0;
-        }
-        catch (TokenExpiredException e)
-        {
+        } catch (TokenExpiredException e) {
             e.printStackTrace();
             // token过期
             flag = 1;
-        }
-        catch (JWTVerificationException e)
-        {
+        } catch (JWTVerificationException e) {
             e.printStackTrace();
             // 校验失败
             flag = 2;
@@ -101,8 +92,7 @@ public class JwtServiceImpl implements JwtService {
      * @vision V1.0
      */
     @Override
-    public String sign(String token)
-    {
+    public String sign(String token) {
         DecodedJWT jwt = JWT.decode(token);
         return jwt.getClaim("userId").asString();
     }
