@@ -2,6 +2,7 @@ package com.example.hos.config;
 
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
@@ -39,6 +40,7 @@ public class SwaggerConfig {
     }
 
     // 核心配置信息
+    @Bean
     public Docket createRestApi(){
 
         List<Parameter> pars = Lists.newArrayList();
@@ -53,6 +55,6 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.hui.springboot.controller"))
                 .paths(PathSelectors.any())
-                .build();
+                .build().globalOperationParameters(pars);
     }
 }
