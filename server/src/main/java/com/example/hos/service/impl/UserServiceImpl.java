@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
             user.setPhone(userVO.getPhone());
         }
         TUserExample tUserExample = new TUserExample();
-        userMapper.updateByExample(user, tUserExample);
+        userMapper.updateByExampleSelective(user, tUserExample);
         String message = responseService.message(ResultResponse.Code.SUCCESS);
         resultResponse.success(message);
         return resultResponse;
@@ -102,8 +102,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse deleteUser(String id) {
         ResultResponse resultResponse = new ResultResponse();
-        TUser tUser = userMapper.selectById(id, "1");
+        TUser tUser = userMapper.selectByIdAndStatus(id, "1");
         tUser.setStatus("0");
+        TUserExample tUserExample = new TUserExample();
+        userMapper.updateByExampleSelective(tUser, tUserExample);
         return resultResponse.success(responseService.message(ResultResponse.Code.SUCCESS));
     }
 
@@ -125,6 +127,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TUser selectById(String id) {
-        return userMapper.selectById(id, "1");
+        return userMapper.selectByIdAndStatus(id, "1");
     }
 }

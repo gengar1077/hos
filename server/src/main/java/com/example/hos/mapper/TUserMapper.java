@@ -36,7 +36,7 @@ public interface TUserMapper {
     List<TUser> selectAll();
 
     @Select("select * from t_user where id=#{id} and status=#{id}")
-    TUser selectById(String id, String status);
+    TUser selectByIdAndStatus(String id, String status);
 
     @Select("select * from t_user where username=#{username}")
     Optional<TUser> selectByName(String username);
