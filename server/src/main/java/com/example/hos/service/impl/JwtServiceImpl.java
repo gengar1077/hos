@@ -34,7 +34,7 @@ public class JwtServiceImpl implements JwtService {
      * @vision V1.0
      */
     @Override
-    public String unSign(String userId) {
+    public String sign(String userId) {
         try {
             Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(JWT_KEY);
@@ -92,7 +92,7 @@ public class JwtServiceImpl implements JwtService {
      * @vision V1.0
      */
     @Override
-    public String sign(String token) {
+    public String unSign(String token) {
         DecodedJWT jwt = JWT.decode(token);
         return jwt.getClaim("userId").asString();
     }

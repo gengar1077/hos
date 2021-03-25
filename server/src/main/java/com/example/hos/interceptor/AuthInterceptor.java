@@ -28,6 +28,8 @@ import java.util.Objects;
 @Component
 public class AuthInterceptor implements AsyncHandlerInterceptor {
 
+    private static final String STATUS = "1";
+
     @Value("${jwt.token.name}")
     private String jwtHeader;
 
@@ -52,7 +54,7 @@ public class AuthInterceptor implements AsyncHandlerInterceptor {
                 }
                 String account = jwtService.unSign(token);
                 if (StringUtils.isNotBlank(account)) {
-                    if (Objects.isNull(userMapper.selectById(account, "1"))){
+                    if (Objects.isNull(userMapper.selectByIdAndStatus(account, STATUS))){
                         response.addHeader(jwtHeader, jwtService.sign(account));
                     } else {
                         failedResponse(response);
