@@ -1,5 +1,6 @@
 package com.example.hos.service.impl;
 
+import com.example.hos.handle.HosException;
 import com.example.hos.mapper.TUserMapper;
 import com.example.hos.model.TUser;
 import com.example.hos.model.TUserExample;
@@ -42,8 +43,7 @@ public class UserServiceImpl implements UserService {
         ResultResponse resultResponse = new ResultResponse();
         TUser tUser = userMapper.selectByName(userVO.getName()).orElse(null);
         if (tUser!=null){
-            String message = responseService.message(ResultResponse.Code.ACCOUNT_IS_BLOCK);
-            resultResponse.miniCodeError(message);
+            throw new HosException("ACCOUNT_IS_BLOCK");
         }
         TUser tUser1 = new TUser();
         BeanUtils.copyProperties(tUser1, userVO);
@@ -58,14 +58,12 @@ public class UserServiceImpl implements UserService {
         ResultResponse resultResponse = new ResultResponse();
         TUser tUser=userMapper.selectByName(username).orElse(null);
         if (tUser==null){
-            responseService.fail(ResultResponse.Code.ACCOUNT_NOT_FOUND);
+            throw new HosException("ACCOUNT_NOT_FOUND");
         }
-        if (tUser!=null&&!password.equals(tUser.getPassword())){
-            String message = responseService.message(ResultResponse.Code.ACCOUNT_PASS_ERROR);
-            resultResponse.miniCodeError(message);
+        if (!password.equals(tUser.getPassword())){
+            throw new HosException("ACCOUNT_PASS_ERROR");
         }
         LoginInfoVO loginInfoVO = new LoginInfoVO();
-        assert tUser != null;
         BeanUtils.copyProperties(loginInfoVO, tUser);
         String message = responseService.message(ResultResponse.Code.SUCCESS);
         resultResponse.success(message);
@@ -83,14 +81,11 @@ public class UserServiceImpl implements UserService {
             user = userMapper.selectByName(userVo.getName()).orElse(null);
         }
         if (Objects.isNull(user)){
-            String message = responseService.message(ResultResponse.Code.ACCOUNT_NOT_FOUND);
-            resultResponse.miniCodeError(message);
+            throw new HosException("ACCOUNT_NOT_FOUND");
         }
-        assert user != null;
         if (!user.getUsername().equals(userVo.getName())){
             if (userMapper.selectByName(userVo.getName()).isPresent()){
-                String message = responseService.message(ResultResponse.Code.ACCOUNT_IS_BLOCK);
-                resultResponse.miniCodeError(message);
+                throw new HosException("ACCOUNT_IS_BLOCK");
             }
         }
         user.setUsername(userVo.getName());

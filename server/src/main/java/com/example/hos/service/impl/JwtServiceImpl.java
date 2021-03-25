@@ -44,7 +44,7 @@ public class JwtServiceImpl implements JwtService {
             Map<String, Object> header = Maps.newHashMap();
             header.put("typ", "JWT");
             header.put("alg", "HS256");
-            String token = JWT.create()
+            return JWT.create()
                     // header
                     .withHeader(header)
                     .withClaim("id", userId)
@@ -52,10 +52,8 @@ public class JwtServiceImpl implements JwtService {
                     .withExpiresAt(date)
                     // 签名
                     .sign(algorithm);
-            return token;
         }
-        catch (IllegalArgumentException e)
-        {
+        catch (IllegalArgumentException e) {
             e.printStackTrace();
             return null;
         }
