@@ -30,7 +30,7 @@ import java.util.UUID;
 @Authorization
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends BaseController {
 
     @Resource
     private UserService userService;
@@ -38,7 +38,7 @@ public class UserController {
     @ApiOperation(value = "用户信息修改")
     @PostMapping(value = "/update")
     public ResultResponse updateUser(UserVO userVO){
-        return userService.updateUser(userVO);
+        return userService.updateUser(currentUser().getuId(), userVO);
     }
 
     @ApiOperation(value = "用户删除")
@@ -88,7 +88,7 @@ public class UserController {
         user.setId(id);
         //设置用户信息中的头像信息
         user.setPhoto("/pic/user/photo/"+id+"/"+uuid+sub);
-        userService.updateUser(user);
+        userService.updateUser(id, user);
         session.setAttribute("user",userService.selectById(user.getId()));
         return "user/userInfo";
     }

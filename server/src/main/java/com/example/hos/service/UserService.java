@@ -36,7 +36,7 @@ public interface UserService {
      * @param userVo
      * @return
      **/
-    ResultResponse updateUser(UserVO userVo);
+    ResultResponse updateUser(String uid, UserVO userVo);
 
     /**
      * 删除用户

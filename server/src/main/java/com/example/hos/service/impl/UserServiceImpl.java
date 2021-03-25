@@ -74,25 +74,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResultResponse updateUser(UserVO userVo) {
+    public ResultResponse updateUser(String uid, UserVO userVO) {
         ResultResponse resultResponse = new ResultResponse();
-        TUser user = null;
-        if (StringUtils.isNotBlank(userVo.getName())) {
-            user = userMapper.selectByName(userVo.getName()).orElse(null);
-        }
+        TUser user = userMapper.selectByPrimaryKey(uid);
         if (Objects.isNull(user)){
             throw new HosException("ACCOUNT_NOT_FOUND");
         }
-        if (!user.getUsername().equals(userVo.getName())){
-            if (userMapper.selectByName(userVo.getName()).isPresent()){
+        if (userMapper.selectByName(userVO.getName()).isPresent()){
                 throw new HosException("ACCOUNT_IS_BLOCK");
             }
+        if (StringUtils.isNotBlank(userVO.getName())){
+            user.setUsername(userVO.getName());
         }
-        user.setUsername(userVo.getName());
-        user.setPassword(userVo.getPassword());
-        user.setPhone(userVo.getPhoto());
+        if (StringUtils.isNotBlank(userVO.getPassword())){
+            user.setPassword(userVO.getPassword());
+        }
+        if (StringUtils.isNotBlank(userVO.getPhone())){
+            user.setPhone(userVO.getPhone());
+        }
         TUserExample tUserExample = new TUserExample();
-        userMapper.updateByExample(user,tUserExample);
+        userMapper.updateByExample(user, tUserExample);
         String message = responseService.message(ResultResponse.Code.SUCCESS);
         resultResponse.success(message);
         return resultResponse;

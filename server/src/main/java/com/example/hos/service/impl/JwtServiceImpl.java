@@ -67,7 +67,8 @@ public class JwtServiceImpl implements JwtService {
      * @return 0 校验通过, 1 token已过期, 2 校验不通过
      * @vision V1.0
      */
-    public static int verify(String token)
+    @Override
+    public int checkToken(String token)
     {
         int flag;
         try

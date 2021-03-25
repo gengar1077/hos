@@ -25,6 +25,9 @@ public class UserVO {
     @ApiModelProperty(value = "用户头像")
     private String photo;
 
+    @ApiModelProperty(value = "用户号码")
+    private String phone;
+
     @ApiModelProperty(value = "用户微博")
     private String wei;
 
