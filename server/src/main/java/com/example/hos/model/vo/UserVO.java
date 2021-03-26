@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 @Data
 @ApiModel(description = "用户信息")
 public class UserVO {
+
     @ApiModelProperty(value = "用户id")
     private String id;
 

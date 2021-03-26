@@ -12,8 +12,8 @@ import java.io.Serializable;
 @Data
 public class ResultResponse implements Serializable {
 
-
     private static final long serialVersionUID = 7235084927681911824L;
+
     private Boolean success;
 
     @JsonInclude(value = JsonInclude.Include.NON_NULL, content = JsonInclude.Include.NON_NULL)

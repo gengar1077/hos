@@ -3,13 +3,15 @@ package com.example.hos.model.vo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @description:
  * @author: KEANU
  * @date: 2021/1/29
  **/
 @Data
-public class LoginInfoVO{
+public class LoginInfoVO implements Serializable {
 
     private static final long serialVersionUID = 247616217919830202L;
 

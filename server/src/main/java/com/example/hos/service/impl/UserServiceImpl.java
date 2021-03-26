@@ -12,6 +12,7 @@ import com.example.hos.service.ResponseService;
 import com.example.hos.service.UserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * @Description:
  * @Date: 2021/2/13
  */
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -57,6 +59,7 @@ public class UserServiceImpl implements UserService {
     public ResultResponse login(String username, String password) {
         ResultResponse resultResponse = new ResultResponse();
         TUser tUser=userMapper.selectByName(username).orElse(null);
+        log.error("user:{}", tUser);
         if (tUser==null){
             throw new HosException("ACCOUNT_NOT_FOUND");
         }
@@ -66,10 +69,10 @@ public class UserServiceImpl implements UserService {
         LoginInfoVO loginInfoVO = new LoginInfoVO();
         BeanUtils.copyProperties(loginInfoVO, tUser);
         String message = responseService.message(ResultResponse.Code.SUCCESS);
-        resultResponse.success(message);
-        resultResponse.setReturnData(loginInfoVO);
         String token = jwtService.unSign(tUser.getuId());
         loginInfoVO.setToken(token);
+        resultResponse.success(message);
+        resultResponse.setReturnData(loginInfoVO);
         return resultResponse;
     }
 
@@ -114,12 +117,9 @@ public class UserServiceImpl implements UserService {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
-        TUserExample tUserExample = new TUserExample();
-        tUserExample.createCriteria().andStatusEqualTo("1");
-        List<UserVO> users = userMapper.selectByExample(null).stream().map(user -> {
+        List<UserVO> users = userMapper.selectAllAndStatus().stream().map(user -> {
             UserVO userVO = new UserVO();
-            userVO.setName(user.getUsername());
-            userVO.setPhoto(user.getPhoto());
+            BeanUtils.copyProperties(userVO, user);
             return userVO;
         }).collect(Collectors.toList());
         return new PageInfo<>(users);

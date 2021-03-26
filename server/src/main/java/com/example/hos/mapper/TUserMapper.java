@@ -32,10 +32,10 @@ public interface TUserMapper {
 
     int updateByPrimaryKey(TUser record);
 
-    @Select("select * from t_user")
-    List<TUser> selectAll();
+    @Select("select * from t_user where status='1'")
+    List<TUser> selectAllAndStatus();
 
-    @Select("select * from t_user where id=#{id} and status=#{id}")
+    @Select("select * from t_user where id=#{id} and status=#{status}")
     TUser selectByIdAndStatus(String id, String status);
 
     @Select("select * from t_user where username=#{username}")
