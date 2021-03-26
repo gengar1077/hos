@@ -5,9 +5,10 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+
 /**
- * @author heweiwei
- * @date 2018/2/5
+ * 响应返回对象
+ * @author 吃面龙
  */
 @Data
 public class ResultResponse implements Serializable {
