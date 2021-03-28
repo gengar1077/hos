@@ -3,7 +3,11 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './Signin.scss';
 
 export default function Signin(props) {
-  const onFinish = (values: any) => {
+  const onFinish = (values: {
+    username: string;
+    password: string;
+    remember: boolean;
+  }) => {
     console.log('Received values of form: ', values);
     props.onSubmit(values);
   };
