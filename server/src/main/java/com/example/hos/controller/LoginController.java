@@ -31,11 +31,14 @@ public class LoginController {
 
     @ApiOperation(value = "登录", produces = "application/json;charset=utf-8")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "用户名", required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "query", dataType = "string")
     })
+//    @ApiImplicitParam(name = "form", value = "用户登录表单", required = true, dataType = "LoginInfoVO")
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public ResultResponse login(String username, String password) {
+//        String username = loginInfoVO.getUsername();
+//        String password = loginInfoVO.getPassword();
         return userService.login(username, password);
     }
 

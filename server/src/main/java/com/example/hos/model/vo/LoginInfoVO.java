@@ -16,7 +16,10 @@ public class LoginInfoVO implements Serializable {
     private static final long serialVersionUID = 247616217919830202L;
 
     @ApiModelProperty(value = "用户名")
-    private String userName;
+    private String username;
+
+    @ApiModelProperty(value = "密码")
+    private String password;
 
     @ApiModelProperty(value = "用户token")
     private String token;

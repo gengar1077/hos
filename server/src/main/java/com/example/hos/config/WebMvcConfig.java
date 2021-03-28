@@ -2,7 +2,6 @@ package com.example.hos.config;
 
 
 import com.example.hos.interceptor.AuthInterceptor;
-import org.springframework.beans.factory.annotation.Value;
 import jodd.util.StringPool;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -19,11 +18,11 @@ import javax.annotation.Resource;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    @Value("${mini.app.appId}")
-    private String appId;
-
-    @Value("${mini.app.secret}")
-    private String secret;
+//    @Value("${mini.app.appId}")
+//    private String appId;
+//
+//    @Value("${mini.app.secret}")
+//    private String secret;
 
     @Resource
     private AuthInterceptor authInterceptor;

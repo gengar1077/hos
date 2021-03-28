@@ -5,15 +5,11 @@ import com.example.hos.model.TUser;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
-import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -42,7 +38,7 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation(value = "用户删除")
-    @ApiImplicitParam(name = "id", value = "用户id", required = true, paramType = "query",dataType = "long")
+    @ApiImplicitParam(name = "id", value = "用户id", required = true, paramType = "query",dataType = "string")
     @PostMapping(value = "/delete")
     public ResultResponse deleteUser(String id) {
         return userService.deleteUser(id);
@@ -50,11 +46,10 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "分页查询用户")
     @GetMapping(value = "/findByPage")
-    public String pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
+    @ResponseBody
+    public ResultResponse pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                            @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
-        PageInfo<UserVO> userPage = userService.selectByPage(pageNum, pageSize);
-        modelMap.put("userPage", userPage);
-        return "user/list";
+        return userService.selectByPage(pageNum, pageSize);
     }
 
     @ApiOperation(value = "修改头像")

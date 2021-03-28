@@ -35,12 +35,12 @@ public interface TUserMapper {
     @Select("select * from t_user where status='1'")
     List<TUser> selectAllAndStatus();
 
-    @Select("select * from t_user where id=#{id} and status=#{status}")
+    @Select("select * from t_user where U_ID=#{id} and status=#{status}")
     TUser selectByIdAndStatus(String id, String status);
 
     @Select("select * from t_user where username=#{username}")
     Optional<TUser> selectByName(String username);
 
-    @Delete("delete from t_user where id=#{id}")
+    @Delete("delete from t_user where U_ID=#{id}")
     int delete(String id);
 }

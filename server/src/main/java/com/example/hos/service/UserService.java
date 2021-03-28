@@ -3,7 +3,6 @@ package com.example.hos.service;
 import com.example.hos.model.TUser;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
-import com.github.pagehelper.PageInfo;
 
 /**
  * @Author: 吃面龙
@@ -55,7 +54,7 @@ public interface UserService {
      * @param pageSize
      * @return
      **/
-    PageInfo<UserVO> selectByPage(Integer pageNum, Integer pageSize);
+    ResultResponse selectByPage(Integer pageNum, Integer pageSize);
 
     /**
      * 根据id查询用户

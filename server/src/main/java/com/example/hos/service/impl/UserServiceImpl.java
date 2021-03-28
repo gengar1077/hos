@@ -14,7 +14,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -47,9 +46,14 @@ public class UserServiceImpl implements UserService {
         if (tUser!=null){
             throw new HosException("ACCOUNT_IS_BLOCK");
         }
-        TUser tUser1 = new TUser();
-        BeanUtils.copyProperties(tUser1, userVO);
-        userMapper.insertSelective(tUser1);
+        TUser user = new TUser();
+        userVO.setName(user.getUsername());
+        userVO.setPassword(user.getPassword());
+        userVO.setPhone(user.getPhone());
+        userVO.setRemark(user.getRemark());
+        userVO.setId(user.getuId());
+//        BeanUtils.copyProperties(tUser1, userVO);
+        userMapper.insertSelective(user);
         String message = responseService.message(ResultResponse.Code.SUCCESS);
         resultResponse.success(message);
         return resultResponse;
@@ -59,7 +63,6 @@ public class UserServiceImpl implements UserService {
     public ResultResponse login(String username, String password) {
         ResultResponse resultResponse = new ResultResponse();
         TUser tUser=userMapper.selectByName(username).orElse(null);
-        log.error("user:{}", tUser);
         if (tUser==null){
             throw new HosException("ACCOUNT_NOT_FOUND");
         }
@@ -67,19 +70,21 @@ public class UserServiceImpl implements UserService {
             throw new HosException("ACCOUNT_PASS_ERROR");
         }
         LoginInfoVO loginInfoVO = new LoginInfoVO();
-        BeanUtils.copyProperties(loginInfoVO, tUser);
+        loginInfoVO.setUsername(tUser.getUsername());
+        loginInfoVO.setPhone(tUser.getPhone());
         String message = responseService.message(ResultResponse.Code.SUCCESS);
         String token = jwtService.unSign(tUser.getuId());
         loginInfoVO.setToken(token);
         resultResponse.success(message);
         resultResponse.setReturnData(loginInfoVO);
+        System.out.println(loginInfoVO);
         return resultResponse;
     }
 
     @Override
     public ResultResponse updateUser(String uid, UserVO userVO) {
         ResultResponse resultResponse = new ResultResponse();
-        TUser user = userMapper.selectByPrimaryKey(uid);
+        TUser user = userMapper.selectByIdAndStatus(uid, "1");
         if (Objects.isNull(user)){
             throw new HosException("ACCOUNT_NOT_FOUND");
         }
@@ -106,6 +111,7 @@ public class UserServiceImpl implements UserService {
     public ResultResponse deleteUser(String id) {
         ResultResponse resultResponse = new ResultResponse();
         TUser tUser = userMapper.selectByIdAndStatus(id, "1");
+        log.error("tuser:{}", tUser);
         tUser.setStatus("0");
         TUserExample tUserExample = new TUserExample();
         userMapper.updateByExampleSelective(tUser, tUserExample);
@@ -113,16 +119,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageInfo<UserVO> selectByPage(Integer pageNum, Integer pageSize) {
+    public ResultResponse selectByPage(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
         List<UserVO> users = userMapper.selectAllAndStatus().stream().map(user -> {
             UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(userVO, user);
+            userVO.setName(user.getUsername());
+            userVO.setPassword(user.getPassword());
+            userVO.setPhone(user.getPhone());
+            userVO.setRemark(user.getRemark());
+            userVO.setId(user.getuId());
+//            BeanUtils.copyProperties(userVO, user);
             return userVO;
         }).collect(Collectors.toList());
-        return new PageInfo<>(users);
+        PageInfo<UserVO> pageInfo = new PageInfo<>(users);
+        ResultResponse response = new ResultResponse();
+        response.setReturnData(pageInfo);
+        return response;
     }
 
     @Override

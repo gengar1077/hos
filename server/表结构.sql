@@ -73,7 +73,6 @@ create table t_sell(
     money number(11),
     p_num number(8),
     pay_type number(2),
-    status number(2),
     operator varchar2(32),
     remark varchar2(128),
     createTime date,

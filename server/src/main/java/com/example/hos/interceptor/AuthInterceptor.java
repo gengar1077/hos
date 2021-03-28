@@ -1,7 +1,6 @@
 package com.example.hos.interceptor;
 
 import com.example.hos.mapper.TUserMapper;
-import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.service.JwtService;
 import com.example.hos.service.ResponseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -101,11 +100,11 @@ public class AuthInterceptor implements AsyncHandlerInterceptor {
     private void failedResponse(HttpServletResponse response) throws IOException {
         response.setCharacterEncoding(Consts.UTF_8.name());
         response.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
-        ResultResponse resultResponse = new ResultResponse();
-        String message=responseService.message(ResultResponse.Code.REQUIRE_LOGIN);
-        resultResponse.requireLogin(message);
+//        ResultResponse resultResponse = new ResultResponse();
+//        String message=responseService.message(ResultResponse.Code.REQUIRE_LOGIN);
+//        resultResponse.requireLogin(message);
         ObjectMapper om = new ObjectMapper();
-        response.getWriter().write(om.writeValueAsString(resultResponse));
+        response.getWriter().write(om.writeValueAsString("null"));
     }
 
 //    private void failedResponse(HttpServletResponse response) throws IOException {
