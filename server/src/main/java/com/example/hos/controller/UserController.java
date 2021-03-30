@@ -48,7 +48,7 @@ public class UserController extends BaseController {
     @GetMapping(value = "/findByPage")
     @ResponseBody
     public ResultResponse pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                           @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
+                           @RequestParam(defaultValue = "6",required = false) Integer pageSize){
         return userService.selectByPage(pageNum, pageSize);
     }
 

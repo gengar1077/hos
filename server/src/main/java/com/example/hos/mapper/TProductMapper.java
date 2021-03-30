@@ -31,6 +31,12 @@ public interface TProductMapper {
 
     int updateByPrimaryKey(TProduct record);
 
+    @Select("select * from t_product where status='1'")
+    List<TProduct> selectAllAndStatus();
+
     @Select("select * from t_product where p_name=#{pName}")
     Optional<TProduct> selectByName(String pName);
+
+    @Select("select * from t_product where P_ID=#{pid} and status=#{status}")
+    TProduct selectByIdAndStatus(String pid, String status);
 }

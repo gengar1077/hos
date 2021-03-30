@@ -1,10 +1,14 @@
 package com.example.hos.service.impl;
 
+import com.example.hos.handle.HosException;
 import com.example.hos.mapper.TProductMapper;
 import com.example.hos.model.TProduct;
 import com.example.hos.model.TProductExample;
+import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.model.vo.ProductVO;
+import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.service.ProductService;
+import com.example.hos.service.ResponseService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -25,61 +29,62 @@ public class ProductServiceImpl implements ProductService {
     @Resource
     private TProductMapper productMapper;
 
-    @Override
-    public String addProduct(TProduct product) {
-        if (Objects.isNull(product)){
-            System.out.println("请填写正确的信息!");
-            return "index";
-        }
-        if (productMapper.selectByPrimaryKey(product.getpId())!=null){
-            System.out.println("药品已存在!");
-            return "index";
-        }
-        productMapper.insertSelective(product);
-        return "index";
-    }
+    @Resource
+    private ResponseService responseService;
 
     @Override
-    public String delProduct(String pid) {
-        if (productMapper.selectByPrimaryKey(pid)!=null){
-            System.out.println("请填写正确的药品序号!");
-            return "index";
-        }
-        productMapper.deleteByPrimaryKey(pid);
-        return null;
-    }
-
-    @Override
-    public String updateProduct(ProductVO productVO) {
-        TProduct product = null;
-        if (StringUtils.isNotBlank(productVO.getPName())) {
-            product = productMapper.selectByName(productVO.getPName()).orElse(null);
-        }
-        if (Objects.isNull(product)){
-            return "药品不存在";
-        }
-        if (!product.getpName().equals(product.getpName())){
-            if (productMapper.selectByName(productVO.getPName()).isPresent()){
-                return "该药品名已经存在，修改失败！";
-            }
-        }
-        product.setpId(productVO.getPid());
+    public ResultResponse addProduct(ProductVO productVO) {
+        ResultResponse resultResponse = new ResultResponse();
+        Optional.ofNullable(productMapper.selectByName(productVO.getPName())).orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
+        TProduct product = new TProduct();
         product.setpName(productVO.getPName());
-        productMapper.updateByPrimaryKey(product);
-        return null;
+        product.setStatus("1");
+        productMapper.insertSelective(product);
+        String message = responseService.message(ResultResponse.Code.SUCCESS);
+        resultResponse.success(message);
+        return resultResponse;
     }
 
     @Override
-    public PageInfo<ProductVO> selectByPage(Integer pageNum, Integer pageSize) {
+    public ResultResponse delProduct(String pid) {
+        ResultResponse resultResponse = new ResultResponse();
+        TProduct product = Optional.ofNullable(productMapper.selectByIdAndStatus(pid, "1"))
+                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+        product.setStatus("0");
+        TProductExample tUserExample = new TProductExample();
+        productMapper.updateByExampleSelective(product, tUserExample);
+        return resultResponse.success(responseService.message(ResultResponse.Code.SUCCESS));
+    }
+
+    @Override
+    public ResultResponse updateProduct(ProductVO productVO) {
+        ResultResponse resultResponse = new ResultResponse();
+        TProduct product = Optional.ofNullable(productMapper.selectByIdAndStatus(productVO.getPid(), "1"))
+                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+        Optional.ofNullable(productMapper.selectByName(productVO.getPName())).orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
+        if (StringUtils.isNotBlank(productVO.getPName())){
+            product.setpName(productVO.getPName());
+        }
+        TProductExample tUserExample = new TProductExample();
+        productMapper.updateByExampleSelective(product, tUserExample);
+        String message = responseService.message(ResultResponse.Code.SUCCESS);
+        resultResponse.success(message);
+        return resultResponse;
+    }
+
+    @Override
+    public ResultResponse selectByPage(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
-        TProductExample tProductExample = new TProductExample();
-        List<ProductVO> products = productMapper.selectByExample(null).stream().map(product -> {
+        List<ProductVO> products = productMapper.selectAllAndStatus().stream().map(product -> {
             ProductVO productVO = new ProductVO();
             productVO.setPName(product.getpName());
             return productVO;
         }).collect(Collectors.toList());
-        return new PageInfo<>(products);
+        PageInfo<ProductVO> pageInfo = new PageInfo<>(products);
+        ResultResponse response = new ResultResponse();
+        response.setReturnData(pageInfo);
+        return response;
     }
 }

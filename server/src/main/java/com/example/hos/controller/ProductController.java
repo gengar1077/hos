@@ -1,8 +1,8 @@
 package com.example.hos.controller;
 
 import com.example.hos.interceptor.Authorization;
-import com.example.hos.model.TProduct;
 import com.example.hos.model.vo.ProductVO;
+import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.StockVO;
 import com.example.hos.service.ProductService;
 import com.example.hos.service.StockService;
@@ -31,47 +31,39 @@ public class ProductController {
 
     @ApiOperation(value = "新增", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/add",method = RequestMethod.POST)
-    public String addProduct(TProduct product) {
-        productService.addProduct(product);
-        return "product/productList";
+    public ResultResponse addProduct(ProductVO productVO) {
+        return productService.addProduct(productVO);
     }
 
     @ApiOperation(value = "删除", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/del",method = RequestMethod.POST)
-    public String delProduct(String pid) {
-        productService.delProduct(pid);
-        return "product/productList";
+    public ResultResponse delProduct(String pid) {
+        return productService.delProduct(pid);
     }
 
     @ApiOperation(value = "药品信息修改")
     @PostMapping(value = "/update")
-    public String updateProduct(ProductVO productVO){
-        productService.updateProduct(productVO);
-        return "product/productList";
+    public ResultResponse updateProduct(ProductVO productVO){
+        return productService.updateProduct(productVO);
     }
 
     @ApiOperation(value = "分页查询药品")
     @GetMapping(value = "/findByPage")
-    public String pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                           @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
-        PageInfo<ProductVO> productPage = productService.selectByPage(pageNum, pageSize);
-        modelMap.put("productPage", productPage);
-        return "product/productList";
+    public ResultResponse pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
+                           @RequestParam(defaultValue = "6",required = false) Integer pageSize){
+        return productService.selectByPage(pageNum, pageSize);
     }
 
     @ApiOperation(value = "查询药品库存")
     @GetMapping(value = "/findStock")
-    public String stockList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                           @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
-        PageInfo<StockVO> stockPage = stockService.selectByPage(pageNum, pageSize);
-        modelMap.put("stockPage", stockPage);
-        return "product/stockList";
+    public ResultResponse stockList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
+                           @RequestParam(defaultValue = "6",required = false) Integer pageSize){
+        return stockService.selectByPage(pageNum, pageSize);
     }
 
     @ApiOperation(value = "更改库存", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/editStock",method = RequestMethod.POST)
-    public String editStock(String pid, int num) {
-        stockService.inStock(pid, num);
-        return "product/stockList";
+    public ResultResponse editStock(String pid, int num) {
+        return stockService.inStock(pid, num);
     }
 }

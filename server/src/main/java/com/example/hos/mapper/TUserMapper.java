@@ -2,7 +2,6 @@ package com.example.hos.mapper;
 
 import com.example.hos.model.TUser;
 import com.example.hos.model.TUserExample;
-import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -40,7 +39,4 @@ public interface TUserMapper {
 
     @Select("select * from t_user where username=#{username}")
     Optional<TUser> selectByName(String username);
-
-    @Delete("delete from t_user where U_ID=#{id}")
-    int delete(String id);
 }

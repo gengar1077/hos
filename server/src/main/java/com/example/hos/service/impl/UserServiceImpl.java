@@ -119,7 +119,6 @@ public class UserServiceImpl implements UserService {
             userVO.setPhone(user.getPhone());
             userVO.setRemark(user.getRemark());
             userVO.setId(user.getuId());
-//            BeanUtils.copyProperties(userVO, user);
             return userVO;
         }).collect(Collectors.toList());
         PageInfo<UserVO> pageInfo = new PageInfo<>(users);

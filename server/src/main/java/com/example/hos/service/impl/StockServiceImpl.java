@@ -1,10 +1,14 @@
 package com.example.hos.service.impl;
 
+import com.example.hos.handle.HosException;
 import com.example.hos.mapper.TProductMapper;
 import com.example.hos.mapper.TStockMapper;
 import com.example.hos.model.TProduct;
 import com.example.hos.model.TStock;
+import com.example.hos.model.type.ErrorInfo;
+import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.StockVO;
+import com.example.hos.service.ResponseService;
 import com.example.hos.service.StockService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -13,10 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,23 +34,26 @@ public class StockServiceImpl implements StockService {
     @Resource
     private TProductMapper productMapper;
 
+    @Resource
+    private ResponseService responseService;
+
     @Override
-    public String inStock(String pid, int num) {
-        TProduct product = productMapper.selectByPrimaryKey(pid);
-        if (Objects.isNull(product)){
-            TStock stock = new TStock();
-            stock.setpId(pid);
-            stock.setpName(product.getpName());
-            stock.setpNum(num);
-            stock.setCreatetime(new Date());
-        }
-        TStock stock = stockMapper.selectByPrimaryKey(pid);
+    public ResultResponse inStock(String pid, int num) {
+        TProduct product = Optional.ofNullable(productMapper.selectByPrimaryKey(pid))
+                .orElseThrow(() -> new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+        TStock stock = Optional.ofNullable(stockMapper.selectByPrimaryKey(pid))
+                .orElseThrow(() -> new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));;
+        stock.setpId(pid);
+        stock.setpName(product.getpName());
         stock.setpNum(num);
-        return null;
+        stock.setCreatetime(new Date());
+        stock.setpNum(num);
+        ResultResponse resultResponse = new ResultResponse();
+        return resultResponse.success(responseService.message(ResultResponse.Code.SUCCESS));
     }
 
     @Override
-    public PageInfo<StockVO> selectByPage(Integer pageNum, Integer pageSize) {
+    public ResultResponse selectByPage(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
@@ -60,9 +64,12 @@ public class StockServiceImpl implements StockService {
         tProducts.forEach(product -> {
             TStock stock = productMap.get(product.getpName());
             StockVO stockVO = new StockVO();
-            BeanUtils.copyProperties(stockVO,stock);
+            BeanUtils.copyProperties(stockVO, stock);
             stockVOList.add(stockVO);
         });
-        return new PageInfo<>(stockVOList);
+        PageInfo<StockVO> pageInfo = new PageInfo<>(stockVOList);
+        ResultResponse response = new ResultResponse();
+        response.setReturnData(pageInfo);
+        return response;
     }
 }
