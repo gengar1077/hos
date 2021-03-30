@@ -45,12 +45,9 @@ public class UserServiceImpl implements UserService {
         ResultResponse resultResponse = new ResultResponse();
         Optional.ofNullable(userMapper.selectByName(userVO.getName())).orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
         TUser user = new TUser();
-        userVO.setName(user.getUsername());
-        userVO.setPassword(user.getPassword());
-        userVO.setPhone(user.getPhone());
-        userVO.setRemark(user.getRemark());
-        userVO.setId(user.getuId());
-//        BeanUtils.copyProperties(tUser1, userVO);
+        user.setUsername(userVO.getName());
+        user.setPassword(userVO.getPassword());
+        user.setStatus("1");
         userMapper.insertSelective(user);
         String message = responseService.message(ResultResponse.Code.SUCCESS);
         resultResponse.success(message);
