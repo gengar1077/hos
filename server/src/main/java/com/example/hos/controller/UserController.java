@@ -33,6 +33,7 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "用户信息修改")
     @PostMapping(value = "/update")
+    @ResponseBody
     public ResultResponse updateUser(UserVO userVO){
         return userService.updateUser(currentUser().getuId(), userVO);
     }
@@ -40,6 +41,7 @@ public class UserController extends BaseController {
     @ApiOperation(value = "用户删除")
     @ApiImplicitParam(name = "id", value = "用户id", required = true, paramType = "query",dataType = "string")
     @PostMapping(value = "/delete")
+    @ResponseBody
     public ResultResponse deleteUser(String id) {
         return userService.deleteUser(id);
     }
@@ -54,6 +56,7 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "根据名字查询用户")
     @GetMapping("/findByUsername")
+    @ResponseBody
     public ResultResponse photo(String username) {
         return userService.selectByName(username);
     }
