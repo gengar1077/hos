@@ -64,4 +64,13 @@ public interface UserService {
      * @return
      **/
     TUser selectById(String id);
+
+    /**
+     * 根据名字查询用户
+     * @author changwei.zhong
+     * @date 2021/2/24
+     * @param username
+     * @return
+     **/
+    ResultResponse selectByName(String username);
 }

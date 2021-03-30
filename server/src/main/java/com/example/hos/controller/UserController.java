@@ -52,6 +52,12 @@ public class UserController extends BaseController {
         return userService.selectByPage(pageNum, pageSize);
     }
 
+    @ApiOperation(value = "根据名字查询用户")
+    @GetMapping("/findByUsername")
+    public ResultResponse photo(String username) {
+        return userService.selectByName(username);
+    }
+
     @ApiOperation(value = "修改头像")
     @GetMapping("/photo")
     public String photo(String id, ModelMap modelMap){

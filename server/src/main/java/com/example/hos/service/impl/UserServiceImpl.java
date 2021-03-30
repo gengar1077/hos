@@ -4,6 +4,7 @@ import com.example.hos.handle.HosException;
 import com.example.hos.mapper.TUserMapper;
 import com.example.hos.model.TUser;
 import com.example.hos.model.TUserExample;
+import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.model.vo.LoginInfoVO;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -42,10 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse addUser(UserVO userVO) {
         ResultResponse resultResponse = new ResultResponse();
-        TUser tUser = userMapper.selectByName(userVO.getName()).orElse(null);
-        if (tUser!=null){
-            throw new HosException("ACCOUNT_IS_BLOCK");
-        }
+        Optional.ofNullable(userMapper.selectByName(userVO.getName())).orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
         TUser user = new TUser();
         userVO.setName(user.getUsername());
         userVO.setPassword(user.getPassword());
@@ -62,12 +60,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse login(String username, String password) {
         ResultResponse resultResponse = new ResultResponse();
-        TUser tUser=userMapper.selectByName(username).orElse(null);
-        if (tUser==null){
-            throw new HosException("ACCOUNT_NOT_FOUND");
-        }
+        TUser tUser = userMapper.selectByName(username)
+                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
         if (!password.equals(tUser.getPassword())){
-            throw new HosException("ACCOUNT_PASS_ERROR");
+            throw new HosException(ErrorInfo.PASSWORD_IS_FALSE.getMessage());
         }
         LoginInfoVO loginInfoVO = new LoginInfoVO();
         loginInfoVO.setUsername(tUser.getUsername());
@@ -84,13 +80,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse updateUser(String uid, UserVO userVO) {
         ResultResponse resultResponse = new ResultResponse();
-        TUser user = userMapper.selectByIdAndStatus(uid, "1");
-        if (Objects.isNull(user)){
-            throw new HosException("ACCOUNT_NOT_FOUND");
-        }
-        if (userMapper.selectByName(userVO.getName()).isPresent()){
-                throw new HosException("ACCOUNT_IS_BLOCK");
-            }
+        TUser user = Optional.ofNullable(userMapper.selectByIdAndStatus(uid, "1"))
+                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+        Optional.ofNullable(userMapper.selectByName(userVO.getName())).orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
         if (StringUtils.isNotBlank(userVO.getName())){
             user.setUsername(userVO.getName());
         }
@@ -110,11 +102,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse deleteUser(String id) {
         ResultResponse resultResponse = new ResultResponse();
-        TUser tUser = userMapper.selectByIdAndStatus(id, "1");
-        log.error("tuser:{}", tUser);
-        tUser.setStatus("0");
+        TUser user = Optional.ofNullable(userMapper.selectByIdAndStatus(id, "1"))
+                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+        user.setStatus("0");
         TUserExample tUserExample = new TUserExample();
-        userMapper.updateByExampleSelective(tUser, tUserExample);
+        userMapper.updateByExampleSelective(user, tUserExample);
         return resultResponse.success(responseService.message(ResultResponse.Code.SUCCESS));
     }
 
@@ -141,6 +133,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TUser selectById(String id) {
-        return userMapper.selectByIdAndStatus(id, "1");
+        return Optional.ofNullable(userMapper.selectByIdAndStatus(id, "1"))
+                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+    }
+
+    @Override
+    public ResultResponse selectByName(String username) {
+        TUser tUser = userMapper.selectByName(username)
+                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
+        ResultResponse response = new ResultResponse();
+        response.setReturnData(tUser);
+        return response;
     }
 }

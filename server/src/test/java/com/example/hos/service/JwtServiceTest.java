@@ -1,7 +1,10 @@
 package com.example.hos.service;
 
+import com.example.hos.model.TUser;
+import com.example.hos.model.vo.UserVO;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -23,5 +26,16 @@ public class JwtServiceTest {
 
     @Test
     public void unSign() {
+    }
+
+    @Test
+    public void test() {
+        TUser user = new TUser();
+        UserVO userVO = new UserVO();
+        userVO.setName("嘤嘤嘤");
+        userVO.setPhone("157");
+        userVO.setPassword("nmsl");
+        userVO.setRemark("jwt");
+        BeanUtils.copyProperties(user, userVO);
     }
 }
