@@ -1,10 +1,12 @@
 package com.example.hos.controller;
 
 import com.example.hos.interceptor.Authorization;
+import com.example.hos.interceptor.RoleAccess;
 import com.example.hos.model.TUser;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
+import com.example.hos.until.Constant;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
@@ -42,6 +44,7 @@ public class UserController extends BaseController {
     @ApiImplicitParam(name = "id", value = "用户id", required = true, paramType = "query",dataType = "string")
     @PostMapping(value = "/delete")
     @ResponseBody
+    @RoleAccess(roles = {Constant.ROLE_ADMIN})
     public ResultResponse deleteUser(String id) {
         return userService.deleteUser(id);
     }

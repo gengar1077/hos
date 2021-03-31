@@ -4,6 +4,8 @@ import com.example.hos.model.TUser;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 
+import java.util.List;
+
 /**
  * @Author: 吃面龙
  * @Description:
@@ -73,4 +75,13 @@ public interface UserService {
      * @return
      **/
     ResultResponse selectByName(String username);
+
+    /**
+     * 根据用户获取角色
+     * @param uid
+     * @return a
+     * @author changwei.zhong
+     * @date 2021/3/31
+     **/
+    List<String> getRoles(String uid);
 }

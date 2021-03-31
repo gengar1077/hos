@@ -2,8 +2,11 @@ package com.example.hos.mapper;
 
 import com.example.hos.model.TPermission;
 import com.example.hos.model.TPermissionExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface TPermissionMapper {
     long countByExample(TPermissionExample example);
@@ -19,4 +22,7 @@ public interface TPermissionMapper {
     int updateByExampleSelective(@Param("record") TPermission record, @Param("example") TPermissionExample example);
 
     int updateByExample(@Param("record") TPermission record, @Param("example") TPermissionExample example);
+
+    @Select("select * from t_permission where user_id=#{} and status='1")
+    Optional<List<TPermission>> findAllByUserIdAndStatus(String uid);
 }

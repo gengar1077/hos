@@ -1,7 +1,9 @@
 package com.example.hos.service.impl;
 
 import com.example.hos.handle.HosException;
+import com.example.hos.mapper.TPermissionMapper;
 import com.example.hos.mapper.TUserMapper;
+import com.example.hos.model.TPermission;
 import com.example.hos.model.TUser;
 import com.example.hos.model.TUserExample;
 import com.example.hos.model.type.ErrorInfo;
@@ -13,6 +15,7 @@ import com.example.hos.service.ResponseService;
 import com.example.hos.service.UserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -39,6 +42,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private JwtService jwtService;
+
+    @Resource
+    private TPermissionMapper permissionMapper;
 
     @Override
     public ResultResponse addUser(UserVO userVO) {
@@ -140,5 +146,11 @@ public class UserServiceImpl implements UserService {
         ResultResponse response = new ResultResponse();
         response.setReturnData(tUser);
         return response;
+    }
+
+    @Override
+    public List<String> getRoles(String uid) {
+        List<TPermission> permissions = permissionMapper.findAllByUserIdAndStatus(uid).orElse(Lists.newArrayList());
+        return permissions.stream().map(TPermission::getBak1).collect(Collectors.toList());
     }
 }
