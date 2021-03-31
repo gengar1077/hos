@@ -11,7 +11,9 @@ public enum ErrorInfo {
 
     PASSWORD_IS_FALSE("508", "密码错误"),
 
-    ACCOUNT_IS_EXIST("545", "");
+    REQUIRE_LOGIN("509", "请登录"),
+
+    ACCOUNT_IS_EXIST("545", "用户已存在");
 
     private String code;
 
