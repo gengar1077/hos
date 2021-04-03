@@ -8,7 +8,7 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/Dashboard/index';
 import Signin, { ErrorType } from './pages/Signin';
 import axios from 'axios';
 import config from './config/env.test';
