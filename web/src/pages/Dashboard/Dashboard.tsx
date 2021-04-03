@@ -1,8 +1,8 @@
 import './Dashboard.scss';
-import Doughnut from '../../components/Doughnut';
-import LineChart from '../../components/LineChart';
-import BarChart from '../../components/BarChart';
-import PolarChart from '../../components/PolarChart';
+import Doughnut from '@/components/Doughnut';
+import LineChart from '@/components/LineChart';
+import BarChart from '@/components/BarChart';
+import PolarChart from '@/components/PolarChart';
 export default function Dashboard() {
   return (
     <div>
