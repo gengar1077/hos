@@ -9,10 +9,23 @@ import {
   useLocation,
 } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
-import Signin from './pages/Signin';
+import Signin, { ErrorType } from './pages/Signin';
 import axios from 'axios';
 import config from './config/env.test';
 const { BASE_URL } = config;
+
+const routeConifg = [
+  {
+    path: '/',
+    component: Dashboard,
+    routes: [
+      {
+        path: '/dashboard',
+        component: Dashboard,
+      },
+    ],
+  },
+];
 export default function AuthExample() {
   const [roleInfo, setRoleInfo] = useState<any>();
   const [errorText, setErrorText] = useState<string>();
@@ -32,40 +45,17 @@ export default function AuthExample() {
     <ProvideAuth>
       <Router>
         <div>
-          {/* <AuthButton /> */}
-          {/* <ul>
-            <li>
-              <Link to="/dashboard">dashboard</Link>
-            </li>
-            <li>
-              <Link to="/signin">signin</Link>
-            </li>
-            <li>
-              <Link to="/public">public</Link>
-            </li>
-          </ul> */}
-          <h1>TEST PAGE</h1>
-          <div>
-            <h2>CORS</h2>
-            <button onClick={sendRequest}>
-              click me to send request to get role-info
-            </button>
-            <h3></h3>
-            <p>{roleInfo ?? 'no role info'}</p>
-            <h3>Error</h3>
-            <p>{errorText ?? 'no error'}</p>
-          </div>
-
           <Switch>
             <Route path="/signin">
               <AuthSignin />
             </Route>
-            {/* <PrivateRoute path="/dashboard">
-              <Dashboard />
-            </PrivateRoute> */}
-            <Route path="/dashboard">
-              <Dashboard />
-            </Route>
+            {routeConifg.map((item, i) => {
+              return (
+                <PrivateRoute key={i} path={item.path}>
+                  <item.component></item.component>
+                </PrivateRoute>
+              );
+            })}
           </Switch>
         </div>
       </Router>
@@ -103,21 +93,23 @@ function useAuth() {
 function useProvideAuth() {
   const [user, setUser] = useState<string | null>();
 
-  const signin = (username: string, password: string) => {
-    console.log(`[signin] username:${username}, password:${password}`);
-    axios
-      .post(BASE_URL + '/login/login', {
+  const signin = async (username: string, password: string) => {
+    console.log(`[AuthContext] username:${username}, password:${password}`);
+    try {
+      const res = await axios.post(BASE_URL + '/login/login', {
         username,
         password,
-      })
-      .then((res) => {
-        console.log(`[signin] sigin success:${JSON.stringify(res)}`);
       });
+      console.log(`[AuthContext] sigin success:`, res);
+      return res.data;
+    } catch (e) {
+      console.log(`[AuthContext] sigin failed:`, e);
+      throw e;
+    }
   };
 
-  const signout = (cb) => {
+  const signout = () => {
     setUser(null);
-    cb();
   };
 
   return {
@@ -130,39 +122,25 @@ function useProvideAuth() {
 function AuthSignin() {
   const auth = useAuth();
   const history = useHistory();
-  const onSubmit = (values: {
+  const onSubmit = async (values: {
     password: string;
     remember: boolean;
     username: string;
   }) => {
-    console.log('onSubmit values: ', values);
-    auth.signin(values.username, values.password);
-    // auth.signin(() => {
-    //   history.push('/dashboard');
-    // });
+    console.log(`[App] user signin info: `, values);
+    try {
+      await auth.signin(values.username, values.password);
+      history.push('/dashboard');
+    } catch (e) {
+      console.log(`[App] user signin error: `, e);
+      if (e.message === 'Network Error') {
+        return ErrorType.NETWORK_ERROR;
+      }
+      return ErrorType.PWD_ERROR;
+    }
   };
 
   return <Signin onSubmit={onSubmit} />;
-}
-
-function AuthButton() {
-  let history = useHistory();
-  let auth = useAuth();
-
-  return auth.user ? (
-    <p>
-      Welcome!{' '}
-      <button
-        onClick={() => {
-          auth.signout(() => history.push('/'));
-        }}
-      >
-        Sign out
-      </button>
-    </p>
-  ) : (
-    <p>You are not logged in.</p>
-  );
 }
 
 // A wrapper for <Route> that redirects to the login
