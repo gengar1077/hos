@@ -75,10 +75,10 @@ export default function Dashboard() {
               <DashboardPage></DashboardPage>
             </Route>
             <Route path={`/user`}>
-              <h3>manager user</h3>
+              <User></User>
             </Route>
             <Route path={`/drug`}>
-              <h3>manager drug</h3>
+              <Drug></Drug>
             </Route>
           </Switch>
         </Content>
