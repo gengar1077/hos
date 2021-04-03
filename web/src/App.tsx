@@ -16,14 +16,8 @@ const { BASE_URL } = config;
 
 const routeConifg = [
   {
-    path: '/',
+    path: ['/', '/dashboard', '/user', '/drug'],
     component: Dashboard,
-    routes: [
-      {
-        path: '/dashboard',
-        component: Dashboard,
-      },
-    ],
   },
 ];
 export default function AuthExample() {
@@ -51,9 +45,12 @@ export default function AuthExample() {
             </Route>
             {routeConifg.map((item, i) => {
               return (
-                <PrivateRoute key={i} path={item.path}>
+                // <PrivateRoute key={i} path={item.path}>
+                //   <item.component></item.component>
+                // </PrivateRoute>
+                <Route exact key={i} path={item.path}>
                   <item.component></item.component>
-                </PrivateRoute>
+                </Route>
               );
             })}
           </Switch>
@@ -96,12 +93,14 @@ function useProvideAuth() {
   const signin = async (username: string, password: string) => {
     console.log(`[AuthContext] username:${username}, password:${password}`);
     try {
-      const res = await axios.post(BASE_URL + '/login/login', {
-        username,
-        password,
-      });
-      console.log(`[AuthContext] sigin success:`, res);
-      return res.data;
+      // TODO: 跳转先写死等，接口完成之后在放开
+      setUser('kongfu-cat');
+      // const res = await axios.post(BASE_URL + '/login/login', {
+      //   username,
+      //   password,
+      // });
+      // console.log(`[AuthContext] sigin success:`, res);
+      // return res.data;
     } catch (e) {
       console.log(`[AuthContext] sigin failed:`, e);
       throw e;
