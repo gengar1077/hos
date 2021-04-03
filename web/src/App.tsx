@@ -10,8 +10,24 @@ import {
 } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Signin from './pages/Signin';
-
+import axios from 'axios';
+import config from './config/env.test';
+const { BASE_URL } = config;
 export default function AuthExample() {
+  const [roleInfo, setRoleInfo] = useState<any>();
+  const [errorText, setErrorText] = useState<string>();
+  const sendRequest = () => {
+    axios
+      .get(BASE_URL + '/role/info')
+      .then((res) => {
+        setRoleInfo(JSON.stringify(res.data));
+        console.log(res);
+      })
+      .catch((err) => {
+        setErrorText(JSON.stringify(err));
+        console.log(err);
+      });
+  };
   return (
     <ProvideAuth>
       <Router>
@@ -28,6 +44,17 @@ export default function AuthExample() {
               <Link to="/public">public</Link>
             </li>
           </ul> */}
+          <h1>TEST PAGE</h1>
+          <div>
+            <h2>CORS</h2>
+            <button onClick={sendRequest}>
+              click me to send request to get role-info
+            </button>
+            <h3></h3>
+            <p>{roleInfo ?? 'no role info'}</p>
+            <h3>Error</h3>
+            <p>{errorText ?? 'no error'}</p>
+          </div>
 
           <Switch>
             <Route path="/signin">
@@ -46,26 +73,14 @@ export default function AuthExample() {
   );
 }
 
-const fakeAuth = {
-  isAuthenticated: false,
-  signin(cb?) {
-    fakeAuth.isAuthenticated = true;
-    setTimeout(cb, 100); // fake async
-  },
-  signout(cb?) {
-    fakeAuth.isAuthenticated = false;
-    setTimeout(cb, 100);
-  },
-};
-
 /** For more details on
  * `authContext`, `ProvideAuth`, `useAuth` and `useProvideAuth`
  * refer to: https://usehooks.com/useAuth/
  */
 const authContext = createContext<{
   user: string | null | undefined;
-  signin: (cb?: any) => void;
-  signout: (cb?: any) => void;
+  signin: any;
+  signout: any;
 }>({
   user: 'defaultuser',
   signin: () => {
@@ -88,18 +103,21 @@ function useAuth() {
 function useProvideAuth() {
   const [user, setUser] = useState<string | null>();
 
-  const signin = (cb) => {
-    return fakeAuth.signin(() => {
-      setUser('user');
-      cb();
-    });
+  const signin = (username: string, password: string) => {
+    console.log(`[signin] username:${username}, password:${password}`);
+    axios
+      .post(BASE_URL + '/login/login', {
+        username,
+        password,
+      })
+      .then((res) => {
+        console.log(`[signin] sigin success:${JSON.stringify(res)}`);
+      });
   };
 
   const signout = (cb) => {
-    return fakeAuth.signout(() => {
-      setUser(null);
-      cb();
-    });
+    setUser(null);
+    cb();
   };
 
   return {
@@ -118,9 +136,10 @@ function AuthSignin() {
     username: string;
   }) => {
     console.log('onSubmit values: ', values);
-    auth.signin(() => {
-      history.push('/dashboard');
-    });
+    auth.signin(values.username, values.password);
+    // auth.signin(() => {
+    //   history.push('/dashboard');
+    // });
   };
 
   return <Signin onSubmit={onSubmit} />;
