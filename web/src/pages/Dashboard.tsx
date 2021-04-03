@@ -16,8 +16,43 @@ import {
   useParams,
   useRouteMatch,
 } from 'react-router-dom';
+import { Doughnut } from 'react-chartjs-2';
 const { Header, Sider, Content } = Layout;
-
+const data = {
+  labels: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: Array(5)
+        .fill(undefined)
+        .map(() => Math.ceil(Math.random() * 100)),
+      backgroundColor: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
+    },
+    {
+      label: 'Dataset 2',
+      data: Array(5)
+        .fill(undefined)
+        .map(() => Math.ceil(Math.random() * 100)),
+      backgroundColor: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
+    },
+  ],
+};
+const config = {
+  type: 'doughnut',
+  data: data,
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Doughnut Chart',
+      },
+    },
+  },
+};
 export default function Dashboard() {
   const [collapsed, toggleCollapsed] = useReducer((state) => !state, false);
   const { path, url } = useRouteMatch();
@@ -70,6 +105,7 @@ export default function Dashboard() {
           <Switch>
             <Route exact path={[`/dashboard`, '/']}>
               <h3>dashboard</h3>
+              <Doughnut {...config}></Doughnut>
             </Route>
             <Route path={`/user`}>
               <h3>manager user</h3>
