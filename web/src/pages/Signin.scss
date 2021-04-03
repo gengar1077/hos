@@ -14,7 +14,10 @@
     box-sizing: content-box;
     transform: translate(-50%, -50%);
     background: #f6f6f7;
-    .title{
+    .msg {
+      color: red;
+    }
+    .title {
       text-align: center;
       font-size: 24px;
       font-weight: 500;
@@ -29,7 +32,7 @@
     .login-form-button {
       width: 100%;
     }
-    .register{
+    .register {
       margin-top: 16px;
       float: right;
     }
