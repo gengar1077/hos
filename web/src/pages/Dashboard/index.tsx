@@ -7,7 +7,7 @@ import {
   TableOutlined,
 } from '@ant-design/icons';
 import React, { useReducer } from 'react';
-import './Dashboard.scss';
+import './index.scss';
 import {
   BrowserRouter as Router,
   Switch,
@@ -16,10 +16,9 @@ import {
   useParams,
   useRouteMatch,
 } from 'react-router-dom';
-import Doughnut from '../components/Doughnut';
-import LineChart from '../components/LineChart';
-import BarChart from '../components/BarChart';
-import PolarChart from '../components/PolarChart';
+import DashboardPage from './Dashboard';
+import User from './User';
+import Drug from './Drug';
 const { Header, Sider, Content } = Layout;
 
 export default function Dashboard() {
@@ -73,11 +72,7 @@ export default function Dashboard() {
         >
           <Switch>
             <Route exact path={[`/dashboard`, '/']}>
-              <h3>dashboard</h3>
-              <Doughnut></Doughnut>
-              <LineChart></LineChart>
-              <BarChart></BarChart>
-              <PolarChart></PolarChart>
+              <DashboardPage></DashboardPage>
             </Route>
             <Route path={`/user`}>
               <h3>manager user</h3>
