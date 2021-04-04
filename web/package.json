@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^4.16.1",
+    "craco-plugin-scoped-css": "^1.1.1",
     "eslint": "^7.21.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",

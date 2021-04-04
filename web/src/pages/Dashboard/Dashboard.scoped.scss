@@ -1,0 +1,20 @@
+.dashboard-wrapper {
+  height: 100%;
+  .chart-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    .chart {
+      border: 1px solid #eee;
+      background-color: #eee;
+      border-radius: 4px;
+      box-sizing: border-box;
+      padding: 8px;
+    }
+  }
+  .calendar {
+    width: 300px;
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+  }
+}

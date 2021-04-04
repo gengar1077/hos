@@ -36,5 +36,5 @@ const config = {
 };
 
 export default function Doughnut(props) {
-  return <DoughnutChartJS {...config}></DoughnutChartJS>;
+  return <DoughnutChartJS {...config} {...props}></DoughnutChartJS>;
 }
