@@ -16,11 +16,7 @@ export enum ErrorType {
 }
 export default function Register(props) {
   const [form] = Form.useForm();
-  const onFinish = async (values: {
-    username: string;
-    password: string;
-    remember: boolean;
-  }) => {
+  const onFinish = async (values: { username: string; password: string }) => {
     console.log('[Signin] received values of form: ', values);
     const res = await props.onSubmit(values);
     if (res === ErrorType.NETWORK_ERROR) {
@@ -64,11 +60,24 @@ export default function Register(props) {
         </Form.Item>
         <Form.Item
           name="confirm"
-          rules={[{ required: true, message: '请再次确认密码!' }]}
+          rules={[
+            {
+              required: true,
+              message: '请再次确认密码!',
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('password') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('两次密码输入不一致'));
+              },
+            }),
+          ]}
         >
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
-            type="confirm"
+            type="password"
             placeholder="确认密码"
           />
         </Form.Item>
