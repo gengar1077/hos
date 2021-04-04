@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 import Dashboard from './pages/Dashboard/index';
 import Signin, { ErrorType } from './pages/Signin';
+import Register from './pages/Register';
 import axios from 'axios';
 import config from './config/env.test';
 const { BASE_URL } = config;
@@ -42,6 +43,9 @@ export default function AuthExample() {
           <Switch>
             <Route path="/signin">
               <AuthSignin />
+            </Route>
+            <Route path="/register">
+              <Register />
             </Route>
             {routeConifg.map((item, i) => {
               return (

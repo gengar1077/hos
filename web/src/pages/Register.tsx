@@ -1,7 +1,7 @@
 import { Form, Input, Button, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import React, { useContext, createContext, useState } from 'react';
-import './Signin.scoped.scss';
+import './Register.scoped.scss';
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,7 +14,7 @@ export enum ErrorType {
   NETWORK_ERROR = 0,
   PWD_ERROR,
 }
-export default function Signin(props) {
+export default function Register(props) {
   const [form] = Form.useForm();
   const onFinish = async (values: {
     username: string;
@@ -42,7 +42,7 @@ export default function Signin(props) {
         initialValues={{ remember: true }}
         onFinish={onFinish}
       >
-        <div className="title">登录框</div>
+        <div className="title">注册框</div>
         <Form.Item
           name="username"
           rules={[{ required: true, message: '请输入用户名!' }]}
@@ -62,14 +62,15 @@ export default function Signin(props) {
             placeholder="密码"
           />
         </Form.Item>
-        <Form.Item>
-          <Form.Item name="remember" valuePropName="checked" noStyle>
-            <Checkbox>记住我</Checkbox>
-          </Form.Item>
-
-          <a className="login-form-forgot" href="">
-            忘记密码
-          </a>
+        <Form.Item
+          name="confirm"
+          rules={[{ required: true, message: '请再次确认密码!' }]}
+        >
+          <Input
+            prefix={<LockOutlined className="site-form-item-icon" />}
+            type="confirm"
+            placeholder="确认密码"
+          />
         </Form.Item>
         <Form.Item>
           <Button
@@ -77,10 +78,10 @@ export default function Signin(props) {
             htmlType="submit"
             className="login-form-button"
           >
-            登录
+            注册
           </Button>
           <div className="register">
-            没有账户 <Link to="/register">注册!</Link>
+            <Link to="/signin">已有账户返回登录</Link>
           </div>
         </Form.Item>
       </Form>
