@@ -24,6 +24,14 @@ const routeConifg = [
 export default function AuthExample() {
   const [roleInfo, setRoleInfo] = useState<any>();
   const [errorText, setErrorText] = useState<string>();
+  const handleRegister = async ({ username, password }) => {
+    console.log('[App] handleRegister', username, password);
+    const res = await axios.post(BASE_URL + '/login/register', {
+      name: username,
+      password,
+    });
+    console.log('[App] handleRegister success', res);
+  };
   const sendRequest = () => {
     axios
       .get(BASE_URL + '/role/info')
@@ -45,7 +53,7 @@ export default function AuthExample() {
               <AuthSignin />
             </Route>
             <Route path="/register">
-              <Register />
+              <Register onSubmit={handleRegister} />
             </Route>
             {routeConifg.map((item, i) => {
               return (
@@ -98,13 +106,13 @@ function useProvideAuth() {
     console.log(`[AuthContext] username:${username}, password:${password}`);
     try {
       // TODO: 跳转先写死等，接口完成之后在放开
-      setUser('kongfu-cat');
-      // const res = await axios.post(BASE_URL + '/login/login', {
-      //   username,
-      //   password,
-      // });
-      // console.log(`[AuthContext] sigin success:`, res);
-      // return res.data;
+      // setUser('kongfu-cat');
+      const res = await axios.post(BASE_URL + '/login/login', {
+        username,
+        password,
+      });
+      console.log(`[AuthContext] sigin success:`, res);
+      return res.data;
     } catch (e) {
       console.log(`[AuthContext] sigin failed:`, e);
       throw e;
