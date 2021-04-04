@@ -1,8 +1,9 @@
 package com.example.hos.interceptor;
 
-import com.example.hos.mapper.TUserMapper;
+import com.example.hos.dao.repository.UserRepository;
+import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.service.JwtService;
-import com.example.hos.service.ResponseService;
+import com.example.hos.until.Constant;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Consts;
@@ -27,8 +28,6 @@ import java.util.Objects;
 @Component
 public class AuthInterceptor implements AsyncHandlerInterceptor {
 
-    private static final String STATUS = "1";
-
     @Value("${jwt.token.name}")
     private String jwtHeader;
 
@@ -36,24 +35,22 @@ public class AuthInterceptor implements AsyncHandlerInterceptor {
     private JwtService jwtService;
 
     @Resource
-    private TUserMapper userMapper;
-
-    @Resource
-    private ResponseService responseService;
+    private UserRepository userRepository;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
             HandlerMethod method = (HandlerMethod) handler;
             Authorization authorization = getAuthorizationAnnotation(method);
+//            boolean annotation = getAuthorizationAnnotation(method);
             if (Objects.nonNull(authorization)) {
                 String token = request.getHeader(jwtHeader);
                 if (StringUtils.isBlank(token)) {
                     token = request.getParameter(jwtHeader);
                 }
                 String account = jwtService.unSign(token);
-                if (StringUtils.isNotBlank(account)) {
-                    if (Objects.isNull(userMapper.selectByIdAndStatus(account, STATUS))){
+                if (StringUtils.isNoneBlank(account)) {
+                    if (Objects.isNull(userRepository.findByUidAndStatus(account, Constant.STATUS))){
                         response.addHeader(jwtHeader, jwtService.sign(account));
                     } else {
                         failedResponse(response);
@@ -90,6 +87,16 @@ public class AuthInterceptor implements AsyncHandlerInterceptor {
         return authorization;
     }
 
+//    @SuppressWarnings("rawtypes")
+//    private boolean getAuthorizationAnnotation(HandlerMethod handlerMethod) {
+//        Class<?> handlerClass = handlerMethod.getMethod().getDeclaringClass();
+//        Authorization annotation = handlerMethod.getMethodAnnotation(Authorization.class);
+//        if (annotation == null) {
+//            annotation = AnnotationUtils.findAnnotation(handlerClass, Authorization.class);
+//        }
+//        return annotation != null;
+//    }
+
     /**
      * 登录失败信息
      * @param
@@ -100,19 +107,7 @@ public class AuthInterceptor implements AsyncHandlerInterceptor {
     private void failedResponse(HttpServletResponse response) throws IOException {
         response.setCharacterEncoding(Consts.UTF_8.name());
         response.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
-//        ResultResponse resultResponse = new ResultResponse();
-//        String message=responseService.message(ResultResponse.Code.REQUIRE_LOGIN);
-//        resultResponse.requireLogin(message);
         ObjectMapper om = new ObjectMapper();
-        response.getWriter().write(om.writeValueAsString("null"));
+        response.getWriter().write(om.writeValueAsString(ErrorInfo.REQUIRE_LOGIN.getMessage()));
     }
-
-//    private void failedResponse(HttpServletResponse response) throws IOException {
-//        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-//        response.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
-//        ObjectMapper om = new ObjectMapper();
-//        Opr<Void> opr = new Opr<>();
-//        opr.setCode(Message.LOGIN_AUTH_FAIL.getCode()).setResult(false).setHttpStatus(HttpStatus.UNAUTHORIZED.value()).setMsg(Message.LOGIN_AUTH_FAIL.getMsg());
-//        response.getWriter().write(om.writeValueAsString(opr));
-//    }
 }

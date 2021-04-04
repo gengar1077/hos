@@ -1,6 +1,6 @@
 package com.example.hos.service.impl;
 
-import com.example.hos.model.TSell;
+import com.example.hos.model.Sell;
 import com.example.hos.service.SellService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class SellServiceImpl implements SellService {
 
     @Override
-    public PageInfo<TSell> selectByPage(Integer pageNum, Integer pageSize) {
+    public PageInfo<Sell> selectByPage(Integer pageNum, Integer pageSize) {
         return null;
     }
 

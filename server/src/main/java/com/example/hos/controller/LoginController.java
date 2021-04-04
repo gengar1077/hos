@@ -1,45 +1,35 @@
 package com.example.hos.controller;
 
+import com.example.hos.model.vo.LoginRequest;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author changwei.zhong
  * @date create by 2021/3/23
  */
-@Controller
+@RestController
 @RequestMapping("/login")
 public class LoginController {
-
-    private static final Logger LOG= LoggerFactory.getLogger(UserController.class);
 
     @Resource
     private UserService userService;
 
     @ApiOperation(value = "登录", produces = "application/json;charset=utf-8")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "query", dataType = "string")
+            @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "body", dataType = "string"),
+            @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "body", dataType = "string")
     })
-//    @ApiImplicitParam(name = "form", value = "用户登录表单", required = true, dataType = "LoginInfoVO")
     @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public ResultResponse login(String username, String password) {
-//        String username = loginInfoVO.getUsername();
-//        String password = loginInfoVO.getPassword();
-        return userService.login(username, password);
+    public ResultResponse login(@RequestBody LoginRequest loginRequest) {
+        return userService.login(loginRequest.getUsername(), loginRequest.getPassword());
     }
 
     @ApiOperation(value = "注册", produces = "application/json;charset=utf-8")
@@ -48,10 +38,10 @@ public class LoginController {
         return userService.addUser(userVO);
     }
 
-    @ApiOperation(value = "登出", produces = "application/json;charset=utf-8")
-    @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.removeAttribute("user");
-        return "index";
-    }
+//    @ApiOperation(value = "登出", produces = "application/json;charset=utf-8")
+//    @PostMapping("/logout")
+//    public String logout(HttpSession session) {
+//        session.removeAttribute("user");
+//        return "index";
+//    }
 }

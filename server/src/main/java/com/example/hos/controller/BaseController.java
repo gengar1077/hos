@@ -1,9 +1,9 @@
 package com.example.hos.controller;
 
 
+import com.example.hos.dao.repository.UserRepository;
 import com.example.hos.log.LogFactory;
-import com.example.hos.mapper.TUserMapper;
-import com.example.hos.model.TUser;
+import com.example.hos.model.entity.User;
 import com.example.hos.service.JwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -27,7 +27,7 @@ public abstract class BaseController {
     private JwtService jwtService;
 
     @Resource
-    private TUserMapper userMapper;
+    private UserRepository userRepository;
 
     /**
      * @description 获取当前用户
@@ -36,14 +36,14 @@ public abstract class BaseController {
      * @param
      * @return java.lang.String
      */
-    public TUser currentUser() {
+    public User currentUser() {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String token = request.getHeader(jwtHeader);
         LogFactory.getDebugLog().debug("token:{}", token);
         int i = jwtService.checkToken(token);
         if(i == 0){
             String uid = jwtService.sign(token);
-            return userMapper.selectByPrimaryKey(uid);
+            return userRepository.findById(uid).orElse(null);
         }else {
             return null;
         }

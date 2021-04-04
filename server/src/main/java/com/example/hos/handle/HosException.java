@@ -19,7 +19,7 @@ public class HosException extends RuntimeException{
         super(message);
     }
 
-    public HosException(String code,String message){
+    public HosException(String code, String message){
         super(message);
         this.code=code;
     }

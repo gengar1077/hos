@@ -40,7 +40,7 @@ public class ResultResponse implements Serializable {
         return this;
     }
 
-    public ResultResponse fail(String code,String message){
+    public ResultResponse fail(String code, String message){
         this.setSuccess(false);
         this.setReturnCode(code);
         this.setMessage(message);
@@ -55,6 +55,8 @@ public class ResultResponse implements Serializable {
         public static final String SUCCESS="200";
 
         public static final String REQUIRE_LOGIN="508";
+
+        public static final String PASSWORD_IS_FALSE="508";
 
     }
 }

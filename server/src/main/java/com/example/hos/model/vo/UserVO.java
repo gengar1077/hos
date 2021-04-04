@@ -1,6 +1,6 @@
 package com.example.hos.model.vo;
 
-import com.example.hos.model.TUser;
+import com.example.hos.model.entity.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -45,7 +45,7 @@ public class UserVO {
      * @param user 用户
      * @return userVo
      **/
-    public static UserVO makeVO(TUser user) {
+    public static UserVO makeVO(User user) {
         UserVO userVo = new UserVO();
         BeanUtils.copyProperties(user,userVo);
         return userVo;

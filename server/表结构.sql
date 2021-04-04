@@ -28,7 +28,10 @@ CREATE SEQUENCE SEQ_permission INCREMENT BY 1 START WITH 1 MAXvalue 99999999;
 create table t_permission(
     per_id varchar2(11) primary key,
     role_id varchar2(11),
-    menu_id varchar2(11)
+    role_name varchar2(32),
+    user_id varchar2(11),
+    user_name varchar2(32),
+    status char(1)
 );
 
 -- 4、药品表

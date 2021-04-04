@@ -1,7 +1,7 @@
 package com.example.hos.controller;
 
 import com.example.hos.interceptor.Authorization;
-import com.example.hos.model.TSell;
+import com.example.hos.model.Sell;
 import com.example.hos.service.SellService;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +29,7 @@ public class SellController {
     @GetMapping(value = "/findByPage")
     public String pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                            @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
-        PageInfo<TSell> sellPageInfo = sellService.selectByPage(pageNum,pageSize);
+        PageInfo<Sell> sellPageInfo = sellService.selectByPage(pageNum,pageSize);
         modelMap.put("sellPageInfo", sellPageInfo);
         return "product/productList";
     }

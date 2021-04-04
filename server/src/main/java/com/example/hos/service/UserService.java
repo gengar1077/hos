@@ -1,8 +1,10 @@
 package com.example.hos.service;
 
-import com.example.hos.model.TUser;
+import com.example.hos.model.entity.User;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
+
+import java.util.List;
 
 /**
  * @Author: 吃面龙
@@ -38,6 +40,14 @@ public interface UserService {
     ResultResponse updateUser(String uid, UserVO userVo);
 
     /**
+     * 管理员修改用户
+     * @date: 2021/1/7
+     * @param userVo
+     * @return
+     **/
+    ResultResponse updateUserByAdmin(UserVO userVo);
+
+    /**
      * 删除用户
      * @author changwei.zhong
      * @date 2021/2/24
@@ -63,5 +73,23 @@ public interface UserService {
      * @param id
      * @return
      **/
-    TUser selectById(String id);
+    User selectById(String id);
+
+    /**
+     * 根据名字查询用户
+     * @author changwei.zhong
+     * @date 2021/2/24
+     * @param username
+     * @return
+     **/
+    ResultResponse selectByName(String username);
+
+    /**
+     * 根据用户获取角色
+     * @param uid
+     * @return a
+     * @author changwei.zhong
+     * @date 2021/3/31
+     **/
+    List<String> getRoles(String uid);
 }

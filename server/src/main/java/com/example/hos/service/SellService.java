@@ -1,6 +1,6 @@
 package com.example.hos.service;
 
-import com.example.hos.model.TSell;
+import com.example.hos.model.Sell;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -12,7 +12,7 @@ import com.github.pagehelper.PageInfo;
 public interface SellService {
 
 
-    PageInfo<TSell> selectByPage(Integer pageNum, Integer pageSize);
+    PageInfo<Sell> selectByPage(Integer pageNum, Integer pageSize);
 
     String addSell();
 }

@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * @author heweiwei
  * @date 2018/2/5
  */
 @Service
@@ -45,7 +44,7 @@ public class JwtServiceImpl implements JwtService {
             return JWT.create()
                     // header
                     .withHeader(header)
-                    .withClaim("id", userId)
+                    .withClaim("uid", userId)
                     // 过期时间
                     .withExpiresAt(date)
                     // 签名
@@ -94,6 +93,6 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String unSign(String token) {
         DecodedJWT jwt = JWT.decode(token);
-        return jwt.getClaim("userId").asString();
+        return jwt.getClaim("uid").asString();
     }
 }

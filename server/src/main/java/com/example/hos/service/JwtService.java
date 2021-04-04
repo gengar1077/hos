@@ -13,7 +13,7 @@ public interface JwtService {
      * @param userId
      * @return
      */
-    String sign(String userId);
+    String unSign(String userId);
 
     /**
      * 解密
@@ -21,7 +21,7 @@ public interface JwtService {
      * @param token
      * @return
      */
-    String unSign(String token);
+    String sign(String token);
 
     /**
      * @title 校验token
