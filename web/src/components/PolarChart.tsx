@@ -37,6 +37,6 @@ const config = {
     },
   },
 };
-export default function PolarChart() {
-  return <Polar {...config}></Polar>;
+export default function PolarChart(props) {
+  return <Polar {...config} {...props}></Polar>;
 }

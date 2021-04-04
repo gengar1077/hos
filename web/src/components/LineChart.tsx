@@ -37,6 +37,6 @@ const config = {
     },
   },
 };
-export default function LineChart() {
-  return <Line {...config}></Line>;
+export default function LineChart(props) {
+  return <Line {...config} {...props}></Line>;
 }

@@ -37,6 +37,6 @@ const config = {
     },
   },
 };
-export default function BarChart() {
-  return <Bar {...config}></Bar>;
+export default function BarChart(props) {
+  return <Bar {...config} {...props}></Bar>;
 }
