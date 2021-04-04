@@ -42,7 +42,7 @@ public abstract class BaseController {
         LogFactory.getDebugLog().debug("token:{}", token);
         int i = jwtService.checkToken(token);
         if(i == 0){
-            String uid = jwtService.sign(token);
+            String uid = jwtService.unSign(token);
             return userRepository.findById(uid).orElse(null);
         }else {
             return null;

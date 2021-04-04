@@ -5,7 +5,6 @@ import com.example.hos.dao.repository.RoleRepository;
 import com.example.hos.dao.repository.UserRepository;
 import com.example.hos.handle.HosException;
 import com.example.hos.model.entity.Permission;
-import com.example.hos.model.entity.Role;
 import com.example.hos.model.entity.User;
 import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.model.vo.LoginInfoVO;
@@ -121,8 +120,9 @@ public class UserServiceImpl implements UserService {
             user.setPhone(userVO.getPhone());
         }
         if (StringUtils.isNotBlank(userVO.getRoleName())){
-            Role role = roleRepository.findRoleByRname(userVO.getRoleName()).orElse(null);
-            user.setRoleId(role.getRid());
+            roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> {
+                user.setRoleId(role.getRid());
+            });
         }
         userRepository.saveAndFlush(user);
         return resultResponse;
