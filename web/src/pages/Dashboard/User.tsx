@@ -1,4 +1,4 @@
-import './User.scss';
+import './User.scoped.scss';
 import {
   Table,
   Input,
@@ -7,6 +7,13 @@ import {
   Popconfirm,
   Form,
   Typography,
+  Modal,
+  Cascader,
+  Select,
+  Row,
+  Col,
+  Checkbox,
+  AutoComplete,
 } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -71,7 +78,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   );
 };
 
-const HorizontalLoginForm = () => {
+const HorizontalSearchForm = () => {
   const [form] = Form.useForm();
   const [, forceUpdate] = useState({});
 
@@ -87,41 +94,20 @@ const HorizontalLoginForm = () => {
   return (
     <Form
       form={form}
-      name="horizontal_login"
+      name="horizontal_search"
       layout="inline"
       onFinish={onFinish}
     >
-      <Form.Item
-        name="username"
-        rules={[{ required: true, message: 'Please input your username!' }]}
-      >
+      <Form.Item name="username">
         <Input
           prefix={<UserOutlined className="site-form-item-icon" />}
-          placeholder="Username"
-        />
-      </Form.Item>
-      <Form.Item
-        name="password"
-        rules={[{ required: true, message: 'Please input your password!' }]}
-      >
-        <Input
-          prefix={<LockOutlined className="site-form-item-icon" />}
-          type="password"
-          placeholder="Password"
+          placeholder="用户名"
         />
       </Form.Item>
       <Form.Item shouldUpdate>
         {() => (
-          <Button
-            type="primary"
-            htmlType="submit"
-            disabled={
-              !form.isFieldsTouched(true) ||
-              !!form.getFieldsError().filter(({ errors }) => errors.length)
-                .length
-            }
-          >
-            Log in
+          <Button type="primary" htmlType="submit">
+            查询
           </Button>
         )}
       </Form.Item>
@@ -129,22 +115,65 @@ const HorizontalLoginForm = () => {
   );
 };
 
+const { Option } = Select;
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
+
 export default function User() {
   const [form] = Form.useForm();
+  const [userForm] = Form.useForm();
   const [data, setData] = useState(originData);
   const [editingKey, setEditingKey] = useState('');
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const isEditing = (record: Item) => record.key === editingKey;
 
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select style={{ width: 70 }}>
+        <Option value="86">+86</Option>
+        <Option value="87">+87</Option>
+      </Select>
+    </Form.Item>
+  );
   const edit = (record: Partial<Item> & { key: React.Key }) => {
     form.setFieldsValue({ name: '', age: '', address: '', ...record });
     setEditingKey(record.key);
   };
-
-  const cancel = () => {
+  const handEditCancel = () => {
     setEditingKey('');
   };
-
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+  const handleOk = () => {
+    userForm
+      .validateFields()
+      .then((values) => {
+        userForm.resetFields();
+        onFinish(values);
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+  };
+  const onFinish = (values: any) => {
+    console.log('Received values of form: ', values);
+    setIsModalVisible(false);
+  };
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+  const handleUserDelete = () => {
+    console.log('handleUserDelete');
+  };
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as Item;
@@ -200,19 +229,35 @@ export default function User() {
               onClick={() => save(record.key)}
               style={{ marginRight: 8 }}
             >
-              Save
+              保存
             </a>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
+            <Popconfirm
+              title="确定取消？"
+              onConfirm={handEditCancel}
+              okText="确定"
+              cancelText="取消"
+            >
+              <a>取消</a>
             </Popconfirm>
           </span>
         ) : (
-          <Typography.Link
-            disabled={editingKey !== ''}
-            onClick={() => edit(record)}
-          >
-            Edit
-          </Typography.Link>
+          <>
+            <Typography.Link
+              disabled={editingKey !== ''}
+              onClick={() => edit(record)}
+              style={{ marginRight: 8 }}
+            >
+              编辑
+            </Typography.Link>
+            <Popconfirm
+              title="确定删除？"
+              onConfirm={handleUserDelete}
+              okText="确定"
+              cancelText="取消"
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </>
         );
       },
     },
@@ -235,24 +280,127 @@ export default function User() {
   });
 
   return (
-    <div>
-      <HorizontalLoginForm></HorizontalLoginForm>
-      <Form form={form} component={false}>
-        <Table
-          components={{
-            body: {
-              cell: EditableCell,
-            },
+    <div className="user-wrapper">
+      <Modal
+        title="新增用户"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        cancelText="取消"
+        okText="新增"
+      >
+        <Form
+          {...formItemLayout}
+          form={userForm}
+          name="register"
+          onFinish={onFinish}
+          initialValues={{
+            prefix: '86',
           }}
-          bordered
-          dataSource={data}
-          columns={mergedColumns}
-          rowClassName="editable-row"
-          pagination={{
-            onChange: cancel,
-          }}
-        />
-      </Form>
+          scrollToFirstError
+        >
+          <Form.Item
+            name="email"
+            label="E-mail"
+            rules={[
+              {
+                type: 'email',
+                message: '这是个无效的电子邮箱',
+              },
+              {
+                required: true,
+                message: '请输入电子邮箱',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            label="密码"
+            rules={[
+              {
+                required: true,
+                message: '请输入密码',
+              },
+            ]}
+            hasFeedback
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            name="confirm"
+            label="确认密码"
+            dependencies={['password']}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: '请再次确认密码',
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('两次密码输入不一致'));
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            name="nickname"
+            label="昵称"
+            tooltip="请输入昵称"
+            rules={[
+              {
+                required: true,
+                message: '请输入昵称',
+                whitespace: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="phone"
+            label="手机号"
+            rules={[{ required: true, message: '请输入手机号' }]}
+          >
+            <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <div className="search-form">
+        <HorizontalSearchForm></HorizontalSearchForm>
+        <Button type="primary" onClick={showModal}>
+          新增用户
+        </Button>
+      </div>
+      <div className="list-table">
+        <Form form={form} component={false}>
+          <Table
+            components={{
+              body: {
+                cell: EditableCell,
+              },
+            }}
+            bordered
+            dataSource={data}
+            columns={mergedColumns}
+            rowClassName="editable-row"
+            pagination={{
+              onChange: handEditCancel,
+            }}
+          />
+        </Form>
+      </div>
     </div>
   );
 }

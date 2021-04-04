@@ -1,0 +1,11 @@
+.user-wrapper {
+  position: relative;
+  .search-form {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+  .list-table {
+    width: 100%;
+  }
+}
