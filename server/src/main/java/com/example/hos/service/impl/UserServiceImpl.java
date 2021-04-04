@@ -1,9 +1,11 @@
 package com.example.hos.service.impl;
 
 import com.example.hos.dao.repository.PermissionRepository;
+import com.example.hos.dao.repository.RoleRepository;
 import com.example.hos.dao.repository.UserRepository;
 import com.example.hos.handle.HosException;
 import com.example.hos.model.entity.Permission;
+import com.example.hos.model.entity.Role;
 import com.example.hos.model.entity.User;
 import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.model.vo.LoginInfoVO;
@@ -44,6 +46,9 @@ public class UserServiceImpl implements UserService {
     @Resource
     private PermissionRepository permissionRepository;
 
+    @Resource
+    private RoleRepository roleRepository;
+
     @Override
     public ResultResponse addUser(UserVO userVO) {
         ResultResponse resultResponse = new ResultResponse();
@@ -58,7 +63,6 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(userVO.getPassword())){
             user.setPassword(userVO.getPassword());
         }
-        user.setPassword(userVO.getPassword());
         user.setStatus(Constant.STATUS);
         userRepository.saveAndFlush(user);
         return resultResponse;
@@ -76,6 +80,9 @@ public class UserServiceImpl implements UserService {
         loginInfoVO.setUsername(user.getUsername());
         loginInfoVO.setPassword(user.getPassword());
         loginInfoVO.setPhone(user.getPhone());
+        if (user.getRoleId() == ""){
+            loginInfoVO.setIsAdmin(true);
+        }
         String token = jwtService.sign(user.getUid());
         loginInfoVO.setToken(token);
         resultResponse.setReturnData(loginInfoVO);
@@ -102,10 +109,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse updateUserByAdmin(UserVO userVO) {
         ResultResponse resultResponse = new ResultResponse();
-        User user = userRepository.findByUidAndStatus(userVO.getId(), Constant.STATUS)
+        User user = userRepository.findByUsername(userVO.getName())
                 .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
-        if (StringUtils.isNotBlank(userVO.getName())){
-            user.setPassword(userVO.getName());
+        if (StringUtils.isNotBlank(userVO.getRemark())){
+            user.setRemark(userVO.getRemark());
         }
         if (StringUtils.isNotBlank(userVO.getPassword())){
             user.setPassword(userVO.getPassword());
@@ -113,6 +120,11 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(userVO.getPhone())){
             user.setPhone(userVO.getPhone());
         }
+        if (StringUtils.isNotBlank(userVO.getRoleName())){
+            Role role = roleRepository.findRoleByRname(userVO.getRoleName()).orElse(null);
+            user.setRoleId(role.getRid());
+        }
+        userRepository.saveAndFlush(user);
         return resultResponse;
     }
 
@@ -131,7 +143,7 @@ public class UserServiceImpl implements UserService {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
-        List<UserVO> users = userRepository.findAllByStatus(Constant.STATUS).stream().map(user -> {
+        List<UserVO> users = userRepository.findByStatus(Constant.STATUS).stream().map(user -> {
             UserVO userVO = new UserVO();
             userVO.setName(user.getUsername());
             userVO.setPassword(user.getPassword());

@@ -34,7 +34,7 @@ public class LoginController {
 
     @ApiOperation(value = "注册", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/register",method = RequestMethod.POST)
-    public ResultResponse register(UserVO userVO) {
+    public ResultResponse register(@RequestBody UserVO userVO) {
         return userService.addUser(userVO);
     }
 

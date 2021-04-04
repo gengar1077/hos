@@ -30,7 +30,7 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "管理员修改个人信息")
     @PostMapping(value = "/updateByAdmin")
-    public ResultResponse updateUserByAdmin(UserVO userVO){
+    public ResultResponse updateUserByAdmin(@RequestBody UserVO userVO){
         return userService.updateUserByAdmin(userVO);
     }
 
@@ -38,8 +38,8 @@ public class UserController extends BaseController {
     @ApiImplicitParam(name = "id", value = "用户id", required = true, paramType = "query",dataType = "string")
     @PostMapping(value = "/delete")
 //    @RoleAccess(roles = {Constant.ROLE_ADMIN})
-    public ResultResponse deleteUser(String id) {
-        return userService.deleteUser(id);
+    public ResultResponse deleteUser(@RequestBody UserVO userVO) {
+        return userService.deleteUser(userVO.getId());
     }
 
     @ApiOperation(value = "分页查询用户")
