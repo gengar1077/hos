@@ -209,7 +209,7 @@ export default function Suplier() {
     }
   };
   const updateList = async (pageNum: number, pageSize = 10) => {
-    console.log(`[Stock] update list:`, pageNum, pageSize);
+    console.log(`[Supplier] update list:`, pageNum, pageSize);
     try {
       setLoading(true);
       const res = await axios.get(BASE_URL + '/supplier/findStock', {
@@ -228,9 +228,9 @@ export default function Suplier() {
       const total = res.data?.returnData?.total || 0;
       setTotal(total);
       setData(data);
-      console.log(`[Stock] update list success:`, res);
+      console.log(`[Supplier] update list success:`, res);
     } catch (e) {
-      console.log(`[Stock] update list failed:`, e);
+      console.log(`[Supplier] update list failed:`, e);
     } finally {
       setLoading(false);
       handEditCancel();
@@ -249,19 +249,18 @@ export default function Suplier() {
   const showModal = () => {
     setIsModalVisible(true);
   };
-  const handleAdd = async ({ username, password }) => {
-    console.log('[Stock] handleAdd:', username, password);
+  const handleAdd = async (values) => {
+    console.log('[Supplier] handleAdd:', values);
     try {
-      const res = await axios.post(BASE_URL + '/login/register', {
-        name: username,
-        password,
+      const res = await axios.post(BASE_URL + '/supplier/addSupplier', {
+        ...values,
       });
       await updateList(1);
       setIsModalVisible(false);
-      console.log('[Stock] handleAdd success:', res);
+      console.log('[Supplier] handleAdd success:', res);
       message.success('新增成功');
     } catch (e) {
-      console.log('[Stock] handleAdd failed:', e);
+      console.log('[Supplier] handleAdd failed:', e);
       message.error('新增失败，请重试');
       throw e;
     }

@@ -236,12 +236,11 @@ export default function Drug() {
   const showModal = () => {
     setIsModalVisible(true);
   };
-  const handleAdd = async ({ username, password }) => {
-    console.log('[Stock] handleAdd:', username, password);
+  const handleAdd = async (values) => {
+    console.log('[Stock] handleAdd:', values);
     try {
-      const res = await axios.post(BASE_URL + '/login/register', {
-        name: username,
-        password,
+      const res = await axios.post(BASE_URL + '/product/addStock', {
+        ...values,
       });
       await updateList(1);
       setIsModalVisible(false);

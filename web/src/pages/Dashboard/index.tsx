@@ -21,6 +21,7 @@ import User from './User';
 import Drug from './Drug';
 import Stock from './Stock';
 import Supplier from './Supplier';
+import Sell from './Sell';
 const { Header, Sider, Content } = Layout;
 
 export default function Dashboard() {
@@ -33,6 +34,7 @@ export default function Dashboard() {
     { path: '/drug', index: '3' },
     { path: '/stock', index: '4' },
     { path: '/supplier', index: '5' },
+    { path: '/sell', index: '6' },
   ];
   const index = PathIndex.find((item) => item.path === path)?.index ?? '1';
   const defaultSelectedKeys = [index];
@@ -59,6 +61,9 @@ export default function Dashboard() {
           </Menu.Item>
           <Menu.Item key="5" icon={<TableOutlined />}>
             <Link to="/supplier">供应商管理</Link>
+          </Menu.Item>
+          <Menu.Item key="6" icon={<TableOutlined />}>
+            <Link to="/sell">销售管理</Link>
           </Menu.Item>
         </Menu>
       </Sider>
@@ -95,6 +100,9 @@ export default function Dashboard() {
             </Route>
             <Route path={`/supplier`}>
               <Supplier></Supplier>
+            </Route>
+            <Route path={`/sell`}>
+              <Sell></Sell>
             </Route>
           </Switch>
         </Content>

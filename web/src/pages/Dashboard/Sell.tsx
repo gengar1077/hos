@@ -1,4 +1,4 @@
-import './Drug.scoped.scss';
+import './Supplier.scoped.scss';
 import {
   Table,
   Input,
@@ -16,6 +16,7 @@ import {
   FormInstance,
   notification,
   message,
+  Descriptions,
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -24,6 +25,17 @@ import config from '../../config/env.test';
 const { BASE_URL } = config;
 interface Item {
   key: string;
+  sellId: string;
+  money: number;
+  pname: string;
+  pNum: number;
+  operator: string;
+  remark: string;
+  createtime: Date;
+  status: string;
+  productVO: ProductVO;
+}
+interface ProductVO {
   pid: string;
   pname: string;
   place: string;
@@ -42,6 +54,47 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }
 const formRef = React.createRef<FormInstance>();
+
+const SearchSelect = (props: any) => {
+  const [selectLoading, setSelectLoading] = useState(false);
+  const [drugList, setDrugList] = useState<string[]>([]);
+  const { Option } = Select;
+  const getDrugInfoList = async () => {
+    console.log(`[Sell] getDrugInfoList`);
+    setSelectLoading(true);
+    try {
+      const res = await axios.get(BASE_URL + '/product/findByPage');
+      const data: Item[] = res.data?.returnData?.list || [];
+      const pnameList = data?.map((item) => item.pname) || [];
+      setDrugList(pnameList);
+      console.log(`[Sell] getDrugInfoList:`, pnameList);
+    } catch (e) {
+      console.log(`[Sell] getDrugInfoList failed:`, e);
+      message.error('获取药物列表失败');
+    } finally {
+      setSelectLoading(false);
+    }
+  };
+  return (
+    <Select
+      loading={selectLoading}
+      style={{ width: 200 }}
+      placeholder="请选择药品"
+      defaultValue={props.value}
+      optionFilterProp="children"
+      onDropdownVisibleChange={getDrugInfoList}
+      onChange={(value: string) => {
+        console.log('[Sell] drug name select change', value);
+        formRef.current!.setFieldsValue({ pname: value });
+      }}
+    >
+      {drugList.map((item) => {
+        return <Option value={item}>{item}</Option>;
+      })}
+    </Select>
+  );
+};
+
 const EditableCell: React.FC<EditableCellProps> = ({
   editing,
   dataIndex,
@@ -66,7 +119,11 @@ const EditableCell: React.FC<EditableCellProps> = ({
             },
           ]}
         >
-          {inputNode}
+          {dataIndex === 'pname' ? (
+            <SearchSelect value={record.pname} />
+          ) : (
+            inputNode
+          )}
         </Form.Item>
       ) : (
         children
@@ -112,7 +169,6 @@ const HorizontalSearchForm = () => {
   );
 };
 
-const { Option } = Select;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -123,21 +179,42 @@ const formItemLayout = {
     sm: { span: 18 },
   },
 };
-export default function Drug() {
+export default function Sell() {
   const [form] = Form.useForm();
   const [addForm] = Form.useForm();
   const [data, setData] = useState<Item[]>([]);
+  const [drugInfoModalData, setDrugInfoModalData] = useState<
+    ProductVO | undefined
+  >(undefined);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [editingKey, setEditingKey] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
 
   const isEditing = (record: Item) => record.key === editingKey;
+  const handleDelete = async (key: React.Key) => {
+    try {
+      const index = data.findIndex((item) => key === item.key);
+      if (index > -1) {
+        const item = data[index];
+        const res = await axios.post(BASE_URL + '/sell/del', {
+          id: item.sellId,
+        });
+      }
+      console.log('[Sell] handleDelete success:', key, index);
+      updateList(1);
+      message.success('删除成功');
+    } catch (e) {
+      console.log('[Sell] handleDelete failed:', e);
+      message.error('删除失败，请重试');
+    }
+  };
   const updateList = async (pageNum: number, pageSize = 10) => {
-    console.log(`[Drug] update list:`, pageNum, pageSize);
+    console.log(`[Stock] update list:`, pageNum, pageSize);
     try {
       setLoading(true);
-      const res = await axios.get(BASE_URL + '/product/findByPage', {
+      const res = await axios.get(BASE_URL + '/sell/findByPage', {
         data: {
           pageNum,
           pageSize,
@@ -145,14 +222,17 @@ export default function Drug() {
       });
       const data =
         res.data?.returnData?.list.map((item: Item) => {
-          return { ...item, key: item.pid };
+          return {
+            ...item,
+            key: item.sellId,
+          };
         }) || [];
       const total = res.data?.returnData?.total || 0;
       setTotal(total);
       setData(data);
-      console.log(`[Drug] update list success:`, res);
+      console.log(`[Stock] update list success:`, res);
     } catch (e) {
-      console.log(`[Drug] update list failed:`, e);
+      console.log(`[Stock] update list failed:`, e);
     } finally {
       setLoading(false);
       handEditCancel();
@@ -172,17 +252,17 @@ export default function Drug() {
     setIsModalVisible(true);
   };
   const handleAdd = async (values) => {
-    console.log('[Drug] handleAdd:', values);
+    console.log('[Stock] handleAdd:', values);
     try {
-      const res = await axios.post(BASE_URL + '/product/add', {
+      const res = await axios.post(BASE_URL + '/sell/addSell', {
         ...values,
       });
       await updateList(1);
       setIsModalVisible(false);
-      console.log('[Drug] handleAdd success:', res);
+      console.log('[Stock] handleAdd success:', res);
       message.success('新增成功');
     } catch (e) {
-      console.log('[Drug] handleAdd failed:', e);
+      console.log('[Stock] handleAdd failed:', e);
       message.error('新增失败，请重试');
       throw e;
     }
@@ -199,107 +279,77 @@ export default function Drug() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-  const handleDelete = async (key: React.Key) => {
-    try {
-      const index = data.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = data[index];
-        const res = await axios.post(BASE_URL + '/product/del', {
-          id: item.pid,
-        });
-      }
-      console.log('[Drug] handleDelete success:', key, index);
-      updateList(1);
-      message.success('删除成功');
-    } catch (e) {
-      console.log('[Drug] handleDelete failed:', e);
-      message.error('删除失败，请重试');
+  const handleViewShow = async (key: React.Key) => {
+    const index = data.findIndex((item) => key === item.key);
+    if (index > -1) {
+      const item = data[index];
+      const drugInfo = item.productVO;
+      setDrugInfoModalData(drugInfo);
+      setIsViewModalVisible(true);
     }
   };
-
-  const handleUpdate = async (key: React.Key) => {
-    console.log('[Drug] handleUpdate:', key);
-    try {
-      const row = (await form.validateFields()) as Item;
-      const index = data.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = data[index];
-        const newItem = {
-          ...item,
-          ...row,
-        };
-        const res = await axios.post(BASE_URL + '/product/update', {
-          ...newItem,
-        });
-        setEditingKey('');
-      }
-      updateList(1);
-      console.log('[Drug] handleUpdate success:', key, index);
-      message.success('更新成功');
-    } catch (e) {
-      console.log('[Drug] handleUpdate failed:', e);
-      message.error('更新失败，请重试');
-    }
+  const handleViewCancel = () => {
+    setIsViewModalVisible(false);
   };
-
   const columns = [
     {
-      title: '药品名',
+      title: '药品价格',
+      dataIndex: 'money',
+      editable: true,
+    },
+    {
+      title: '药品名称',
       dataIndex: 'pname',
       editable: true,
     },
     {
-      title: '药品地点',
-      dataIndex: 'place',
+      title: '药品数量',
+      dataIndex: 'pNum',
       editable: true,
     },
     {
-      title: '药品规格',
-      dataIndex: 'spec',
+      title: '操作人',
+      dataIndex: 'operator',
       editable: true,
     },
     {
-      title: '药品价格',
-      dataIndex: 'price',
-      editable: true,
-    },
-    {
-      title: '药品描述',
+      title: '简介',
       dataIndex: 'remark',
       editable: true,
+    },
+    {
+      title: '操作时间',
+      dataIndex: 'createtime',
+      render: (_: any, record: Item) => {
+        return <span>{record.createtime.toString()?.split('T')[0]}</span>;
+      },
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      editable: true,
+    },
+    {
+      title: '药品信息',
+      dataIndex: 'productVO',
+      render: (_: any, record: Item) => {
+        return (
+          <Typography.Link
+            disabled={editingKey !== ''}
+            onClick={() => handleViewShow(record.key)}
+            style={{ marginRight: 8 }}
+          >
+            点击查看
+          </Typography.Link>
+        );
+      },
     },
     {
       title: '操作',
       dataIndex: 'operation',
       render: (_: any, record: Item) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <a
-              href="javascript:;"
-              onClick={() => handleUpdate(record.key)}
-              style={{ marginRight: 8 }}
-            >
-              保存
-            </a>
-            <Popconfirm
-              title="确定取消？"
-              onConfirm={handEditCancel}
-              okText="确定"
-              cancelText="取消"
-            >
-              <a>取消</a>
-            </Popconfirm>
-          </span>
-        ) : (
+        return (
           <>
-            <Typography.Link
-              disabled={editingKey !== ''}
-              onClick={() => edit(record)}
-              style={{ marginRight: 8 }}
-            >
-              编辑
-            </Typography.Link>
             <Popconfirm
               title="确定删除？"
               onConfirm={() => {
@@ -335,7 +385,7 @@ export default function Drug() {
   return (
     <div className="drug-wrapper">
       <Modal
-        title="新增药品"
+        title="新增销售"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -351,46 +401,7 @@ export default function Drug() {
           scrollToFirstError
         >
           <Form.Item
-            name="pname"
-            label="药品名"
-            rules={[
-              {
-                required: true,
-                message: '请输入药品名',
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="place"
-            label="药品地点"
-            rules={[
-              {
-                required: true,
-                message: '请输入药品地点',
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="spec"
-            label="药品规格"
-            rules={[
-              {
-                required: true,
-                message: '请输入药品规格',
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="price"
+            name="sname"
             label="药品价格"
             rules={[
               {
@@ -403,11 +414,51 @@ export default function Drug() {
             <Input />
           </Form.Item>
           <Form.Item
-            name="remark"
-            label="药品描述"
+            name="pname"
+            label="药品名"
             rules={[
               {
-                message: '请输入药品描述',
+                required: true,
+                message: '请输入药品名',
+                whitespace: true,
+              },
+            ]}
+          >
+            <SearchSelect />
+          </Form.Item>
+          <Form.Item
+            name="pNum"
+            label="药品数量"
+            rules={[
+              {
+                required: true,
+                message: '请输入药品数量',
+                whitespace: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="operator"
+            label="操作人"
+            rules={[
+              {
+                required: true,
+                message: '请输入操作人',
+                whitespace: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="remark"
+            label="简介"
+            rules={[
+              {
+                required: true,
+                message: '请输入简介',
                 whitespace: true,
               },
             ]}
@@ -416,10 +467,40 @@ export default function Drug() {
           </Form.Item>
         </Form>
       </Modal>
+      <Modal
+        title="药品信息"
+        onOk={handleViewCancel}
+        onCancel={handleViewCancel}
+        visible={isViewModalVisible}
+        cancelText="取消"
+        okText="确认"
+      >
+        {drugInfoModalData ? (
+          <Descriptions title="药品详情">
+            <Descriptions.Item label="药品名">
+              {drugInfoModalData.pname}
+            </Descriptions.Item>
+            <Descriptions.Item label="药品地点">
+              {drugInfoModalData.place}
+            </Descriptions.Item>
+            <Descriptions.Item label="药品规格">
+              {drugInfoModalData.spec}
+            </Descriptions.Item>
+            <Descriptions.Item label="药品价格">
+              {drugInfoModalData.price}
+            </Descriptions.Item>
+            <Descriptions.Item label="药品描述">
+              {drugInfoModalData.remark}
+            </Descriptions.Item>
+          </Descriptions>
+        ) : (
+          <div>药品信息为空</div>
+        )}
+      </Modal>
       <div className="search-form">
         <HorizontalSearchForm></HorizontalSearchForm>
         <Button type="primary" onClick={showModal}>
-          新增药品
+          新增销售
         </Button>
       </div>
       <div className="list-table">
