@@ -12,7 +12,9 @@ import java.util.Optional;
  */
 public interface StockRepository extends JpaRepository<Stock, String> {
 
-    Optional<Stock> findByPidAndStatus(String uid, String status);
+    Optional<Stock> findByPnameAndStatus(String pname, String status);
+
+    Optional<Stock> findByStockIdAndStatus(String sid, String status);
 
     List<Stock> findAllByStatus(String status);
 }

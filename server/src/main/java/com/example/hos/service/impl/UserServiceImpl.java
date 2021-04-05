@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         loginInfoVO.setUsername(user.getUsername());
         loginInfoVO.setPassword(user.getPassword());
         loginInfoVO.setPhone(user.getPhone());
-        if (user.getRoleId() == ""){
+        if (user.getRoleId().equals(Constant.ADMIN_ID)){
             loginInfoVO.setIsAdmin(true);
         }
         String token = jwtService.sign(user.getUid());
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
         ResultResponse resultResponse = new ResultResponse();
         User user = userRepository.findByUidAndStatus(id, Constant.STATUS)
                 .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
-        user.setStatus("0");
+        user.setStatus(Constant.DEL_STATUS);
         userRepository.saveAndFlush(user);
         return resultResponse;
     }

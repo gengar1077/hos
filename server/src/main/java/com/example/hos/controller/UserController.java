@@ -35,7 +35,7 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation(value = "用户删除")
-    @ApiImplicitParam(name = "id", value = "用户id", required = true, paramType = "query",dataType = "string")
+    @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "string")
     @PostMapping(value = "/delete")
 //    @RoleAccess(roles = {Constant.ROLE_ADMIN})
     public ResultResponse deleteUser(@RequestBody UserVO userVO) {

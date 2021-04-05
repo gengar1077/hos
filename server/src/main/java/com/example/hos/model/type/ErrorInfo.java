@@ -12,7 +12,17 @@ public enum ErrorInfo {
 
     REQUIRE_LOGIN("509", "请登录"),
 
-    ACCOUNT_IS_EXIST("545", "用户已存在");
+    ACCOUNT_IS_EXIST("545", "用户已存在"),
+
+    PRODUCT_IS_EXIST("512", "药品已存在"),
+
+    PRODUCT_NOT_FOUND("510", "找不到药品"),
+
+    SUPPLIER_IS_EXIST("513", "供应商已存在"),
+
+    SUPPLIER_NOT_FOUND("514", "找不到供应商"),
+
+    STOCK_NOT_FOUND("511", "找不到库存");
 
     private String code;
 

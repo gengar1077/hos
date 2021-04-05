@@ -31,7 +31,7 @@ public class Product implements Serializable {
     private String sid;
 
     /**
-     * @desc 药品姓名
+     * @desc 药品名称
      */
     @Column(name = "hos_p_name")
     private String pname;

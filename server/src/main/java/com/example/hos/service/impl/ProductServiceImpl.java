@@ -31,9 +31,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResultResponse addProduct(ProductVO productVO) {
         ResultResponse resultResponse = new ResultResponse();
-        Optional.ofNullable(productRepository.findByPname(productVO.getPName())).orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
+        Optional<Product> byPname = productRepository.findByPname(productVO.getPname());
+        if (byPname.isPresent()){
+            throw new HosException(ErrorInfo.PRODUCT_IS_EXIST.getMessage());
+        }
         Product product = new Product();
-        product.setPname(productVO.getPName());
+        product.setPname(productVO.getPname());
+        product.setSpec(productVO.getSpec());
+        product.setPlace(productVO.getPlace());
+        product.setRemark(productVO.getRemark());
+        product.setPrice(productVO.getPrice());
         product.setStatus(Constant.STATUS);
         productRepository.saveAndFlush(product);
         return resultResponse;
@@ -43,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     public ResultResponse delProduct(String pid) {
         ResultResponse resultResponse = new ResultResponse();
         Product product = productRepository.findByPidAndStatus(pid, Constant.STATUS)
-                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+                .orElseThrow(()->new HosException(ErrorInfo.PRODUCT_NOT_FOUND.getMessage()));
         product.setStatus("0");
         productRepository.saveAndFlush(product);
         return resultResponse;
@@ -53,11 +60,15 @@ public class ProductServiceImpl implements ProductService {
     public ResultResponse updateProduct(ProductVO productVO) {
         ResultResponse resultResponse = new ResultResponse();
         Product product = productRepository.findByPidAndStatus(productVO.getPid(), Constant.STATUS)
-                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
-        Optional.ofNullable(productRepository.findByPname(productVO.getPName())).orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
-        if (StringUtils.isNotBlank(productVO.getPName())){
-            product.setPname(productVO.getPName());
+                .orElseThrow(()->new HosException(ErrorInfo.PRODUCT_NOT_FOUND.getMessage()));
+        Optional.ofNullable(productRepository.findByPname(productVO.getPname())).orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
+        if (StringUtils.isNotBlank(productVO.getPname())){
+            product.setPname(productVO.getPname());
         }
+        product.setSpec(productVO.getSpec());
+        product.setPlace(productVO.getPlace());
+        product.setRemark(productVO.getRemark());
+        product.setPrice(productVO.getPrice());
         productRepository.saveAndFlush(product);
         return resultResponse;
     }
@@ -69,7 +80,11 @@ public class ProductServiceImpl implements ProductService {
                 pageSize==null?2:pageSize);
         List<ProductVO> products = productRepository.findAllByStatus(Constant.STATUS).stream().map(product -> {
             ProductVO productVO = new ProductVO();
-            productVO.setPName(product.getPname());
+            productVO.setPname(product.getPname());
+            productVO.setPlace(product.getPlace());
+            productVO.setRemark(product.getRemark());
+            productVO.setSpec(product.getSpec());
+            productVO.setPrice(product.getPrice());
             return productVO;
         }).collect(Collectors.toList());
         PageInfo<ProductVO> pageInfo = new PageInfo<>(products);

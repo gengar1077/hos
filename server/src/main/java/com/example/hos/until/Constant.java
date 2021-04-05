@@ -22,7 +22,17 @@ public final class Constant {
     public static final String ROLE_SELL = "sell";
 
     /**
-     * @description: 用户状态
+     * @description: 状态
      */
     public static final String STATUS = "1";
+
+    /**
+     * @description: 删除状态
+     */
+    public static final String DEL_STATUS = "0";
+
+    /**
+     * @description: 管理员
+     */
+    public static final String ADMIN_ID = "7f3a3216-b161-4bd2-b552-c832271374ab";
 }

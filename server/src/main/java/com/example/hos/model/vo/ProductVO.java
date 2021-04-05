@@ -18,5 +18,20 @@ public class ProductVO implements Serializable {
     private String pid;
 
     @ApiModelProperty(value = "药品名")
-    private String pName;
+    private String pname;
+
+    @ApiModelProperty(value = "药品地点")
+    private String place;
+
+    @ApiModelProperty(value = "药品规格")
+    private String spec;
+
+    @ApiModelProperty(value = "药品价格")
+    private Integer price;
+
+    @ApiModelProperty(value = "药品描述")
+    private String remark;
+
+    @ApiModelProperty(value = "药品状态")
+    private String status;
 }
