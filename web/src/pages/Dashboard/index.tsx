@@ -19,6 +19,7 @@ import {
 import DashboardPage from './Dashboard';
 import User from './User';
 import Drug from './Drug';
+import Stock from './Stock';
 const { Header, Sider, Content } = Layout;
 
 export default function Dashboard() {
@@ -29,6 +30,7 @@ export default function Dashboard() {
     { path: '/dashboard', index: '1' },
     { path: '/user', index: '2' },
     { path: '/drug', index: '3' },
+    { path: '/stock', index: '4' },
   ];
   const index = PathIndex.find((item) => item.path === path)?.index ?? '1';
   const defaultSelectedKeys = [index];
@@ -49,6 +51,9 @@ export default function Dashboard() {
           </Menu.Item>
           <Menu.Item key="3" icon={<TableOutlined />}>
             <Link to="/drug">药物管理</Link>
+          </Menu.Item>
+          <Menu.Item key="4" icon={<TableOutlined />}>
+            <Link to="/stock">库存管理</Link>
           </Menu.Item>
         </Menu>
       </Sider>
@@ -79,6 +84,9 @@ export default function Dashboard() {
             </Route>
             <Route path={`/drug`}>
               <Drug></Drug>
+            </Route>
+            <Route path={`/stock`}>
+              <Stock></Stock>
             </Route>
           </Switch>
         </Content>

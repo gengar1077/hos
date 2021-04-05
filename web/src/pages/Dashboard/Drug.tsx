@@ -66,7 +66,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
             },
           ]}
         >
-          ( inputNode )
+          {inputNode}
         </Form.Item>
       ) : (
         children
@@ -137,7 +137,7 @@ export default function Drug() {
     console.log(`[Drug] update list:`, pageNum, pageSize);
     try {
       setLoading(true);
-      const res = await axios.get(BASE_URL + '/user/findByPage', {
+      const res = await axios.get(BASE_URL + '/product/findByPage', {
         data: {
           pageNum,
           pageSize,
@@ -205,7 +205,7 @@ export default function Drug() {
       const index = data.findIndex((item) => key === item.key);
       if (index > -1) {
         const item = data[index];
-        const res = await axios.post(BASE_URL + '/user/delete', {
+        const res = await axios.post(BASE_URL + '/product/del', {
           id: item.pid,
         });
       }
@@ -229,7 +229,7 @@ export default function Drug() {
           ...item,
           ...row,
         };
-        const res = await axios.post(BASE_URL + '/user/updateByAdmin', {
+        const res = await axios.post(BASE_URL + '/product/update', {
           ...newItem,
         });
         setEditingKey('');
