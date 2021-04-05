@@ -8,7 +8,7 @@ public enum ErrorInfo {
 
     ACCOUNT_NOT_FOUND("507", "找不到账号"),
 
-    PASSWORD_IS_FALSE("508", "密码错误"),
+    PASSWORD_IS_FALSE("508", "用户名或密码错误"),
 
     REQUIRE_LOGIN("509", "请登录"),
 
@@ -21,6 +21,8 @@ public enum ErrorInfo {
     SUPPLIER_IS_EXIST("513", "供应商已存在"),
 
     SUPPLIER_NOT_FOUND("514", "找不到供应商"),
+
+    DATA_ERROR("400", "数据异常"),
 
     STOCK_NOT_FOUND("511", "找不到库存");
 

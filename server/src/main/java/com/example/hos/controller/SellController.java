@@ -1,15 +1,10 @@
 package com.example.hos.controller;
 
-import com.example.hos.interceptor.Authorization;
-import com.example.hos.model.Sell;
+import com.example.hos.model.vo.ResultResponse;
+import com.example.hos.model.vo.SellVO;
 import com.example.hos.service.SellService;
-import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -17,25 +12,31 @@ import javax.annotation.Resource;
  * @author changwei.zhong
  * @date create by 2021/3/17
  */
-@Authorization
-@Controller
+//@Auization
+@RestController
 @RequestMapping("/sell")
 public class SellController {
 
     @Resource
     private SellService sellService;
 
-    @ApiOperation(value = "获取药品出售清单")
+    @ApiOperation(value = "销售列表")
     @GetMapping(value = "/findByPage")
-    public String pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                           @RequestParam(defaultValue = "6",required = false) Integer pageSize, ModelMap modelMap){
-        PageInfo<Sell> sellPageInfo = sellService.selectByPage(pageNum,pageSize);
-        modelMap.put("sellPageInfo", sellPageInfo);
-        return "product/productList";
+    public ResultResponse pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
+                                   @RequestParam(defaultValue = "6",required = false) Integer pageSize,
+                                   String name){
+        return sellService.selectByPage(pageNum, pageSize, name);
     }
 
-    public String addSell(){
-        String s = sellService.addSell();
-        return s;
+    @ApiOperation(value = "新增销售单", produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "/addSell",method = RequestMethod.POST)
+    public ResultResponse addSell(@RequestBody SellVO sellVO){
+        return sellService.addSell(sellVO);
+    }
+
+    @ApiOperation(value = "删除销售单", produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "/del",method = RequestMethod.POST)
+    public ResultResponse delProduct(@RequestBody SellVO sellVO) {
+        return sellService.delSell(sellVO.getSellId());
     }
 }

@@ -4,10 +4,11 @@ import com.example.hos.model.vo.LoginRequest;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -23,10 +24,6 @@ public class LoginController {
     private UserService userService;
 
     @ApiOperation(value = "登录", produces = "application/json;charset=utf-8")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "body", dataType = "string"),
-            @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "body", dataType = "string")
-    })
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public ResultResponse login(@RequestBody LoginRequest loginRequest) {
         return userService.login(loginRequest.getUsername(), loginRequest.getPassword());
@@ -42,6 +39,5 @@ public class LoginController {
 //    @PostMapping("/logout")
 //    public String logout(HttpSession session) {
 //        session.removeAttribute("user");
-//        return "index";
 //    }
 }

@@ -46,21 +46,29 @@ public class ProductController {
     @ApiOperation(value = "分页查询药品")
     @GetMapping(value = "/findByPage")
     public ResultResponse pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                                   @RequestParam(defaultValue = "6",required = false) Integer pageSize){
-        return productService.selectByPage(pageNum, pageSize);
+                                   @RequestParam(defaultValue = "6",required = false) Integer pageSize,
+                                   String name){
+        return productService.selectByPage(pageNum, pageSize, name);
+    }
+
+    @ApiOperation(value = "查询药品信息")
+    @GetMapping(value = "/findByName")
+    public ResultResponse findProduct(String name){
+        return productService.findProduct(name);
     }
 
     @ApiOperation(value = "查询药品库存")
     @GetMapping(value = "/findStock")
     public ResultResponse stockList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                                    @RequestParam(defaultValue = "6",required = false) Integer pageSize){
-        return stockService.selectByPage(pageNum, pageSize);
+                                    @RequestParam(defaultValue = "6",required = false) Integer pageSize,
+                                    String name){
+        return stockService.selectByPage(pageNum, pageSize, name);
     }
 
     @ApiOperation(value = "更改库存", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/editStock",method = RequestMethod.POST)
-    public ResultResponse editStock(String pname, int num) {
-        return stockService.inStock(pname, num);
+    public ResultResponse editStock(@RequestBody StockVO stockVO) {
+        return stockService.inStock(stockVO.getPname(), stockVO.getPNum());
     }
 
     @ApiOperation(value = "添加库存单", produces = "application/json;charset=utf-8")

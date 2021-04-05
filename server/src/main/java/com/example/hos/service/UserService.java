@@ -64,7 +64,7 @@ public interface UserService {
      * @param pageSize
      * @return
      **/
-    ResultResponse selectByPage(Integer pageNum, Integer pageSize);
+    ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name);
 
     /**
      * 根据id查询用户
@@ -74,15 +74,6 @@ public interface UserService {
      * @return
      **/
     User selectById(String id);
-
-    /**
-     * 根据名字查询用户
-     * @author changwei.zhong
-     * @date 2021/2/24
-     * @param username
-     * @return
-     **/
-    ResultResponse selectByName(String username);
 
     /**
      * 根据用户获取角色

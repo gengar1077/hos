@@ -8,6 +8,7 @@ class HosApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }

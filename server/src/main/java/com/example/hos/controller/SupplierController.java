@@ -35,7 +35,8 @@ public class SupplierController {
     @ApiOperation(value = "查询供应商列表")
     @GetMapping(value = "/findStock")
     public ResultResponse supplierList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                                    @RequestParam(defaultValue = "6",required = false) Integer pageSize){
-        return supplierService.selectByPage(pageNum, pageSize);
+                                    @RequestParam(defaultValue = "6",required = false) Integer pageSize,
+                                       String name){
+        return supplierService.selectByPage(pageNum, pageSize, name);
     }
 }

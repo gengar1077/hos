@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setStatus(Constant.STATUS);
         userRepository.saveAndFlush(user);
+        resultResponse.setSuccess(true);
         return resultResponse;
     }
 
@@ -85,6 +86,7 @@ public class UserServiceImpl implements UserService {
         String token = jwtService.sign(user.getUid());
         loginInfoVO.setToken(token);
         resultResponse.setReturnData(loginInfoVO);
+        resultResponse.setSuccess(true);
         return resultResponse;
     }
 
@@ -102,6 +104,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(userVO.getPhone())){
             user.setPhone(userVO.getPhone());
         }
+        resultResponse.setSuccess(true);
         return resultResponse;
     }
 
@@ -125,6 +128,7 @@ public class UserServiceImpl implements UserService {
             });
         }
         userRepository.saveAndFlush(user);
+        resultResponse.setSuccess(true);
         return resultResponse;
     }
 
@@ -135,14 +139,30 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
         user.setStatus(Constant.DEL_STATUS);
         userRepository.saveAndFlush(user);
+        resultResponse.setSuccess(true);
         return resultResponse;
     }
 
     @Override
-    public ResultResponse selectByPage(Integer pageNum, Integer pageSize) {
+    public ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
+        if (StringUtils.isNoneBlank(name)){
+            List<UserVO> userVOS = userRepository.findLikeUsernameAndStatus(name, Constant.STATUS).stream().map(user -> {
+                UserVO userVO = new UserVO();
+                userVO.setName(user.getUsername());
+                userVO.setPassword(user.getPassword());
+                userVO.setPhone(user.getPhone());
+                userVO.setRemark(user.getRemark());
+                userVO.setId(user.getUid());
+                return userVO;
+            }).collect(Collectors.toList());
+            PageInfo<UserVO> pageInfo = new PageInfo<>(userVOS);
+            ResultResponse response = new ResultResponse();
+            response.setReturnData(pageInfo);
+            return response;
+        }
         List<UserVO> users = userRepository.findByStatus(Constant.STATUS).stream().map(user -> {
             UserVO userVO = new UserVO();
             userVO.setName(user.getUsername());
@@ -162,15 +182,6 @@ public class UserServiceImpl implements UserService {
     public User selectById(String id) {
         return userRepository.findByUidAndStatus(id, Constant.STATUS)
                 .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
-    }
-
-    @Override
-    public ResultResponse selectByName(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
-        ResultResponse response = new ResultResponse();
-        response.setReturnData(user);
-        return response;
     }
 
     @Override

@@ -21,4 +21,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findByStatus(String status);
 
     Optional<User> findByUsername(String username);
+
+    @Query("select u from User u where u.username like CONCAT('%',:username,'%') and u.status = :status order by u.uid desc")
+    List<User> findLikeUsernameAndStatus(String username, String status);
 }

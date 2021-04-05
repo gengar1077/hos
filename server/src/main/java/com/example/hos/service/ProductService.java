@@ -45,5 +45,13 @@ public interface ProductService {
      * @param pageSize
      * @return
      **/
-    ResultResponse selectByPage(Integer pageNum, Integer pageSize);
+    ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name);
+
+    /**
+     * 查询药品
+     * @param name
+     * @author changwei.zhong
+     * @date
+     **/
+    ResultResponse findProduct(String name);
 }

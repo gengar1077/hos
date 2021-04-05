@@ -45,15 +45,16 @@ public class UserController extends BaseController {
     @ApiOperation(value = "分页查询用户")
     @GetMapping(value = "/findByPage")
     public ResultResponse pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                                   @RequestParam(defaultValue = "6",required = false) Integer pageSize){
-        return userService.selectByPage(pageNum, pageSize);
+                                   @RequestParam(defaultValue = "6",required = false) Integer pageSize,
+                                   String name){
+        return userService.selectByPage(pageNum, pageSize, name);
     }
 
-    @ApiOperation(value = "根据名字查询用户")
-    @GetMapping("/findByUsername")
-    public ResultResponse photo(String username) {
-        return userService.selectByName(username);
-    }
+//    @ApiOperation(value = "根据名字查询用户")
+//    @GetMapping("/findByUsername")
+//    public ResultResponse photo(String username) {
+//        return userService.selectByName(username);
+//    }
 
 //    @ApiOperation(value = "修改头像")
 //    @GetMapping("/photo")

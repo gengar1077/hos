@@ -27,7 +27,7 @@ public interface SupplierService {
      * @param pageSize
      * @return
      **/
-    ResultResponse selectByPage(Integer pageNum, Integer pageSize);
+    ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name);
 
     /**
      * @Desc 删除供应商

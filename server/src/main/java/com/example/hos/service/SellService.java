@@ -1,7 +1,7 @@
 package com.example.hos.service;
 
-import com.example.hos.model.Sell;
-import com.github.pagehelper.PageInfo;
+import com.example.hos.model.vo.ResultResponse;
+import com.example.hos.model.vo.SellVO;
 
 /**
  * 销售操作
@@ -11,8 +11,9 @@ import com.github.pagehelper.PageInfo;
  */
 public interface SellService {
 
+    ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name);
 
-    PageInfo<Sell> selectByPage(Integer pageNum, Integer pageSize);
+    ResultResponse addSell(SellVO sellVO);
 
-    String addSell();
+    ResultResponse delSell(String sellId);
 }

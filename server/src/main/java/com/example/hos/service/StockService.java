@@ -28,7 +28,7 @@ public interface StockService {
      * @param pageSize
      * @return
      **/
-    ResultResponse selectByPage(Integer pageNum, Integer pageSize);
+    ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name);
 
     /**
      * 新增库存单
