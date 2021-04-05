@@ -48,7 +48,9 @@ public class StockServiceImpl implements StockService {
         Product product = productRepository.findByPname(stockVO.getPname()).orElseThrow(() -> new HosException(ErrorInfo.PRODUCT_NOT_FOUND.getMessage()));
         Stock stock = new Stock();
         Optional<Stock> byPname = stockRepository.findByPname(stockVO.getPname());
-        if (byPname.isPresent())
+        if (byPname.isPresent()){
+            throw new HosException(ErrorInfo.PRODUCT_IS_EXIST.getMessage());
+        }
         stock.setPname(stockVO.getPname());
         stock.setPid(product.getPid());
         stock.setCreatetime(new Date());
