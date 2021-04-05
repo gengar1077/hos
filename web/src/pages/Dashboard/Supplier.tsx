@@ -96,7 +96,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   );
 };
 
-const HorizontalSearchForm = () => {
+const HorizontalSearchForm = (props) => {
   const [form] = Form.useForm();
   const [, forceUpdate] = useState({});
 
@@ -107,6 +107,7 @@ const HorizontalSearchForm = () => {
 
   const onFinish = (values: any) => {
     console.log('Finish:', values);
+    props.onFinish(values);
   };
 
   return (
@@ -174,14 +175,15 @@ export default function Suplier() {
       message.error('删除失败，请重试');
     }
   };
-  const updateList = async (pageNum: number, pageSize = 10) => {
+  const updateList = async (pageNum: number, pageSize = 10, name?: string) => {
     console.log(`[Supplier] update list:`, pageNum, pageSize);
     try {
       setLoading(true);
       const res = await axios.get(BASE_URL + '/supplier/findStock', {
-        data: {
+        params: {
           pageNum,
           pageSize,
+          name,
         },
       });
       const data =
@@ -441,7 +443,11 @@ export default function Suplier() {
         )}
       </Modal>
       <div className="search-form">
-        <HorizontalSearchForm></HorizontalSearchForm>
+        <HorizontalSearchForm
+          onFinish={(values) => {
+            updateList(1, 999, values?.pname);
+          }}
+        ></HorizontalSearchForm>
         <Button type="primary" onClick={showModal}>
           新增供应商
         </Button>

@@ -98,7 +98,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   );
 };
 
-const HorizontalSearchForm = () => {
+const HorizontalSearchForm = (props) => {
   const [form] = Form.useForm();
   const [, forceUpdate] = useState({});
 
@@ -109,6 +109,7 @@ const HorizontalSearchForm = () => {
 
   const onFinish = (values: any) => {
     console.log('Finish:', values);
+    props.onFinish(values?.pname);
   };
 
   return (
@@ -176,14 +177,15 @@ export default function Sell() {
       message.error('删除失败，请重试');
     }
   };
-  const updateList = async (pageNum: number, pageSize = 10) => {
+  const updateList = async (pageNum: number, pageSize = 10, name?: string) => {
     console.log(`[Stock] update list:`, pageNum, pageSize);
     try {
       setLoading(true);
       const res = await axios.get(BASE_URL + '/sell/findByPage', {
-        data: {
+        params: {
           pageNum,
           pageSize,
+          name,
         },
       });
       const data =
@@ -468,7 +470,11 @@ export default function Sell() {
         )}
       </Modal>
       <div className="search-form">
-        <HorizontalSearchForm></HorizontalSearchForm>
+        <HorizontalSearchForm
+          onFinish={(values) => {
+            updateList(1, 999, values);
+          }}
+        ></HorizontalSearchForm>
         <Button type="primary" onClick={showModal}>
           新增销售
         </Button>

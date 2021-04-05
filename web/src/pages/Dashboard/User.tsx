@@ -99,7 +99,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   );
 };
 
-const HorizontalSearchForm = () => {
+const HorizontalSearchForm = (props) => {
   const [form] = Form.useForm();
   const [, forceUpdate] = useState({});
 
@@ -110,6 +110,7 @@ const HorizontalSearchForm = () => {
 
   const onFinish = (values: any) => {
     console.log('Finish:', values);
+    props.onFinish(values);
   };
 
   return (
@@ -157,14 +158,15 @@ export default function User() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const isEditing = (record: Item) => record.key === editingKey;
-  const updateList = async (pageNum: number, pageSize = 10) => {
+  const updateList = async (pageNum: number, pageSize = 10, name?: string) => {
     console.log(`[User] update user list:`, pageNum, pageSize);
     try {
       setLoading(true);
       const res = await axios.get(BASE_URL + '/user/findByPage', {
-        data: {
+        params: {
           pageNum,
           pageSize,
+          name,
         },
       });
       const data =
@@ -410,7 +412,11 @@ export default function User() {
         </Form>
       </Modal>
       <div className="search-form">
-        <HorizontalSearchForm></HorizontalSearchForm>
+        <HorizontalSearchForm
+          onFinish={(values) => {
+            updateList(1, 999, values?.username);
+          }}
+        ></HorizontalSearchForm>
         <Button type="primary" onClick={showModal}>
           新增用户
         </Button>
