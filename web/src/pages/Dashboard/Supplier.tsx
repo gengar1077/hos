@@ -1,4 +1,4 @@
-import './Stock.scoped.scss';
+import './Supplier.scoped.scss';
 import {
   Table,
   Input,
@@ -25,12 +25,12 @@ import config from '../../config/env.test';
 const { BASE_URL } = config;
 interface Item {
   key: string;
-  stockId: string;
-  pid: string;
+  sid: string;
+  sname: string;
   pname: string;
-  pnum: number;
-  pNum: number;
-  createtime: Date;
+  tel: string;
+  address: string;
+  status: string;
   productVO: ProductVO;
 }
 interface ProductVO {
@@ -58,19 +58,16 @@ const SearchSelect = (props: any) => {
   const [drugList, setDrugList] = useState<string[]>([]);
   const { Option } = Select;
   const getDrugInfoList = async () => {
-    console.log(`[Drug] getDrugInfoList`);
+    console.log(`[Suppiler] getDrugInfoList`);
     setSelectLoading(true);
     try {
       const res = await axios.get(BASE_URL + '/product/findByPage');
-      const data: Item[] =
-        res.data?.returnData?.list.map((item: Item) => {
-          return { ...item, key: item.pid };
-        }) || [];
+      const data: Item[] = res.data?.returnData?.list || [];
       const pnameList = data?.map((item) => item.pname) || [];
       setDrugList(pnameList);
-      console.log(`[Drug] getDrugInfoList:`, pnameList);
+      console.log(`[Suppiler] getDrugInfoList:`, pnameList);
     } catch (e) {
-      console.log(`[Drug] getDrugInfoList failed:`, e);
+      console.log(`[Suppiler] getDrugInfoList failed:`, e);
       message.error('获取药物列表失败');
     } finally {
       setSelectLoading(false);
@@ -85,7 +82,7 @@ const SearchSelect = (props: any) => {
       optionFilterProp="children"
       onDropdownVisibleChange={getDrugInfoList}
       onChange={(value: string) => {
-        console.log('[Drug] drug name select change', value);
+        console.log('[Suppiler] drug name select change', value);
         formRef.current!.setFieldsValue({ pname: value });
       }}
     >
@@ -180,7 +177,7 @@ const formItemLayout = {
     sm: { span: 18 },
   },
 };
-export default function Drug() {
+export default function Suplier() {
   const [form] = Form.useForm();
   const [addForm] = Form.useForm();
   const [data, setData] = useState<Item[]>([]);
@@ -194,11 +191,28 @@ export default function Drug() {
   const [isViewModalVisible, setIsViewModalVisible] = useState(false);
 
   const isEditing = (record: Item) => record.key === editingKey;
+  const handleDelete = async (key: React.Key) => {
+    try {
+      const index = data.findIndex((item) => key === item.key);
+      if (index > -1) {
+        const item = data[index];
+        const res = await axios.post(BASE_URL + '/supplier/del', {
+          id: item.sid,
+        });
+      }
+      console.log('[Supplier] handleDelete success:', key, index);
+      updateList(1);
+      message.success('删除成功');
+    } catch (e) {
+      console.log('[Supplier] handleDelete failed:', e);
+      message.error('删除失败，请重试');
+    }
+  };
   const updateList = async (pageNum: number, pageSize = 10) => {
     console.log(`[Stock] update list:`, pageNum, pageSize);
     try {
       setLoading(true);
-      const res = await axios.get(BASE_URL + '/product/findStock', {
+      const res = await axios.get(BASE_URL + '/supplier/findStock', {
         data: {
           pageNum,
           pageSize,
@@ -208,8 +222,7 @@ export default function Drug() {
         res.data?.returnData?.list.map((item: Item) => {
           return {
             ...item,
-            key: item.stockId,
-            pNum: item.pnum,
+            key: item.sid,
           };
         }) || [];
       const total = res.data?.returnData?.total || 0;
@@ -277,36 +290,11 @@ export default function Drug() {
   const handleViewCancel = () => {
     setIsViewModalVisible(false);
   };
-  const handleUpdate = async (key: React.Key) => {
-    console.log('[Stock] handleUpdate:', key);
-    try {
-      const row = (await form.validateFields()) as Item;
-      const index = data.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = data[index];
-        const newItem = {
-          ...item,
-          ...row,
-        };
-        const res = await axios.post(BASE_URL + '/product/editStock', {
-          ...newItem,
-        });
-        setEditingKey('');
-      }
-      updateList(1);
-      console.log('[Stock] handleUpdate success:', key, index);
-      message.success('更新成功');
-    } catch (e) {
-      console.log('[Stock] handleUpdate failed:', e);
-      message.error('更新失败，请重试');
-    }
-  };
-
   const columns = [
     {
-      title: '库存ID',
-      dataIndex: 'stockId',
-      editable: false,
+      title: '供应商名称',
+      dataIndex: 'sname',
+      editable: true,
     },
     {
       title: '药品名',
@@ -314,16 +302,19 @@ export default function Drug() {
       editable: true,
     },
     {
-      title: '药品数量',
-      dataIndex: 'pNum',
+      title: '供应商号码',
+      dataIndex: 'tel',
       editable: true,
     },
     {
-      title: '操作时间',
-      dataIndex: 'createtime',
-      render: (_: any, record: Item) => {
-        return <span>{record.createtime.toString()?.split('T')[0]}</span>;
-      },
+      title: '供应商地址',
+      dataIndex: 'address',
+      editable: true,
+    },
+    {
+      title: '供应商状态',
+      dataIndex: 'status',
+      editable: true,
     },
     {
       title: '药品信息',
@@ -344,34 +335,18 @@ export default function Drug() {
       title: '操作',
       dataIndex: 'operation',
       render: (_: any, record: Item) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <a
-              href="javascript:;"
-              onClick={() => handleUpdate(record.key)}
-              style={{ marginRight: 8 }}
-            >
-              保存
-            </a>
+        return (
+          <>
             <Popconfirm
-              title="确定取消？"
-              onConfirm={handEditCancel}
+              title="确定删除？"
+              onConfirm={() => {
+                handleDelete(record.key);
+              }}
               okText="确定"
               cancelText="取消"
             >
-              <a>取消</a>
+              <a>删除</a>
             </Popconfirm>
-          </span>
-        ) : (
-          <>
-            <Typography.Link
-              disabled={editingKey !== ''}
-              onClick={() => edit(record)}
-              style={{ marginRight: 8 }}
-            >
-              编辑
-            </Typography.Link>
           </>
         );
       },
@@ -397,7 +372,7 @@ export default function Drug() {
   return (
     <div className="drug-wrapper">
       <Modal
-        title="新增库存"
+        title="新增供应商"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -413,12 +388,51 @@ export default function Drug() {
           scrollToFirstError
         >
           <Form.Item
+            name="sname"
+            label="供应商名称"
+            rules={[
+              {
+                required: true,
+                message: '请输入供应商名称',
+                whitespace: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
             name="pname"
             label="药品名"
             rules={[
               {
                 required: true,
                 message: '请输入药品名',
+                whitespace: true,
+              },
+            ]}
+          >
+            <SearchSelect />
+          </Form.Item>
+          <Form.Item
+            name="tel"
+            label="供应商号码"
+            rules={[
+              {
+                required: true,
+                message: '请输入供应商号码',
+                whitespace: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="address"
+            label="供应商地址"
+            rules={[
+              {
+                required: true,
+                message: '供应商地址',
                 whitespace: true,
               },
             ]}
@@ -460,7 +474,7 @@ export default function Drug() {
       <div className="search-form">
         <HorizontalSearchForm></HorizontalSearchForm>
         <Button type="primary" onClick={showModal}>
-          新增库存
+          新增供应商
         </Button>
       </div>
       <div className="list-table">

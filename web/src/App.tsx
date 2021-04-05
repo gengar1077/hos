@@ -17,7 +17,7 @@ const { BASE_URL } = config;
 
 const routeConifg = [
   {
-    path: ['/', '/dashboard', '/user', '/drug', '/stock'],
+    path: ['/', '/dashboard', '/user', '/drug', '/stock', '/supplier'],
     component: Dashboard,
   },
 ];
