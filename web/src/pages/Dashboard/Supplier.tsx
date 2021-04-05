@@ -19,6 +19,7 @@ import {
   Descriptions,
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
+import SearchSelect from '@/components/SearchSelect';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import config from '../../config/env.test';
@@ -53,46 +54,6 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
 }
 const formRef = React.createRef<FormInstance>();
 
-const SearchSelect = (props: any) => {
-  const [selectLoading, setSelectLoading] = useState(false);
-  const [drugList, setDrugList] = useState<string[]>([]);
-  const { Option } = Select;
-  const getDrugInfoList = async () => {
-    console.log(`[Suppiler] getDrugInfoList`);
-    setSelectLoading(true);
-    try {
-      const res = await axios.get(BASE_URL + '/product/findByPage');
-      const data: Item[] = res.data?.returnData?.list || [];
-      const pnameList = data?.map((item) => item.pname) || [];
-      setDrugList(pnameList);
-      console.log(`[Suppiler] getDrugInfoList:`, pnameList);
-    } catch (e) {
-      console.log(`[Suppiler] getDrugInfoList failed:`, e);
-      message.error('获取药物列表失败');
-    } finally {
-      setSelectLoading(false);
-    }
-  };
-  return (
-    <Select
-      loading={selectLoading}
-      style={{ width: 200 }}
-      placeholder="请选择药品"
-      defaultValue={props.value}
-      optionFilterProp="children"
-      onDropdownVisibleChange={getDrugInfoList}
-      onChange={(value: string) => {
-        console.log('[Suppiler] drug name select change', value);
-        formRef.current!.setFieldsValue({ pname: value });
-      }}
-    >
-      {drugList.map((item) => {
-        return <Option value={item}>{item}</Option>;
-      })}
-    </Select>
-  );
-};
-
 const EditableCell: React.FC<EditableCellProps> = ({
   editing,
   dataIndex,
@@ -118,7 +79,12 @@ const EditableCell: React.FC<EditableCellProps> = ({
           ]}
         >
           {dataIndex === 'pname' ? (
-            <SearchSelect value={record.pname} />
+            <SearchSelect
+              value={record.pname}
+              onChange={(value) => {
+                formRef.current!.setFieldsValue({ pname: value });
+              }}
+            />
           ) : (
             inputNode
           )}
@@ -410,7 +376,11 @@ export default function Suplier() {
               },
             ]}
           >
-            <SearchSelect />
+            <SearchSelect
+              onChange={(value) => {
+                addForm.setFieldsValue({ pname: value });
+              }}
+            />
           </Form.Item>
           <Form.Item
             name="tel"
