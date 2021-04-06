@@ -1,5 +1,6 @@
 package com.example.hos.controller;
 
+import com.example.hos.interceptor.Authorization;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
@@ -22,11 +23,13 @@ public class UserController extends BaseController {
     @Resource
     private UserService userService;
 
+
     @ApiOperation(value = "用户信息修改")
     @PostMapping(value = "/update")
     public ResultResponse updateUser(UserVO userVO){
         return userService.updateUser(currentUser().getUid(), userVO);
     }
+
 
     @ApiOperation(value = "管理员修改个人信息")
     @PostMapping(value = "/updateByAdmin")
@@ -34,16 +37,18 @@ public class UserController extends BaseController {
         return userService.updateUserByAdmin(userVO);
     }
 
+
     @ApiOperation(value = "用户删除")
-    @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "string")
     @PostMapping(value = "/delete")
 //    @RoleAccess(roles = {Constant.ROLE_ADMIN})
     public ResultResponse deleteUser(@RequestBody UserVO userVO) {
         return userService.deleteUser(userVO.getId());
     }
 
+
     @ApiOperation(value = "分页查询用户")
     @GetMapping(value = "/findByPage")
+    @Authorization
     public ResultResponse pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                                    @RequestParam(defaultValue = "6",required = false) Integer pageSize,
                                    String name){

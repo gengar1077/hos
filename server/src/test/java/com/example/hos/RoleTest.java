@@ -27,9 +27,9 @@ public class RoleTest {
     public void test(){
         Role role = new Role();
         role.setRid(UUID.randomUUID().toString());
-        role.setRname("sell");
+        role.setRname("admin");
         role.setStatus(Constant.STATUS);
-        role.setRemark("销售员");
+        role.setRemark("admin");
         roleRepository.saveAndFlush(role);
     }
 }

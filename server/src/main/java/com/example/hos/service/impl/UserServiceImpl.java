@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     public ResultResponse login(String username, String password) {
         ResultResponse resultResponse = new ResultResponse();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
+                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
         if (!password.equals(user.getPassword())){
             throw new HosException(ErrorInfo.PASSWORD_IS_FALSE.getMessage());
         }
@@ -80,9 +80,9 @@ public class UserServiceImpl implements UserService {
         loginInfoVO.setUsername(user.getUsername());
         loginInfoVO.setPassword(user.getPassword());
         loginInfoVO.setPhone(user.getPhone());
-        if (user.getRoleId().equals(Constant.ADMIN_ID)){
-            loginInfoVO.setIsAdmin(true);
-        }
+//        if (user.getRoleId().equals(Constant.ADMIN_ID)){
+//            loginInfoVO.setIsAdmin(true);
+//        }
         String token = jwtService.sign(user.getUid());
         loginInfoVO.setToken(token);
         resultResponse.setReturnData(loginInfoVO);

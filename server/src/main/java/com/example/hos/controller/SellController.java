@@ -12,13 +12,13 @@ import javax.annotation.Resource;
  * @author changwei.zhong
  * @date create by 2021/3/17
  */
-//@Auization
 @RestController
 @RequestMapping("/sell")
 public class SellController {
 
     @Resource
     private SellService sellService;
+
 
     @ApiOperation(value = "销售列表")
     @GetMapping(value = "/findByPage")
@@ -28,11 +28,13 @@ public class SellController {
         return sellService.selectByPage(pageNum, pageSize, name);
     }
 
+
     @ApiOperation(value = "新增销售单", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/addSell",method = RequestMethod.POST)
     public ResultResponse addSell(@RequestBody SellVO sellVO){
         return sellService.addSell(sellVO);
     }
+
 
     @ApiOperation(value = "删除销售单", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/del",method = RequestMethod.POST)

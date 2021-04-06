@@ -25,11 +25,13 @@ public class ProductController {
     @Resource
     private StockService stockService;
 
+
     @ApiOperation(value = "新增", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     public ResultResponse addProduct(@RequestBody ProductVO productVO) {
         return productService.addProduct(productVO);
     }
+
 
     @ApiOperation(value = "删除", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/del",method = RequestMethod.POST)
@@ -37,11 +39,13 @@ public class ProductController {
         return productService.delProduct(productVO.getPid());
     }
 
+
     @ApiOperation(value = "药品信息修改")
     @PostMapping(value = "/update")
     public ResultResponse updateProduct(@RequestBody ProductVO productVO){
         return productService.updateProduct(productVO);
     }
+
 
     @ApiOperation(value = "分页查询药品")
     @GetMapping(value = "/findByPage")
@@ -51,11 +55,13 @@ public class ProductController {
         return productService.selectByPage(pageNum, pageSize, name);
     }
 
+
     @ApiOperation(value = "查询药品信息")
     @GetMapping(value = "/findByName")
     public ResultResponse findProduct(String name){
         return productService.findProduct(name);
     }
+
 
     @ApiOperation(value = "查询药品库存")
     @GetMapping(value = "/findStock")
@@ -65,11 +71,13 @@ public class ProductController {
         return stockService.selectByPage(pageNum, pageSize, name);
     }
 
+
     @ApiOperation(value = "更改库存", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/editStock",method = RequestMethod.POST)
     public ResultResponse editStock(@RequestBody StockVO stockVO) {
         return stockService.inStock(stockVO.getPname(), stockVO.getPNum());
     }
+
 
     @ApiOperation(value = "添加库存单", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/addStock",method = RequestMethod.POST)

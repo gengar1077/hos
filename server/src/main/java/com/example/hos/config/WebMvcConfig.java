@@ -2,6 +2,7 @@ package com.example.hos.config;
 
 
 import com.example.hos.interceptor.AuthInterceptor;
+import com.example.hos.interceptor.JwtInterceptor;
 import jodd.util.StringPool;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -18,18 +19,16 @@ import javax.annotation.Resource;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-//    @Value("${mini.app.appId}")
-//    private String appId;
-//
-//    @Value("${mini.app.secret}")
-//    private String secret;
-
     @Resource
     private AuthInterceptor authInterceptor;
 
+    @Resource
+    private JwtInterceptor jwtInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor).addPathPatterns("/**");
+//        registry.addInterceptor(authInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(jwtInterceptor).addPathPatterns("/**");
     }
 
     /**
