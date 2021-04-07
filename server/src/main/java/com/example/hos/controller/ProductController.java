@@ -1,5 +1,6 @@
 package com.example.hos.controller;
 
+import com.example.hos.interceptor.Authorization;
 import com.example.hos.model.vo.ProductVO;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.StockVO;
@@ -14,7 +15,7 @@ import javax.annotation.Resource;
  * @author changwei.zhong
  * @date create by 2021/3/2
  */
-//@Authorization
+@Authorization
 @RestController
 @RequestMapping("/product")
 public class ProductController {

@@ -26,6 +26,8 @@ public class JwtServiceTest {
 
     @Test
     public void unSign() {
+        String account = jwtService.unSign("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIzMjAwOGZjZi04MjNkLTRhNWMtYmJmYy01NGVhZGMyY2U5MzYiLCJleHAiOjE2MTc3NzgyMTd9.vfKu6iweXf3BCXQERTeJmJAxMycAIi-7fFP-p2GLNZc");
+        System.out.println(account);
     }
 
     @Test

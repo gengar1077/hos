@@ -1,5 +1,6 @@
 package com.example.hos.controller;
 
+import com.example.hos.interceptor.Authorization;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.SupplierVO;
 import com.example.hos.service.SupplierService;
@@ -12,6 +13,7 @@ import javax.annotation.Resource;
  * @author changwei.zhong
  * @date create by 2021/3/22
  */
+@Authorization
 @RestController
 @RequestMapping("/supplier")
 public class SupplierController {

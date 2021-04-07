@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ *@author DBC-090
  *@description 角色访问拦截器
- *@author Qingcheng Wang
  *@date 2020/9/29
  */
 @Component

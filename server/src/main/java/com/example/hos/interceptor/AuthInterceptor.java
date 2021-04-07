@@ -42,7 +42,6 @@ public class AuthInterceptor implements AsyncHandlerInterceptor {
         if (handler instanceof HandlerMethod) {
             HandlerMethod method = (HandlerMethod) handler;
             Authorization authorization = getAuthorizationAnnotation(method);
-//            boolean annotation = getAuthorizationAnnotation(method);
             if (Objects.nonNull(authorization)) {
                 String token = request.getHeader(jwtHeader);
                 if (StringUtils.isBlank(token)) {
@@ -50,7 +49,7 @@ public class AuthInterceptor implements AsyncHandlerInterceptor {
                 }
                 String account = jwtService.unSign(token);
                 if (StringUtils.isNoneBlank(account)) {
-                    if (Objects.isNull(userRepository.findByUidAndStatus(account, Constant.STATUS))){
+                    if (Objects.nonNull(userRepository.findByUidAndStatus(account, Constant.STATUS))){
                         response.addHeader(jwtHeader, jwtService.sign(account));
                     } else {
                         failedResponse(response);
@@ -87,15 +86,6 @@ public class AuthInterceptor implements AsyncHandlerInterceptor {
         return authorization;
     }
 
-//    @SuppressWarnings("rawtypes")
-//    private boolean getAuthorizationAnnotation(HandlerMethod handlerMethod) {
-//        Class<?> handlerClass = handlerMethod.getMethod().getDeclaringClass();
-//        Authorization annotation = handlerMethod.getMethodAnnotation(Authorization.class);
-//        if (annotation == null) {
-//            annotation = AnnotationUtils.findAnnotation(handlerClass, Authorization.class);
-//        }
-//        return annotation != null;
-//    }
 
     /**
      * 登录失败信息
