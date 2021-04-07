@@ -23,7 +23,7 @@ import java.util.List;
  * @Date: 2021/2/13
  */
 @Configuration
-@EnableSwagger2 //开启在线文档
+@EnableSwagger2
 public class SwaggerConfig {
 
     @Value("${jwt.token.name}")

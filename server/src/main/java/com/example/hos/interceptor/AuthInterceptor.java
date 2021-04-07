@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
- * @author Wang Qingcheng
+ * @author DBC-090
  * @date 2021/1/13
  * @description 登录认证拦截器
  */
@@ -66,10 +66,8 @@ public class AuthInterceptor implements AsyncHandlerInterceptor {
 
     /**
      * @description 获取注解
-     * @author Qingcheng Wang
-     * @date 2021/1/13
      * @param handlerMethod
-     * @return com.dragonsoft.sony.bookService.commons.annotation.Authorization
+     * @return
      */
     @SuppressWarnings("rawtypes")
     private Authorization getAuthorizationAnnotation(HandlerMethod handlerMethod) {
@@ -89,10 +87,8 @@ public class AuthInterceptor implements AsyncHandlerInterceptor {
 
     /**
      * 登录失败信息
-     * @param
+     * @param response
      * @return
-     * @author Qingcheng Wang
-     * @date 2020/9/24
      */
     private void failedResponse(HttpServletResponse response) throws IOException {
         response.setCharacterEncoding(Consts.UTF_8.name());
