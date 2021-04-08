@@ -1,7 +1,7 @@
 package com.example.hos;
 
-import com.example.hos.dao.repository.PermissionRepository;
-import com.example.hos.dao.repository.RoleRepository;
+import com.example.hos.repository.PermissionRepository;
+import com.example.hos.repository.RoleRepository;
 import com.example.hos.model.entity.Permission;
 import com.example.hos.model.entity.Role;
 import com.example.hos.until.Constant;
@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
-import java.util.UUID;
 
 /**
  * @Author: 吃面龙

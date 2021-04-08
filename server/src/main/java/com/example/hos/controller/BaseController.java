@@ -1,7 +1,7 @@
 package com.example.hos.controller;
 
 
-import com.example.hos.dao.repository.UserRepository;
+import com.example.hos.repository.UserRepository;
 import com.example.hos.log.LogFactory;
 import com.example.hos.model.entity.User;
 import com.example.hos.service.JwtService;

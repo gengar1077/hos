@@ -1,9 +1,9 @@
 package com.example.hos.service.impl;
 
-import com.example.hos.dao.repository.ProductRepository;
-import com.example.hos.dao.repository.SellRespository;
-import com.example.hos.dao.repository.StockRepository;
-import com.example.hos.dao.repository.UserRepository;
+import com.example.hos.repository.ProductRepository;
+import com.example.hos.repository.SellRespository;
+import com.example.hos.repository.StockRepository;
+import com.example.hos.repository.UserRepository;
 import com.example.hos.handle.HosException;
 import com.example.hos.model.entity.Product;
 import com.example.hos.model.entity.Sell;

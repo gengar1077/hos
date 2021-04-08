@@ -1,4 +1,4 @@
-package com.example.hos.dao.repository;
+package com.example.hos.repository;
 
 import com.example.hos.model.entity.Sell;
 import org.springframework.data.jpa.repository.JpaRepository;

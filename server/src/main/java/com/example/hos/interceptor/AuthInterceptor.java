@@ -1,6 +1,6 @@
 package com.example.hos.interceptor;
 
-import com.example.hos.dao.repository.UserRepository;
+import com.example.hos.repository.UserRepository;
 import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.service.JwtService;
 import com.example.hos.until.Constant;

@@ -1,6 +1,6 @@
 package com.example.hos.service.impl;
 
-import com.example.hos.dao.repository.ProductRepository;
+import com.example.hos.repository.ProductRepository;
 import com.example.hos.handle.HosException;
 import com.example.hos.model.entity.Product;
 import com.example.hos.model.type.ErrorInfo;

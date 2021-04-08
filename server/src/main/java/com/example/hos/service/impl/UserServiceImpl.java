@@ -1,8 +1,8 @@
 package com.example.hos.service.impl;
 
-import com.example.hos.dao.repository.PermissionRepository;
-import com.example.hos.dao.repository.RoleRepository;
-import com.example.hos.dao.repository.UserRepository;
+import com.example.hos.repository.PermissionRepository;
+import com.example.hos.repository.RoleRepository;
+import com.example.hos.repository.UserRepository;
 import com.example.hos.handle.HosException;
 import com.example.hos.model.entity.Permission;
 import com.example.hos.model.entity.User;
@@ -25,7 +25,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
