@@ -80,9 +80,9 @@ public class UserServiceImpl implements UserService {
         loginInfoVO.setUsername(user.getUsername());
         loginInfoVO.setPassword(user.getPassword());
         loginInfoVO.setPhone(user.getPhone());
-        if (user.getRoleId().equals(Constant.ADMIN_ID)){
-            loginInfoVO.setIsAdmin(true);
-        }
+//        if (user.getRoleId().equals(Constant.ADMIN_ID)){
+//            loginInfoVO.setIsAdmin(true);
+//        }
         String token = jwtService.sign(user.getUid());
         loginInfoVO.setToken(token);
         resultResponse.setReturnData(loginInfoVO);
@@ -157,6 +157,9 @@ public class UserServiceImpl implements UserService {
                 userVO.setPhone(user.getPhone());
                 userVO.setRemark(user.getRemark());
                 userVO.setId(user.getUid());
+                roleRepository.findById(user.getRoleId()).ifPresent(role -> {
+                    userVO.setRoleName(role.getRname());
+                });
                 return userVO;
             }).collect(Collectors.toList());
             PageInfo<UserVO> pageInfo = new PageInfo<>(userVOS);

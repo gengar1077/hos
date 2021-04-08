@@ -2,6 +2,7 @@ package com.example.hos.config;
 
 
 import com.example.hos.interceptor.AuthInterceptor;
+import com.example.hos.interceptor.RoleAccessInterceptor;
 import jodd.util.StringPool;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -21,9 +22,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Resource
     private AuthInterceptor authInterceptor;
 
+    @Resource
+    private RoleAccessInterceptor roleAccessInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(roleAccessInterceptor).addPathPatterns("/**");
     }
 
     /**

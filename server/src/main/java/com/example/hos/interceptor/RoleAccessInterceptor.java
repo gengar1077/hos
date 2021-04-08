@@ -1,6 +1,7 @@
 package com.example.hos.interceptor;
 
 
+import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.service.JwtService;
 import com.example.hos.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,9 +105,7 @@ public class RoleAccessInterceptor implements AsyncHandlerInterceptor {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
         ObjectMapper om = new ObjectMapper();
-//        Opr<Void> opr = new Opr<>();
-//        opr.setCode(Message.AUTH_FORBIDDEN.getCode()).setResult(false).setHttpStatus(HttpStatus.FORBIDDEN.value()).setMsg(Message.AUTH_FORBIDDEN.getMessage());
-//        response.getWriter().write(om.writeValueAsString(opr));
+        response.getWriter().write(om.writeValueAsString(ErrorInfo.ROLE_MISMATCHING.getMessage()));
     }
 }
 

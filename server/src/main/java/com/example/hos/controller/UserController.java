@@ -1,9 +1,11 @@
 package com.example.hos.controller;
 
 import com.example.hos.interceptor.Authorization;
+import com.example.hos.interceptor.RoleAccess;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
+import com.example.hos.until.Constant;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,7 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "管理员修改个人信息")
     @PostMapping(value = "/updateByAdmin")
+    @RoleAccess(roles = {Constant.ROLE_ADMIN})
     public ResultResponse updateUserByAdmin(@RequestBody UserVO userVO){
         return userService.updateUserByAdmin(userVO);
     }
@@ -40,7 +43,7 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "用户删除")
     @PostMapping(value = "/delete")
-//    @RoleAccess(roles = {Constant.ROLE_ADMIN})
+    @RoleAccess(roles = {Constant.ROLE_ADMIN})
     public ResultResponse deleteUser(@RequestBody UserVO userVO) {
         return userService.deleteUser(userVO.getId());
     }

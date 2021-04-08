@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
         ResultResponse resultResponse = new ResultResponse();
         Product product = productRepository.findByPidAndStatus(pid, Constant.STATUS)
                 .orElseThrow(()->new HosException(ErrorInfo.PRODUCT_NOT_FOUND.getMessage()));
-        product.setStatus("0");
+        product.setStatus(Constant.DEL_STATUS);
         productRepository.saveAndFlush(product);
         resultResponse.setSuccess(true);
         return resultResponse;

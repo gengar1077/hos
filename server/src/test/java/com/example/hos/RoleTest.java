@@ -1,6 +1,8 @@
 package com.example.hos;
 
+import com.example.hos.dao.repository.PermissionRepository;
 import com.example.hos.dao.repository.RoleRepository;
+import com.example.hos.model.entity.Permission;
 import com.example.hos.model.entity.Role;
 import com.example.hos.until.Constant;
 import org.junit.Test;
@@ -23,13 +25,28 @@ public class RoleTest {
     @Resource
     private RoleRepository roleRepository;
 
+    @Resource
+    private PermissionRepository permissionRepository;
+
     @Test
-    public void test(){
+    public void roleTest(){
         Role role = new Role();
         role.setRid(UUID.randomUUID().toString());
         role.setRname("admin");
         role.setStatus(Constant.STATUS);
         role.setRemark("admin");
         roleRepository.saveAndFlush(role);
+    }
+
+    @Test
+    public void permissionTest(){
+        Permission permission = new Permission();
+        permission.setPerId(UUID.randomUUID().toString());
+        permission.setUid("32008fcf-823d-4a5c-bbfc-54eadc2ce936");
+        permission.setUsername("jk");
+        permission.setRid("c8c6e53c-15b5-492b-ad51-41a84b5f4e6a");
+        permission.setRname("admin");
+        permission.setStatus(Constant.STATUS);
+        permissionRepository.saveAndFlush(permission);
     }
 }

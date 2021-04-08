@@ -12,6 +12,8 @@ public enum ErrorInfo {
 
     REQUIRE_LOGIN("509", "请登录"),
 
+    ROLE_MISMATCHING("515", "角色不匹配"),
+
     ACCOUNT_IS_EXIST("545", "用户已存在"),
 
     PRODUCT_IS_EXIST("512", "药品已存在"),
