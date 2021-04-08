@@ -28,7 +28,7 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "用户信息修改")
     @PostMapping(value = "/update")
-    public ResultResponse updateUser(UserVO userVO){
+    public ResultResponse updateUser(@RequestBody UserVO userVO){
         return userService.updateUser(currentUser().getUid(), userVO);
     }
 
@@ -52,6 +52,7 @@ public class UserController extends BaseController {
     @ApiOperation(value = "分页查询用户")
     @GetMapping(value = "/findByPage")
     @Authorization
+    @RoleAccess(roles = {Constant.ROLE_ADMIN})
     public ResultResponse pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                                    @RequestParam(defaultValue = "6",required = false) Integer pageSize,
                                    String name){

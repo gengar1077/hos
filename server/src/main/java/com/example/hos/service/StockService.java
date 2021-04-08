@@ -38,4 +38,13 @@ public interface StockService {
      * @date 2021/3/8
      **/
     ResultResponse addStock(StockVO stockVO);
+
+    /**
+     * 删除库存单
+     * @param stockId
+     * @return
+     * @author changwei.zhong
+     * @date 2021/3/8
+     **/
+    ResultResponse delStock(String stockId);
 }

@@ -23,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -62,8 +64,18 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(userVO.getPassword())){
             user.setPassword(userVO.getPassword());
         }
+        roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> {
+            user.setRoleId(role.getRid());
+        });
         user.setStatus(Constant.STATUS);
         userRepository.saveAndFlush(user);
+        Permission permission = new Permission();
+        permission.setUid(user.getUid());
+        permission.setUsername(user.getUsername());
+        permission.setRid(user.getRoleId());
+        permission.setRname(Objects.requireNonNull(roleRepository.findRoleByRname(userVO.getRoleName()).orElse(null)).getRname());
+        permission.setStatus(Constant.STATUS);
+        permissionRepository.saveAndFlush(permission);
         resultResponse.setSuccess(true);
         return resultResponse;
     }
@@ -98,11 +110,25 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(userVO.getName())){
             user.setUsername(userVO.getName());
         }
+        if (StringUtils.isNotBlank(userVO.getPhoto())){
+            user.setRoleId(userVO.getPhoto());
+        }
+        if (StringUtils.isNotBlank(userVO.getWei())){
+            user.setWei(userVO.getWei());
+        }
+        if (StringUtils.isNotBlank(userVO.getRemark())){
+            user.setRemark(userVO.getRemark());
+        }
         if (StringUtils.isNotBlank(userVO.getPassword())){
             user.setPassword(userVO.getPassword());
         }
         if (StringUtils.isNotBlank(userVO.getPhone())){
             user.setPhone(userVO.getPhone());
+        }
+        if (StringUtils.isNotBlank(userVO.getRoleName())){
+            roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> {
+                user.setRoleId(role.getRid());
+            });
         }
         userRepository.saveAndFlush(user);
         resultResponse.setSuccess(true);
@@ -174,6 +200,9 @@ public class UserServiceImpl implements UserService {
             userVO.setPhone(user.getPhone());
             userVO.setRemark(user.getRemark());
             userVO.setId(user.getUid());
+            roleRepository.findById(user.getRoleId()).ifPresent(role -> {
+                userVO.setRoleName(role.getRname());
+            });
             return userVO;
         }).collect(Collectors.toList());
         PageInfo<UserVO> pageInfo = new PageInfo<>(users);

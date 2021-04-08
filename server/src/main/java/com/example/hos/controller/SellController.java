@@ -1,9 +1,11 @@
 package com.example.hos.controller;
 
 import com.example.hos.interceptor.Authorization;
+import com.example.hos.interceptor.RoleAccess;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.SellVO;
 import com.example.hos.service.SellService;
+import com.example.hos.until.Constant;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,7 @@ import javax.annotation.Resource;
 @Authorization
 @RestController
 @RequestMapping("/sell")
+@RoleAccess(roles = {Constant.ROLE_SELL, Constant.ROLE_ADMIN})
 public class SellController {
 
     @Resource

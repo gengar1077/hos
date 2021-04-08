@@ -1,11 +1,13 @@
 package com.example.hos.controller;
 
 import com.example.hos.interceptor.Authorization;
+import com.example.hos.interceptor.RoleAccess;
 import com.example.hos.model.vo.ProductVO;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.StockVO;
 import com.example.hos.service.ProductService;
 import com.example.hos.service.StockService;
+import com.example.hos.until.Constant;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +68,7 @@ public class ProductController {
 
     @ApiOperation(value = "查询药品库存")
     @GetMapping(value = "/findStock")
+    @RoleAccess(roles = {Constant.ROLE_STOCK, Constant.ROLE_ADMIN})
     public ResultResponse stockList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                                     @RequestParam(defaultValue = "6",required = false) Integer pageSize,
                                     String name){
@@ -75,6 +78,7 @@ public class ProductController {
 
     @ApiOperation(value = "更改库存", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/editStock",method = RequestMethod.POST)
+    @RoleAccess(roles = {Constant.ROLE_STOCK, Constant.ROLE_ADMIN})
     public ResultResponse editStock(@RequestBody StockVO stockVO) {
         return stockService.inStock(stockVO.getPname(), stockVO.getPNum());
     }
@@ -82,7 +86,16 @@ public class ProductController {
 
     @ApiOperation(value = "添加库存单", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/addStock",method = RequestMethod.POST)
+    @RoleAccess(roles = {Constant.ROLE_STOCK, Constant.ROLE_ADMIN})
     public ResultResponse addStock(@RequestBody StockVO stockVO) {
         return stockService.addStock(stockVO);
+    }
+
+
+    @ApiOperation(value = "删除库存单", produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "/delStock",method = RequestMethod.POST)
+    @RoleAccess(roles = {Constant.ROLE_STOCK, Constant.ROLE_ADMIN})
+    public ResultResponse delStock(@RequestBody StockVO stockVO) {
+        return stockService.delStock(stockVO.getStockId());
     }
 }

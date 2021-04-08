@@ -31,17 +31,15 @@ public class RoleTest {
     @Test
     public void roleTest(){
         Role role = new Role();
-        role.setRid(UUID.randomUUID().toString());
-        role.setRname("admin");
+        role.setRname("sell");
         role.setStatus(Constant.STATUS);
-        role.setRemark("admin");
+        role.setRemark("sell");
         roleRepository.saveAndFlush(role);
     }
 
     @Test
     public void permissionTest(){
         Permission permission = new Permission();
-        permission.setPerId(UUID.randomUUID().toString());
         permission.setUid("32008fcf-823d-4a5c-bbfc-54eadc2ce936");
         permission.setUsername("jk");
         permission.setRid("c8c6e53c-15b5-492b-ad51-41a84b5f4e6a");

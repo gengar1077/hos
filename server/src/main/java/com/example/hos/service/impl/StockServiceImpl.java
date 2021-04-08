@@ -62,6 +62,17 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public ResultResponse delStock(String stockId) {
+        ResultResponse resultResponse = new ResultResponse();
+        Stock stock = stockRepository.findByStockIdAndStatus(stockId, Constant.STATUS)
+                .orElseThrow(()->new HosException(ErrorInfo.STOCK_NOT_FOUND.getMessage()));
+        stock.setStatus(Constant.DEL_STATUS);
+        stockRepository.saveAndFlush(stock);
+        resultResponse.setSuccess(true);
+        return null;
+    }
+
+    @Override
     public ResultResponse inStock(String pname, int num) {
         Product product = productRepository.findByPname(pname)
                 .orElseThrow(() -> new HosException(ErrorInfo.PRODUCT_NOT_FOUND.getMessage()));
