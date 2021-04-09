@@ -16,6 +16,7 @@ import com.example.hos.until.Constant;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import jodd.util.StringPool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.awt.font.ImageGraphicAttribute;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -221,8 +223,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse upload(String uid, MultipartFile image) {
         ResultResponse resultResponse = new ResultResponse();
-        String profilesPath = "img";
-
+        String filesPath = Constant.FILES_PATH;
         if (!image.isEmpty()) {
             // 当前用户
             User user = userRepository.findByUidAndStatus(uid, Constant.STATUS)
@@ -231,8 +232,8 @@ public class UserServiceImpl implements UserService {
             // 默认以原来的头像名称为新头像的名称，这样可以直接替换掉文件夹中对应的旧头像
             String imageName = photo;
             // 若头像名称不存在
-            if (photo == null || "".equals(photo)) {
-                imageName = UUID.randomUUID().toString() + image.getOriginalFilename();
+            if (photo == null || StringPool.EMPTY.equals(photo)) {
+                imageName = filesPath + System.currentTimeMillis()+ image.getOriginalFilename();
                 // 路径存库
                 user.setPhoto(imageName);
                 userRepository.saveAndFlush(user);
@@ -240,7 +241,7 @@ public class UserServiceImpl implements UserService {
             // 磁盘保存
             BufferedOutputStream out = null;
             try {
-                File folder = new File(profilesPath);
+                File folder = new File(filesPath);
                 if (!folder.exists()) {
                     boolean mkdirs = folder.mkdirs();
                     if (!mkdirs){
