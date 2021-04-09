@@ -1,6 +1,12 @@
 .dashboard-wrapper {
   width: 100%;
   min-height: 100vh !important;
+  .editBtn,
+  .logoutBtn {
+    float: right;
+    margin-right: 12px;
+    margin-top: 12px;
+  }
   .trigger {
     padding: 0 24px;
     font-size: 18px;

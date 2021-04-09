@@ -1,4 +1,13 @@
-import { Layout, Menu, Button } from 'antd';
+import {
+  Layout,
+  FormInstance,
+  Menu,
+  Button,
+  Form,
+  Modal,
+  message,
+  Input,
+} from 'antd';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -6,7 +15,7 @@ import {
   DashboardOutlined,
   TableOutlined,
 } from '@ant-design/icons';
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import './index.scss';
 import {
   BrowserRouter as Router,
@@ -22,8 +31,23 @@ import Drug from './Drug';
 import Stock from './Stock';
 import Supplier from './Supplier';
 import Sell from './Sell';
+import axios from 'axios';
+import config from '../../config/env.test';
+import UserRoleSelect, { RoleType } from '@/components/UserRoleSelect';
+import UploadAvatar from '@/components/UploadAvatar';
+const { BASE_URL } = config;
 const { Header, Sider, Content } = Layout;
-
+const formRef = React.createRef<FormInstance>();
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
 export default function Dashboard(props) {
   const [collapsed, toggleCollapsed] = useReducer((state) => !state, false);
   const { path, url } = useRouteMatch();
@@ -38,11 +62,114 @@ export default function Dashboard(props) {
   ];
   const index = PathIndex.find((item) => item.path === path)?.index ?? '1';
   const defaultSelectedKeys = [index];
+  const [userForm] = Form.useForm();
   const handleLogout = () => {
     props.onLogout();
   };
+  const handleProfileEdit = () => {
+    setIsModalVisible(true);
+  };
+  const handleOk = async () => {
+    try {
+      const values = await userForm.validateFields();
+      await handleUserEdit(values);
+      userForm.resetFields();
+    } catch (e) {
+      console.log('handleOk Failed:', e);
+    }
+  };
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+  const handleUserEdit = async (values) => {
+    console.log('[Dashboard] handleUserEdit:', values);
+    try {
+      const res = await axios.post(BASE_URL + '/user/update', {
+        ...values,
+      });
+      setIsModalVisible(false);
+      console.log('[Dashboard] handleUserEdit success:', res);
+      message.success('修改成功');
+    } catch (e) {
+      console.log('[Dashboard] handleUserEdit failed:', e);
+      message.error('修改失败，请重试');
+      throw e;
+    }
+  };
+  const [isModalVisible, setIsModalVisible] = useState(false);
   return (
     <Layout className="dashboard-wrapper">
+      <Modal
+        title="修改个人信息"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        cancelText="取消"
+        okText="修改"
+      >
+        <Form
+          form={userForm}
+          {...formItemLayout}
+          name="editUserProfile"
+          initialValues={{
+            prefix: '86',
+          }}
+          scrollToFirstError
+          ref={formRef}
+        >
+          <Form.Item
+            name="name"
+            label="用户名"
+            rules={[
+              {
+                required: true,
+                message: '请输入用户名',
+                whitespace: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="密码"
+            rules={[
+              {
+                required: true,
+                message: '请输入密码',
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item name="photo" label="头像">
+            <UploadAvatar></UploadAvatar>
+          </Form.Item>
+          <Form.Item name="wei" label="微博">
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="roleName"
+            label="角色"
+            rules={[
+              {
+                required: true,
+                message: '请选择角色',
+              },
+            ]}
+          >
+            <UserRoleSelect
+              isAdmin={false}
+              onChange={(value) => {
+                formRef.current!.setFieldsValue({ roleName: value });
+              }}
+            ></UserRoleSelect>
+          </Form.Item>
+          <Form.Item name="remark" label="简介">
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
         <Menu
@@ -79,8 +206,15 @@ export default function Dashboard(props) {
               onClick: toggleCollapsed,
             },
           )}
-          <Button type="primary" onClick={handleLogout}>
+          <Button className="logoutBtn" type="primary" onClick={handleLogout}>
             登出
+          </Button>
+          <Button
+            className="editBtn"
+            type="primary"
+            onClick={handleProfileEdit}
+          >
+            修改个人信息
           </Button>
         </Header>
         <Content
