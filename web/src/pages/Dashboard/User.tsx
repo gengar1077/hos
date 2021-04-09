@@ -21,12 +21,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import config from '../../config/env.test';
+import UserRoleSelect, { RoleType } from '@/components/UserRoleSelect';
 const { BASE_URL } = config;
-enum RoleType {
-  ROLE_ADMIN = 'admin',
-  ROLE_STOCK = 'stock',
-  ROLE_SELL = 'sell',
-}
+
 interface Item {
   key: string;
   id: string;
@@ -72,20 +69,12 @@ const EditableCell: React.FC<EditableCellProps> = ({
           ]}
         >
           {dataIndex === 'roleName' ? (
-            <Select
-              showSearch
-              style={{ width: 200 }}
-              placeholder="请选择角色"
-              optionFilterProp="children"
-              onChange={(value: string) => {
-                console.log('[User] role change', value);
+            <UserRoleSelect
+              isAdmin={true}
+              onChange={(value) => {
                 formRef.current!.setFieldsValue({ roleName: value });
               }}
-            >
-              <Option value={RoleType.ROLE_ADMIN}>管理员</Option>
-              <Option value={RoleType.ROLE_SELL}>销售员</Option>
-              <Option value={RoleType.ROLE_STOCK}>仓管员</Option>
-            </Select>
+            ></UserRoleSelect>
           ) : dataIndex === 'name' ? (
             formRef.current!.getFieldValue('name')
           ) : (

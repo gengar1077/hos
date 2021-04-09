@@ -1,6 +1,25 @@
 .dashboard-wrapper {
   width: 100%;
   min-height: 100vh !important;
+  .profile-wrapper {
+    position: relative;
+    float: right;
+    margin-right: 12px;
+    .avatar {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      background-color: #1890ff;
+      border-radius: 18px;
+      text-align: center;
+      line-height: 36px;
+      color: #fff;
+    }
+    .editBtn,
+    .logoutBtn {
+      margin-right: 8px;
+    }
+  }
   .trigger {
     padding: 0 24px;
     font-size: 18px;

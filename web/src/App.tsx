@@ -13,12 +13,13 @@ import Signin, { ErrorType } from './pages/Signin';
 import Register from './pages/Register';
 import axios from 'axios';
 import config from './config/env.test';
+import { message } from 'antd';
 const { BASE_URL } = config;
 
 const routeConifg = [
   {
     path: ['/', '/dashboard', '/user', '/drug', '/stock', '/supplier', '/sell'],
-    component: Dashboard,
+    component: AuthDashboard,
   },
 ];
 export default function AuthExample() {
@@ -31,18 +32,7 @@ export default function AuthExample() {
       password,
     });
     console.log('[App] handleRegister success', res);
-  };
-  const sendRequest = () => {
-    axios
-      .get(BASE_URL + '/role/info')
-      .then((res) => {
-        setRoleInfo(JSON.stringify(res.data));
-        console.log(res);
-      })
-      .catch((err) => {
-        setErrorText(JSON.stringify(err));
-        console.log(err);
-      });
+    message.success('注册成功，请到登录页面进行登录');
   };
   return (
     <ProvideAuth>
@@ -60,9 +50,9 @@ export default function AuthExample() {
                 // <PrivateRoute key={i} path={item.path}>
                 //   <item.component></item.component>
                 // </PrivateRoute>
-                <Route exact key={i} path={item.path}>
+                <PrivateRoute exact key={i} path={item.path}>
                   <item.component></item.component>
-                </Route>
+                </PrivateRoute>
               );
             })}
           </Switch>
@@ -72,6 +62,17 @@ export default function AuthExample() {
   );
 }
 
+function setAxiosConfig(token: string) {
+  axios.interceptors.request.use(
+    function (config) {
+      config.headers.hosToken = token;
+      return config;
+    },
+    function (error) {
+      return Promise.reject(error);
+    },
+  );
+}
 /** For more details on
  * `authContext`, `ProvideAuth`, `useAuth` and `useProvideAuth`
  * refer to: https://usehooks.com/useAuth/
@@ -107,11 +108,32 @@ function useProvideAuth() {
     try {
       // TODO: 跳转先写死等，接口完成之后在放开
       // setUser('kongfu-cat');
-      const res = await axios.post(BASE_URL + '/login/login', {
+      const res = await axios.post<{
+        returnData: {
+          isAdmin: boolean;
+          isLogged: boolean;
+          password: string;
+          phone: string;
+          token: string;
+          username: string;
+        };
+      }>(BASE_URL + '/login/login', {
         username,
         password,
       });
       console.log(`[AuthContext] sigin success:`, res);
+      const token = res.data.returnData.token;
+      const name = res.data.returnData.username;
+      localStorage.setItem(
+        'userInfo',
+        JSON.stringify({
+          username: name,
+          hosToken: token,
+        }),
+      );
+      // config hosToken to request header
+      setAxiosConfig(token);
+      setUser(res.data.returnData.username);
       return res.data;
     } catch (e) {
       console.log(`[AuthContext] sigin failed:`, e);
@@ -119,8 +141,16 @@ function useProvideAuth() {
     }
   };
 
-  const signout = () => {
-    setUser(null);
+  const signout = async () => {
+    try {
+      const res = await axios.post<void>(BASE_URL + '/login/logout');
+      setUser(null);
+      localStorage.setItem('userInfo', ''),
+        console.log(`[AuthContext] signout success:`);
+    } catch (e) {
+      console.log(`[AuthContext] signout failed:`, e);
+      throw e;
+    }
   };
 
   return {
@@ -140,7 +170,7 @@ function AuthSignin() {
   }) => {
     console.log(`[App] user signin info: `, values);
     try {
-      await auth.signin(values.username, values.password);
+      const res = await auth.signin(values.username, values.password);
       history.push('/dashboard');
     } catch (e) {
       console.log(`[App] user signin error: `, e);
@@ -154,6 +184,24 @@ function AuthSignin() {
   return <Signin onSubmit={onSubmit} />;
 }
 
+function AuthDashboard() {
+  const auth = useAuth();
+  const history = useHistory();
+  const onLogout = async () => {
+    try {
+      const res = await auth.signout();
+      history.push('/signin');
+    } catch (e) {
+      console.log(`[App] user signout error: `, e);
+      if (e.message === 'Network Error') {
+        return ErrorType.NETWORK_ERROR;
+      }
+      return ErrorType.PWD_ERROR;
+    }
+  };
+  return <Dashboard onLogout={onLogout} user={auth.user} />;
+}
+
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
 function PrivateRoute({ children, ...rest }) {
@@ -161,18 +209,24 @@ function PrivateRoute({ children, ...rest }) {
   return (
     <Route
       {...rest}
-      render={({ location }) =>
-        auth.user ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: '/signin',
-              state: { from: location },
-            }}
-          />
-        )
-      }
+      render={({ location }) => {
+        const userInfo = localStorage.getItem('userInfo');
+        if (!userInfo) {
+          return (
+            <Redirect
+              to={{
+                pathname: '/signin',
+                state: { from: location },
+              }}
+            />
+          );
+        } else {
+          const res = JSON.parse(userInfo);
+          setAxiosConfig(res?.hosToken);
+          auth.user = res?.username;
+          return children;
+        }
+      }}
     />
   );
 }

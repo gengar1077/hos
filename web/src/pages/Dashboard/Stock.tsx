@@ -238,6 +238,23 @@ export default function Drug() {
       setIsViewModalVisible(true);
     }
   };
+  const handleDelete = async (key: React.Key) => {
+    try {
+      const index = data.findIndex((item) => key === item.key);
+      if (index > -1) {
+        const item = data[index];
+        const res = await axios.post(BASE_URL + '/product/delStock', {
+          stockId: item.stockId,
+        });
+      }
+      console.log('[Stock] handleDelete success:', key, index);
+      updateList(1);
+      message.success('删除成功');
+    } catch (e) {
+      console.log('[Stock] handleDelete failed:', e);
+      message.error('删除失败，请重试');
+    }
+  };
   const handleViewCancel = () => {
     setIsViewModalVisible(false);
   };
@@ -336,6 +353,16 @@ export default function Drug() {
             >
               编辑
             </Typography.Link>
+            <Popconfirm
+              title="确定删除？"
+              onConfirm={() => {
+                handleDelete(record.key);
+              }}
+              okText="确定"
+              cancelText="取消"
+            >
+              <a>删除</a>
+            </Popconfirm>
           </>
         );
       },
