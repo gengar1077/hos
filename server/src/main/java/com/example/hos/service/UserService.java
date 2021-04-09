@@ -3,7 +3,9 @@ package com.example.hos.service;
 import com.example.hos.model.entity.User;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -83,4 +85,14 @@ public interface UserService {
      * @date 2021/3/31
      **/
     List<String> getRoles(String uid);
+
+    /**
+     * 上传头像
+     * @param uid
+     * @param image
+     * @return a
+     * @author changwei.zhong
+     * @date 2021/3/31
+     **/
+    ResultResponse upload(String uid, MultipartFile image) ;
 }

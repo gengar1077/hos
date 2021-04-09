@@ -20,11 +20,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -63,9 +69,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(userVO.getPassword())){
             user.setPassword(userVO.getPassword());
         }
-        roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> {
-            user.setRoleId(role.getRid());
-        });
+        roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> user.setRoleId(role.getRid()));
         user.setStatus(Constant.STATUS);
         userRepository.saveAndFlush(user);
         Permission permission = new Permission();
@@ -125,9 +129,7 @@ public class UserServiceImpl implements UserService {
             user.setPhone(userVO.getPhone());
         }
         if (StringUtils.isNotBlank(userVO.getRoleName())){
-            roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> {
-                user.setRoleId(role.getRid());
-            });
+            roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> user.setRoleId(role.getRid()));
         }
         userRepository.saveAndFlush(user);
         resultResponse.setSuccess(true);
@@ -149,9 +151,7 @@ public class UserServiceImpl implements UserService {
             user.setPhone(userVO.getPhone());
         }
         if (StringUtils.isNotBlank(userVO.getRoleName())){
-            roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> {
-                user.setRoleId(role.getRid());
-            });
+            roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> user.setRoleId(role.getRid()));
         }
         userRepository.saveAndFlush(user);
         resultResponse.setSuccess(true);
@@ -182,9 +182,7 @@ public class UserServiceImpl implements UserService {
                 userVO.setPhone(user.getPhone());
                 userVO.setRemark(user.getRemark());
                 userVO.setId(user.getUid());
-                roleRepository.findById(user.getRoleId()).ifPresent(role -> {
-                    userVO.setRoleName(role.getRname());
-                });
+                roleRepository.findById(user.getRoleId()).ifPresent(role -> userVO.setRoleName(role.getRname()));
                 return userVO;
             }).collect(Collectors.toList());
             PageInfo<UserVO> pageInfo = new PageInfo<>(userVOS);
@@ -199,9 +197,7 @@ public class UserServiceImpl implements UserService {
             userVO.setPhone(user.getPhone());
             userVO.setRemark(user.getRemark());
             userVO.setId(user.getUid());
-            roleRepository.findById(user.getRoleId()).ifPresent(role -> {
-                userVO.setRoleName(role.getRname());
-            });
+            roleRepository.findById(user.getRoleId()).ifPresent(role -> userVO.setRoleName(role.getRname()));
             return userVO;
         }).collect(Collectors.toList());
         PageInfo<UserVO> pageInfo = new PageInfo<>(users);
@@ -220,5 +216,52 @@ public class UserServiceImpl implements UserService {
     public List<String> getRoles(String uid) {
         List<Permission> permissions = permissionRepository.findAllByUidAndStatus(uid, Constant.STATUS).orElse(Lists.newArrayList());
         return permissions.stream().map(Permission::getRname).collect(Collectors.toList());
+    }
+
+    @Override
+    public ResultResponse upload(String uid, MultipartFile image) {
+        ResultResponse resultResponse = new ResultResponse();
+        String profilesPath = "D:/Java/pic";
+
+        if (!image.isEmpty()) {
+            // 当前用户
+            User user = userRepository.findByUidAndStatus(uid, Constant.STATUS)
+                    .orElseThrow(() -> new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+            String photo = user.getPhoto();
+            // 默认以原来的头像名称为新头像的名称，这样可以直接替换掉文件夹中对应的旧头像
+            String imageName = photo;
+            // 若头像名称不存在
+            if (photo == null || "".equals(photo)) {
+                imageName = UUID.randomUUID().toString() + System.currentTimeMillis() + image.getOriginalFilename();
+                // 路径存库
+                user.setPhoto(imageName);
+                userRepository.saveAndFlush(user);
+            }
+            // 磁盘保存
+            BufferedOutputStream out = null;
+            try {
+                File folder = new File(profilesPath);
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+                out = new BufferedOutputStream(new FileOutputStream(imageName));
+                // 写入新文件
+                out.write(image.getBytes());
+                out.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return resultResponse;
+            } finally {
+                try {
+                    assert out != null;
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return resultResponse;
+        } else {
+            throw new HosException(ErrorInfo.PHOTO_NOT_FOUND.getMessage());
+        }
     }
 }

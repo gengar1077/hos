@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  * @date create by 2021/3/17
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class SellServiceImpl implements SellService {
 
     @Resource

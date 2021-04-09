@@ -24,6 +24,8 @@ public enum ErrorInfo {
 
     SUPPLIER_NOT_FOUND("514", "找不到供应商"),
 
+    PHOTO_NOT_FOUND("522", "找不到图片"),
+
     DATA_ERROR("400", "数据异常"),
 
     STOCK_NOT_FOUND("511", "找不到库存");

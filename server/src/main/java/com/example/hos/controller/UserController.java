@@ -7,10 +7,15 @@ import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
 import com.example.hos.until.Constant;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.awt.*;
+import java.io.IOException;
 
 /**
  * @Author: 吃面龙
@@ -59,4 +64,12 @@ public class UserController extends BaseController {
         return userService.selectByPage(pageNum, pageSize, name);
     }
 
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name="photo",value = "头像", required = true, dataTypeClass = MultipartFile.class, paramType = "form")
+    })
+    @RequestMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public ResultResponse upload(MultipartFile image) {
+        return userService.upload(currentUser().getUid(), image);
+    }
 }
