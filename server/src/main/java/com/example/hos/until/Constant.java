@@ -22,6 +22,11 @@ public final class Constant {
     public static final String ROLE_SELL = "sell";
 
     /**
+     * @description: 普通用户
+     */
+    public static final String ROLE_USER = "user";
+
+    /**
      * @description: 状态
      */
     public static final String STATUS = "1";
@@ -35,6 +40,11 @@ public final class Constant {
      * @description: 管理员
      */
     public static final String ADMIN_ID = "7f3a3216-b161-4bd2-b552-c832271374ab";
+
+    /**
+     * @description: 普通用户
+     */
+    public static final String USER = "e2132e93-baaf-4766-aa8c-2ac44ea3e57d";
 
     /**
      * @description: 文件路径

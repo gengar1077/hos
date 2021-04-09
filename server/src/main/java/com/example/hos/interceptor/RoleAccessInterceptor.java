@@ -63,8 +63,8 @@ public class RoleAccessInterceptor implements AsyncHandlerInterceptor {
                 String account = jwtService.unSign(token);
                 List<String> haveRoles = userService.getRoles(account);
                 if (CollectionUtils.isEmpty(haveRoles) || !CollectionUtils.containsAny(haveRoles, roleAccess.roles())) {
+                    log.info("账号{}不匹配角色{},访问{}失败", account, roleAccess.roles(), request.getRequestURI());
                     failedResponse(response);
-                    log.debug("账号{}不匹配角色{},访问{}失败", account, roleAccess.roles(), request.getRequestURI());
                     return false;
                 }
             }

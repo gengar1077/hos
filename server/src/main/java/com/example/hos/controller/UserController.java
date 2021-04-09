@@ -6,15 +6,12 @@ import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
 import com.example.hos.until.Constant;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -45,6 +42,11 @@ public class UserController extends BaseController {
         return userService.updateUserByAdmin(userVO);
     }
 
+    @ApiOperation(value = "获取用户")
+    @GetMapping(value = "/getUser")
+    public ResultResponse getUser(){
+        return userService.selectById(currentUser().getUid());
+    }
 
     @ApiOperation(value = "用户删除")
     @PostMapping(value = "/delete")
@@ -67,7 +69,7 @@ public class UserController extends BaseController {
     @ApiOperation(value = "上传头像")
     @RequestMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     @ResponseBody
-    public ResultResponse upload(MultipartFile image) {
+    public ResultResponse upload(MultipartFile image) throws IOException {
         return userService.upload(currentUser().getUid(), image);
     }
 }

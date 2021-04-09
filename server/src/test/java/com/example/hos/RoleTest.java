@@ -30,18 +30,18 @@ public class RoleTest {
     @Test
     public void roleTest(){
         Role role = new Role();
-        role.setRname("sell");
+        role.setRname("user");
         role.setStatus(Constant.STATUS);
-        role.setRemark("sell");
+        role.setRemark("user");
         roleRepository.saveAndFlush(role);
     }
 
     @Test
     public void permissionTest(){
         Permission permission = new Permission();
-        permission.setUid("32008fcf-823d-4a5c-bbfc-54eadc2ce936");
+        permission.setUid("b667c410-4ce3-4e52-97ca-28f9b9001138");
         permission.setUsername("jk");
-        permission.setRid("c8c6e53c-15b5-492b-ad51-41a84b5f4e6a");
+        permission.setRid("7f3a3216-b161-4bd2-b552-c832271374ab");
         permission.setRname("admin");
         permission.setStatus(Constant.STATUS);
         permissionRepository.saveAndFlush(permission);

@@ -1,22 +1,22 @@
 package com.example.hos.service.impl;
 
-import com.example.hos.repository.PermissionRepository;
-import com.example.hos.repository.RoleRepository;
-import com.example.hos.repository.UserRepository;
 import com.example.hos.handle.HosException;
 import com.example.hos.model.entity.Permission;
+import com.example.hos.model.entity.Role;
 import com.example.hos.model.entity.User;
 import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.model.vo.LoginInfoVO;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
+import com.example.hos.repository.PermissionRepository;
+import com.example.hos.repository.RoleRepository;
+import com.example.hos.repository.UserRepository;
 import com.example.hos.service.JwtService;
 import com.example.hos.service.UserService;
 import com.example.hos.until.Constant;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import jodd.util.StringPool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -24,15 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.awt.font.ImageGraphicAttribute;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -71,14 +66,14 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(userVO.getPassword())){
             user.setPassword(userVO.getPassword());
         }
-        roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> user.setRoleId(role.getRid()));
+        user.setRoleId(Constant.USER);
         user.setStatus(Constant.STATUS);
         userRepository.saveAndFlush(user);
         Permission permission = new Permission();
         permission.setUid(user.getUid());
         permission.setUsername(user.getUsername());
         permission.setRid(user.getRoleId());
-        permission.setRname(Objects.requireNonNull(roleRepository.findRoleByRname(userVO.getRoleName()).orElse(null)).getRname());
+        permission.setRname(Constant.ROLE_USER);
         permission.setStatus(Constant.STATUS);
         permissionRepository.saveAndFlush(permission);
         resultResponse.setSuccess(true);
@@ -97,9 +92,7 @@ public class UserServiceImpl implements UserService {
         loginInfoVO.setUsername(user.getUsername());
         loginInfoVO.setPassword(user.getPassword());
         loginInfoVO.setPhone(user.getPhone());
-//        if (user.getRoleId().equals(Constant.ADMIN_ID)){
-//            loginInfoVO.setIsAdmin(true);
-//        }
+        roleRepository.findById(user.getRoleId()).ifPresent(role -> loginInfoVO.setRoleName(role.getRname()));
         String token = jwtService.sign(user.getUid());
         loginInfoVO.setToken(token);
         resultResponse.setReturnData(loginInfoVO);
@@ -113,10 +106,14 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUidAndStatus(uid, Constant.STATUS)
                 .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
         if (StringUtils.isNotBlank(userVO.getName())){
+            Optional<User> username = userRepository.findByUsername(userVO.getName());
+            if (username.isPresent()){
+                throw new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage());
+            }
             user.setUsername(userVO.getName());
         }
         if (StringUtils.isNotBlank(userVO.getPhoto())){
-            user.setRoleId(userVO.getPhoto());
+            user.setPhoto(userVO.getPhoto());
         }
         if (StringUtils.isNotBlank(userVO.getWei())){
             user.setWei(userVO.getWei());
@@ -132,6 +129,11 @@ public class UserServiceImpl implements UserService {
         }
         if (StringUtils.isNotBlank(userVO.getRoleName())){
             roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> user.setRoleId(role.getRid()));
+            Role role = roleRepository.findRoleByRname(userVO.getRoleName()).orElse(null);
+            Permission permission = permissionRepository.findByUidAndStatus(uid, Constant.STATUS);
+            assert role != null;
+            permission.setRid(role.getRid());
+            permission.setRname(role.getRname());
         }
         userRepository.saveAndFlush(user);
         resultResponse.setSuccess(true);
@@ -151,6 +153,9 @@ public class UserServiceImpl implements UserService {
         }
         if (StringUtils.isNotBlank(userVO.getPhone())){
             user.setPhone(userVO.getPhone());
+        }
+        if (StringUtils.isNotBlank(userVO.getWei())){
+            user.setWei(userVO.getWei());
         }
         if (StringUtils.isNotBlank(userVO.getRoleName())){
             roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> user.setRoleId(role.getRid()));
@@ -209,9 +214,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User selectById(String id) {
-        return userRepository.findByUidAndStatus(id, Constant.STATUS)
-                .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+    public ResultResponse selectById(String id) {
+        ResultResponse resultResponse = new ResultResponse();
+        User user = userRepository.findByUidAndStatus(id, Constant.STATUS)
+                .orElseThrow(() -> new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+        UserVO userVO = new UserVO();
+        userVO.setRemark(user.getRemark());
+        userVO.setPhone(user.getPhone());
+        userVO.setName(user.getUsername());
+        roleRepository.findById(user.getRoleId()).ifPresent(role -> userVO.setRoleName(role.getRname()));
+        userVO.setWei(user.getWei());
+        userVO.setPhoto(user.getPhoto());
+        resultResponse.setReturnData(userVO);
+        return resultResponse;
     }
 
     @Override
@@ -220,52 +235,74 @@ public class UserServiceImpl implements UserService {
         return permissions.stream().map(Permission::getRname).collect(Collectors.toList());
     }
 
+//    @Override
+//    public ResultResponse upload(String uid, MultipartFile image) {
+//        ResultResponse resultResponse = new ResultResponse();
+//        String filesPath = Constant.FILES_PATH;
+//        if (!image.isEmpty()) {
+//            // 当前用户
+//            User user = userRepository.findByUidAndStatus(uid, Constant.STATUS)
+//                    .orElseThrow(() -> new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
+//            String photo = user.getPhoto();
+//            // 默认以原来的头像名称为新头像的名称，这样可以直接替换掉文件夹中对应的旧头像
+//            String imageName = photo;
+//            // 若头像名称不存在
+//            if (photo == null || StringPool.EMPTY.equals(photo)) {
+//                imageName = filesPath + System.currentTimeMillis()+ image.getOriginalFilename();
+//                // 路径存库
+//                user.setPhoto(imageName);
+//                userRepository.saveAndFlush(user);
+//            }
+//            // 磁盘保存
+//            BufferedOutputStream out = null;
+//            try {
+//                File folder = new File(filesPath);
+//                if (!folder.exists()) {
+//                    boolean mkdirs = folder.mkdirs();
+//                    if (!mkdirs){
+//                        throw new HosException(ErrorInfo.PHOTO_NOT_FOUND.getMessage());
+//                    }
+//                }
+//                out = new BufferedOutputStream(new FileOutputStream(imageName));
+//                // 写入新文件
+//                out.write(image.getBytes());
+//                out.flush();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                return resultResponse;
+//            } finally {
+//                try {
+//                    assert out != null;
+//                    out.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            return resultResponse;
+//        } else {
+//            throw new HosException(ErrorInfo.PHOTO_NOT_FOUND.getMessage());
+//        }
+//    }
+
     @Override
-    public ResultResponse upload(String uid, MultipartFile image) {
+    public ResultResponse upload(String uid, MultipartFile image) throws IOException {
         ResultResponse resultResponse = new ResultResponse();
-        String filesPath = Constant.FILES_PATH;
         if (!image.isEmpty()) {
-            // 当前用户
+            String imageStr = getImageStr(image);
             User user = userRepository.findByUidAndStatus(uid, Constant.STATUS)
                     .orElseThrow(() -> new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
-            String photo = user.getPhoto();
-            // 默认以原来的头像名称为新头像的名称，这样可以直接替换掉文件夹中对应的旧头像
-            String imageName = photo;
-            // 若头像名称不存在
-            if (photo == null || StringPool.EMPTY.equals(photo)) {
-                imageName = filesPath + System.currentTimeMillis()+ image.getOriginalFilename();
-                // 路径存库
-                user.setPhoto(imageName);
-                userRepository.saveAndFlush(user);
-            }
-            // 磁盘保存
-            BufferedOutputStream out = null;
-            try {
-                File folder = new File(filesPath);
-                if (!folder.exists()) {
-                    boolean mkdirs = folder.mkdirs();
-                    if (!mkdirs){
-                        throw new HosException(ErrorInfo.PHOTO_NOT_FOUND.getMessage());
-                    }
-                }
-                out = new BufferedOutputStream(new FileOutputStream(imageName));
-                // 写入新文件
-                out.write(image.getBytes());
-                out.flush();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return resultResponse;
-            } finally {
-                try {
-                    assert out != null;
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return resultResponse;
+            user.setPhoto(imageStr);
+            userRepository.saveAndFlush(user);
         } else {
             throw new HosException(ErrorInfo.PHOTO_NOT_FOUND.getMessage());
         }
+        resultResponse.setSuccess(true);
+        return resultResponse;
+    }
+
+    public static String getImageStr(MultipartFile file) throws IOException {
+        byte[] fileByte = null;
+        fileByte = file.getBytes();
+        return Base64.getEncoder().encodeToString(fileByte);
     }
 }

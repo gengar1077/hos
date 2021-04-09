@@ -30,7 +30,7 @@ public class LoginInfoVO implements Serializable {
     @ApiModelProperty(value = "是否登陆过")
     private Boolean isLogged;
 
-    @ApiModelProperty(value = "是否是管理员")
-    private Boolean isAdmin;
+    @ApiModelProperty(value = "角色")
+    private String roleName;
 
 }

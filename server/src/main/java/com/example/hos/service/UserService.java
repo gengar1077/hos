@@ -1,6 +1,5 @@
 package com.example.hos.service;
 
-import com.example.hos.model.entity.User;
 import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,7 +74,7 @@ public interface UserService {
      * @param id
      * @return
      **/
-    User selectById(String id);
+    ResultResponse selectById(String id);
 
     /**
      * 根据用户获取角色
@@ -94,5 +93,5 @@ public interface UserService {
      * @author changwei.zhong
      * @date 2021/3/31
      **/
-    ResultResponse upload(String uid, MultipartFile image) ;
+    ResultResponse upload(String uid, MultipartFile image) throws IOException;
 }

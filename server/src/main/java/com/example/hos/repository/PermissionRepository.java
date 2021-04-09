@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface PermissionRepository extends JpaRepository<Permission, String> {
 
     Optional<List<Permission>> findAllByUidAndStatus(String uid, String status);
+
+    Permission findByUidAndStatus(String uid, String status);
 }
