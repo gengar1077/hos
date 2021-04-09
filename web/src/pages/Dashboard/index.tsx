@@ -1,4 +1,4 @@
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Button } from 'antd';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -24,7 +24,7 @@ import Supplier from './Supplier';
 import Sell from './Sell';
 const { Header, Sider, Content } = Layout;
 
-export default function Dashboard() {
+export default function Dashboard(props) {
   const [collapsed, toggleCollapsed] = useReducer((state) => !state, false);
   const { path, url } = useRouteMatch();
   const PathIndex = [
@@ -38,6 +38,9 @@ export default function Dashboard() {
   ];
   const index = PathIndex.find((item) => item.path === path)?.index ?? '1';
   const defaultSelectedKeys = [index];
+  const handleLogout = () => {
+    props.onLogout();
+  };
   return (
     <Layout className="dashboard-wrapper">
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -48,7 +51,7 @@ export default function Dashboard() {
           defaultSelectedKeys={defaultSelectedKeys}
         >
           <Menu.Item key="1" icon={<DashboardOutlined />}>
-            <Link to="/dashboard">仪表盘</Link>
+            <Link to="/dashboard">主页</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<UserOutlined />}>
             <Link to="/user">用户管理</Link>
@@ -76,6 +79,9 @@ export default function Dashboard() {
               onClick: toggleCollapsed,
             },
           )}
+          <Button type="primary" onClick={handleLogout}>
+            登出
+          </Button>
         </Header>
         <Content
           className="site-layout-background"
