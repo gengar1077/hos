@@ -36,7 +36,4 @@ public final class Constant {
      */
     public static final String ADMIN_ID = "7f3a3216-b161-4bd2-b552-c832271374ab";
 
-    public static final String WINDOWS_PROFILES_PATH = "win";
-
-    public static final String LINUX_PROFILES_PATH = "linux";
 }

@@ -64,10 +64,8 @@ public class UserController extends BaseController {
         return userService.selectByPage(pageNum, pageSize, name);
     }
 
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name="photo",value = "头像", required = true, dataTypeClass = MultipartFile.class, paramType = "form")
-    })
-    @RequestMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "上传头像")
+    @RequestMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     @ResponseBody
     public ResultResponse upload(MultipartFile image) {
         return userService.upload(currentUser().getUid(), image);

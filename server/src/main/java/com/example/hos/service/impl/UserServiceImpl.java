@@ -221,7 +221,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse upload(String uid, MultipartFile image) {
         ResultResponse resultResponse = new ResultResponse();
-        String profilesPath = "D:/Java/pic";
+        String profilesPath = "img";
 
         if (!image.isEmpty()) {
             // 当前用户
@@ -232,7 +232,7 @@ public class UserServiceImpl implements UserService {
             String imageName = photo;
             // 若头像名称不存在
             if (photo == null || "".equals(photo)) {
-                imageName = UUID.randomUUID().toString() + System.currentTimeMillis() + image.getOriginalFilename();
+                imageName = UUID.randomUUID().toString() + image.getOriginalFilename();
                 // 路径存库
                 user.setPhoto(imageName);
                 userRepository.saveAndFlush(user);
@@ -242,7 +242,10 @@ public class UserServiceImpl implements UserService {
             try {
                 File folder = new File(profilesPath);
                 if (!folder.exists()) {
-                    folder.mkdirs();
+                    boolean mkdirs = folder.mkdirs();
+                    if (!mkdirs){
+                        throw new HosException(ErrorInfo.PHOTO_NOT_FOUND.getMessage());
+                    }
                 }
                 out = new BufferedOutputStream(new FileOutputStream(imageName));
                 // 写入新文件
