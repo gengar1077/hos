@@ -7,6 +7,7 @@ import {
   Modal,
   message,
   Input,
+  Result,
 } from 'antd';
 import {
   MenuUnfoldOutlined,
@@ -15,7 +16,7 @@ import {
   DashboardOutlined,
   TableOutlined,
 } from '@ant-design/icons';
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import './index.scss';
 import {
   BrowserRouter as Router,
@@ -24,6 +25,7 @@ import {
   Link,
   useParams,
   useRouteMatch,
+  useHistory,
 } from 'react-router-dom';
 import DashboardPage from './Dashboard';
 import User from './User';
@@ -48,7 +50,52 @@ const formItemLayout = {
     sm: { span: 18 },
   },
 };
+
+async function getUserProfile() {
+  try {
+    const res = await axios.get(BASE_URL + '/user/getUser');
+    console.log('[Dashboard] getUserProfile success:', res);
+    return res.data.returnData;
+  } catch (e) {
+    console.log('[Dashboard] getUserProfile failed:', e);
+    message.error('获取用户信息失败');
+    throw e;
+  }
+}
+function NoAuthPage() {
+  const history = useHistory();
+  return (
+    <Result
+      status="warning"
+      title="用户角色无对应权限，请登录相应账户操作"
+      extra={
+        <Button
+          type="primary"
+          key="console"
+          onClick={() => {
+            history.push('/signin');
+          }}
+        >
+          跳转登录
+        </Button>
+      }
+    />
+  );
+}
 export default function Dashboard(props) {
+  const [userProfile, setUserProfile] = useState({
+    name: props.user,
+    photo: '',
+    phone: '',
+    wei: '',
+    roleName: RoleType.ROLE_USER,
+    remark: '',
+  });
+  useEffect(() => {
+    getUserProfile().then((profile) => {
+      setUserProfile(profile);
+    });
+  }, []);
   const [collapsed, toggleCollapsed] = useReducer((state) => !state, false);
   const { path, url } = useRouteMatch();
   const PathIndex = [
@@ -67,6 +114,7 @@ export default function Dashboard(props) {
     props.onLogout();
   };
   const handleProfileEdit = () => {
+    userForm.setFieldsValue({ ...userProfile });
     setIsModalVisible(true);
   };
   const handleOk = async () => {
@@ -142,7 +190,7 @@ export default function Dashboard(props) {
           >
             <Input.Password />
           </Form.Item>
-          <Form.Item name="photo" label="头像">
+          <Form.Item label="头像">
             <UploadAvatar></UploadAvatar>
           </Form.Item>
           <Form.Item name="wei" label="微博">
@@ -183,15 +231,19 @@ export default function Dashboard(props) {
           <Menu.Item key="2" icon={<UserOutlined />}>
             <Link to="/user">用户管理</Link>
           </Menu.Item>
+
           <Menu.Item key="3" icon={<TableOutlined />}>
             <Link to="/drug">药物管理</Link>
           </Menu.Item>
+
           <Menu.Item key="4" icon={<TableOutlined />}>
             <Link to="/stock">库存管理</Link>
           </Menu.Item>
+
           <Menu.Item key="5" icon={<TableOutlined />}>
             <Link to="/supplier">供应商管理</Link>
           </Menu.Item>
+
           <Menu.Item key="6" icon={<TableOutlined />}>
             <Link to="/sell">销售管理</Link>
           </Menu.Item>
@@ -206,16 +258,15 @@ export default function Dashboard(props) {
               onClick: toggleCollapsed,
             },
           )}
-          <Button className="logoutBtn" type="primary" onClick={handleLogout}>
-            登出
-          </Button>
-          <Button
-            className="editBtn"
-            type="primary"
-            onClick={handleProfileEdit}
-          >
-            修改个人信息
-          </Button>
+          <div className="profile-wrapper">
+            <div className="avatar">{userProfile.name[0]}</div>
+            <Button className="editBtn" type="link" onClick={handleProfileEdit}>
+              修改个人信息
+            </Button>
+            <Button className="logoutBtn" type="primary" onClick={handleLogout}>
+              登出
+            </Button>
+          </div>
         </Header>
         <Content
           className="site-layout-background"
@@ -230,19 +281,37 @@ export default function Dashboard(props) {
               <DashboardPage></DashboardPage>
             </Route>
             <Route path={`/user`}>
-              <User></User>
+              {userProfile.roleName === RoleType.ROLE_ADMIN ? (
+                <User></User>
+              ) : (
+                <NoAuthPage></NoAuthPage>
+              )}
             </Route>
             <Route path={`/drug`}>
               <Drug></Drug>
             </Route>
             <Route path={`/stock`}>
-              <Stock></Stock>
+              {userProfile.roleName === RoleType.ROLE_STOCK ||
+              userProfile.roleName === RoleType.ROLE_ADMIN ? (
+                <Stock></Stock>
+              ) : (
+                <NoAuthPage></NoAuthPage>
+              )}
             </Route>
             <Route path={`/supplier`}>
-              <Supplier></Supplier>
+              {userProfile.roleName === RoleType.ROLE_ADMIN ? (
+                <Supplier></Supplier>
+              ) : (
+                <NoAuthPage></NoAuthPage>
+              )}
             </Route>
             <Route path={`/sell`}>
-              <Sell></Sell>
+              {userProfile.roleName === RoleType.ROLE_SELL ||
+              userProfile.roleName === RoleType.ROLE_ADMIN ? (
+                <Sell></Sell>
+              ) : (
+                <NoAuthPage></NoAuthPage>
+              )}
             </Route>
           </Switch>
         </Content>

@@ -13,6 +13,7 @@ import Signin, { ErrorType } from './pages/Signin';
 import Register from './pages/Register';
 import axios from 'axios';
 import config from './config/env.test';
+import { message } from 'antd';
 const { BASE_URL } = config;
 
 const routeConifg = [
@@ -31,18 +32,7 @@ export default function AuthExample() {
       password,
     });
     console.log('[App] handleRegister success', res);
-  };
-  const sendRequest = () => {
-    axios
-      .get(BASE_URL + '/role/info')
-      .then((res) => {
-        setRoleInfo(JSON.stringify(res.data));
-        console.log(res);
-      })
-      .catch((err) => {
-        setErrorText(JSON.stringify(err));
-        console.log(err);
-      });
+    message.success('注册成功，请到登录页面进行登录');
   };
   return (
     <ProvideAuth>
@@ -209,7 +199,7 @@ function AuthDashboard() {
       return ErrorType.PWD_ERROR;
     }
   };
-  return <Dashboard onLogout={onLogout} />;
+  return <Dashboard onLogout={onLogout} user={auth.user} />;
 }
 
 // A wrapper for <Route> that redirects to the login

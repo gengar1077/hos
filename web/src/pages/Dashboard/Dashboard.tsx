@@ -11,20 +11,20 @@ export default function Dashboard() {
   }
   return (
     <div className="dashboard-wrapper">
-      <h3>dashboard</h3>
+      <h3>仪表盘</h3>
       <Row gutter={16}>
         <Col span={8}>
-          <Card title="Card title" bordered={false}>
+          <Card title="数据卡片" bordered={false}>
             <Doughnut></Doughnut>
           </Card>
         </Col>
         <Col span={8}>
-          <Card title="Card title" bordered={false}>
+          <Card title="数据卡片" bordered={false}>
             <LineChart></LineChart>
           </Card>
         </Col>
         <Col span={8}>
-          <Card title="Card title" bordered={false}>
+          <Card title="数据卡片" bordered={false}>
             <BarChart></BarChart>
           </Card>
         </Col>

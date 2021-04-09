@@ -4,6 +4,7 @@ export enum RoleType {
   ROLE_ADMIN = 'admin',
   ROLE_STOCK = 'stock',
   ROLE_SELL = 'sell',
+  ROLE_USER = 'user',
 }
 export default function UserRoleSelect(props) {
   return (
@@ -20,6 +21,7 @@ export default function UserRoleSelect(props) {
       {props.isAdmin ? <Option value={RoleType.ROLE_ADMIN}>管理员</Option> : ''}
       <Option value={RoleType.ROLE_SELL}>销售员</Option>
       <Option value={RoleType.ROLE_STOCK}>仓管员</Option>
+      <Option value={RoleType.ROLE_USER}>普通用户</Option>
     </Select>
   );
 }
