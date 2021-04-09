@@ -1,4 +1,5 @@
 import { Doughnut as DoughnutChartJS } from 'react-chartjs-2';
+const backgroundColor = ['#eab676', '#76b5c5', '#abdbe3', '#eeeee4', '#1e81b0'];
 const data = {
   labels: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
   datasets: [
@@ -7,14 +8,14 @@ const data = {
       data: Array(5)
         .fill(undefined)
         .map(() => Math.ceil(Math.random() * 100)),
-      backgroundColor: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
+      backgroundColor,
     },
     {
       label: 'Dataset 2',
       data: Array(5)
         .fill(undefined)
         .map(() => Math.ceil(Math.random() * 100)),
-      backgroundColor: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
+      backgroundColor,
     },
   ],
 };
@@ -23,9 +24,12 @@ const config = {
   data: data,
   options: {
     responsive: true,
+    legend: {
+      display: true,
+    },
     plugins: {
       legend: {
-        position: 'top',
+        position: 'left',
       },
       title: {
         display: true,

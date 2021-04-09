@@ -8,16 +8,16 @@ const data = {
       data: Array(7)
         .fill(undefined)
         .map(() => Math.ceil(Math.random() * 100)),
-      borderColor: 'Red',
-      backgroundColor: 'Blue',
+      borderColor: '#fec979',
+      backgroundColor: '#fec979',
     },
     {
       label: 'Dataset 2',
       data: Array(7)
         .fill(undefined)
         .map(() => Math.ceil(Math.random() * 100)),
-      borderColor: 'Blue',
-      backgroundColor: 'Red',
+      borderColor: '#42b7d8',
+      backgroundColor: '#42b7d8',
     },
   ],
 };
