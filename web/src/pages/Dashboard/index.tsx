@@ -92,9 +92,11 @@ export default function Dashboard(props) {
     remark: '',
   });
   useEffect(() => {
-    getUserProfile().then((profile) => {
-      setUserProfile(profile);
-    });
+    setInterval(() => {
+      getUserProfile().then((profile) => {
+        setUserProfile(profile);
+      });
+    }, 1000);
   }, []);
   const [collapsed, toggleCollapsed] = useReducer((state) => !state, false);
   const { path, url } = useRouteMatch();
