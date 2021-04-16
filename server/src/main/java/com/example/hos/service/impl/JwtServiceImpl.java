@@ -18,12 +18,9 @@ import java.util.Map;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    //    @Value(("${jwt.secret.key}"))
-    //    private String jwtKey;
-
     private static final long EXPIRE_TIME = 360 * 60 * 1000;
 
-    private static final String JWT_KEY = "testsecret";
+    private static final String JWT_KEY = "testSecret";
 
     /**
      * @title 生成token

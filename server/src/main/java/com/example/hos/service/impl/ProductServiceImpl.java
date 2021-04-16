@@ -74,9 +74,9 @@ public class ProductServiceImpl implements ProductService {
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
         if (StringUtils.isNoneBlank(name)){
-            List<ProductVO> productVOS = productRepository.findLikeProductnameAndStatus(name, Constant.STATUS)
+            List<ProductVO> productVOList = productRepository.findLikeProductnameAndStatus(name, Constant.STATUS)
                     .stream().map(this::makeVO).collect(Collectors.toList());
-            return new PageInfo<>(productVOS);
+            return new PageInfo<>(productVOList);
         }
         List<ProductVO> products = productRepository.findAllByStatus(Constant.STATUS)
                 .stream().map(this::makeVO).collect(Collectors.toList());
