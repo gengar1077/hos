@@ -2,11 +2,12 @@ package com.example.hos.controller;
 
 import com.example.hos.interceptor.Authorization;
 import com.example.hos.interceptor.RoleAccess;
-import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.SellVO;
 import com.example.hos.service.SellService;
 import com.example.hos.until.Constant;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,23 +28,25 @@ public class SellController {
 
     @ApiOperation(value = "销售列表")
     @GetMapping(value = "/findByPage")
-    public ResultResponse pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                                   @RequestParam(defaultValue = "6",required = false) Integer pageSize,
-                                   String name){
-        return sellService.selectByPage(pageNum, pageSize, name);
+    public ResponseEntity<PageInfo<SellVO>> pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
+                                                     @RequestParam(defaultValue = "6",required = false) Integer pageSize,
+                                                     String name){
+        return ResponseEntity.ok().body(sellService.selectByPage(pageNum, pageSize, name));
     }
 
 
     @ApiOperation(value = "新增销售单", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/addSell",method = RequestMethod.POST)
-    public ResultResponse addSell(@RequestBody SellVO sellVO){
-        return sellService.addSell(sellVO);
+    public ResponseEntity<Void> addSell(@RequestBody SellVO sellVO){
+        sellService.addSell(sellVO);
+        return ResponseEntity.ok().build();
     }
 
 
     @ApiOperation(value = "删除销售单", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/del",method = RequestMethod.POST)
-    public ResultResponse delProduct(@RequestBody SellVO sellVO) {
-        return sellService.delSell(sellVO.getSellId());
+    public ResponseEntity<Void> delProduct(@RequestBody SellVO sellVO) {
+        sellService.delSell(sellVO.getSellId());
+        return ResponseEntity.ok().build();
     }
 }

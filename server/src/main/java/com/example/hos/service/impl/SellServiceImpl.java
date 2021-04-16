@@ -11,7 +11,6 @@ import com.example.hos.model.entity.Stock;
 import com.example.hos.model.entity.User;
 import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.model.vo.ProductVO;
-import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.SellVO;
 import com.example.hos.service.SellService;
 import com.example.hos.until.Constant;
@@ -51,7 +50,7 @@ public class SellServiceImpl implements SellService {
     private ProductRepository productRepository;
 
     @Override
-    public ResultResponse addSell(SellVO sellVO) {
+    public void addSell(SellVO sellVO) {
         Sell sell = new Sell();
         sell.setCreatetime(new Date());
         sell.setMoney(sellVO.getMoney());
@@ -65,24 +64,18 @@ public class SellServiceImpl implements SellService {
                 .orElseThrow(() -> new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
         sell.setOperator(user.getUsername());
         sellRespository.saveAndFlush(sell);
-        ResultResponse resultResponse = new ResultResponse();
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     @Override
-    public ResultResponse delSell(String sellId) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void delSell(String sellId) {
         Sell sell = sellRespository.findBySellIdAndStatus(sellId, Constant.STATUS).
                 orElseThrow(()-> new HosException(ErrorInfo.DATA_ERROR.getMessage()));
         sell.setStatus(Constant.DEL_STATUS);
         sellRespository.saveAndFlush(sell);
-        resultResponse.setSuccess(true);
-        return null;
     }
 
     @Override
-    public ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name) {
+    public PageInfo<SellVO> selectByPage(Integer pageNum, Integer pageSize, String name) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
@@ -93,28 +86,10 @@ public class SellServiceImpl implements SellService {
             tProducts.forEach(product -> {
                 Sell sell = productMap.get(product.getPname());
                 if (ObjectUtils.allNotNull(sell)){
-                    SellVO sellVO = new SellVO();
-                    ProductVO productVO = new ProductVO();
-                    productVO.setPid(product.getPid());
-                    productVO.setPname(product.getPname());
-                    productVO.setPrice(product.getPrice());
-                    productVO.setSpec(product.getSpec());
-                    productVO.setRemark(product.getRemark());
-                    productVO.setPlace(product.getPlace());
-                    sellVO.setProductVO(productVO);
-                    sellVO.setCreatetime(new Date());
-                    sellVO.setMoney(sell.getMoney());
-                    sellVO.setSellId(sell.getSellId());
-                    sellVO.setPname(sell.getPname());
-                    sellVO.setRemark(sell.getRemark());
-                    sellVO.setOperator(sell.getOperator());
-                    sellVOList.add(sellVO);
+                    sellVOList.add(makeVO(product, sell));
                 }
             });
-            PageInfo<SellVO> pageInfo = new PageInfo<>(sellVOList);
-            ResultResponse response = new ResultResponse();
-            response.setReturnData(pageInfo);
-            return response;
+            return new PageInfo<>(sellVOList);
         }
         Map<String, Sell> productMap = sellRespository.findAllByStatus(Constant.STATUS).stream().collect(Collectors.toMap(Sell::getPname, Function.identity()));
         List<Product> tProducts = productRepository.findAllByStatus(Constant.STATUS);
@@ -122,27 +97,22 @@ public class SellServiceImpl implements SellService {
         tProducts.forEach(product -> {
             Sell sell = productMap.get(product.getPname());
             if (ObjectUtils.allNotNull(sell)){
-                SellVO sellVO = new SellVO();
-                ProductVO productVO = new ProductVO();
-                productVO.setPid(product.getPid());
-                productVO.setPname(product.getPname());
-                productVO.setPrice(product.getPrice());
-                productVO.setSpec(product.getSpec());
-                productVO.setRemark(product.getRemark());
-                productVO.setPlace(product.getPlace());
-                sellVO.setProductVO(productVO);
-                sellVO.setCreatetime(new Date());
-                sellVO.setMoney(sell.getMoney());
-                sellVO.setSellId(sell.getSellId());
-                sellVO.setPname(sell.getPname());
-                sellVO.setRemark(sell.getRemark());
-                sellVO.setOperator(sell.getOperator());
-                sellVOList.add(sellVO);
+                sellVOList.add(makeVO(product, sell));
             }
         });
-        PageInfo<SellVO> pageInfo = new PageInfo<>(sellVOList);
-        ResultResponse response = new ResultResponse();
-        response.setReturnData(pageInfo);
-        return response;
+        return new PageInfo<>(sellVOList);
+    }
+
+    private SellVO makeVO(Product product, Sell sell) {
+        SellVO sellVO = new SellVO();
+        ProductVO productVO = ProductVO.makeVO(product);
+        sellVO.setProductVO(productVO);
+        sellVO.setCreatetime(new Date());
+        sellVO.setMoney(sell.getMoney());
+        sellVO.setSellId(sell.getSellId());
+        sellVO.setPname(sell.getPname());
+        sellVO.setRemark(sell.getRemark());
+        sellVO.setOperator(sell.getOperator());
+        return sellVO;
     }
 }

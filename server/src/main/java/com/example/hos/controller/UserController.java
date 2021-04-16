@@ -2,12 +2,13 @@ package com.example.hos.controller;
 
 import com.example.hos.interceptor.Authorization;
 import com.example.hos.interceptor.RoleAccess;
-import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.service.UserService;
 import com.example.hos.until.Constant;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,29 +31,32 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "用户信息修改")
     @PostMapping(value = "/update")
-    public ResultResponse updateUser(@RequestBody UserVO userVO){
-        return userService.updateUser(currentUser().getUid(), userVO);
+    public ResponseEntity<Void> updateUser(@RequestBody UserVO userVO){
+        userService.updateUser(currentUser().getUid(), userVO);
+        return ResponseEntity.ok().build();
     }
 
 
     @ApiOperation(value = "管理员修改个人信息")
     @PostMapping(value = "/updateByAdmin")
     @RoleAccess(roles = {Constant.ROLE_ADMIN})
-    public ResultResponse updateUserByAdmin(@RequestBody UserVO userVO){
-        return userService.updateUserByAdmin(userVO);
+    public ResponseEntity<Void> updateUserByAdmin(@RequestBody UserVO userVO){
+        userService.updateUserByAdmin(userVO);
+        return ResponseEntity.ok().build();
     }
 
     @ApiOperation(value = "获取用户")
     @GetMapping(value = "/getUser")
-    public ResultResponse getUser(){
-        return userService.selectById(currentUser().getUid());
+    public ResponseEntity<UserVO> getUser(){
+        return ResponseEntity.ok().body(userService.selectById(currentUser().getUid()));
     }
 
     @ApiOperation(value = "用户删除")
     @PostMapping(value = "/delete")
     @RoleAccess(roles = {Constant.ROLE_ADMIN})
-    public ResultResponse deleteUser(@RequestBody UserVO userVO) {
-        return userService.deleteUser(userVO.getId());
+    public ResponseEntity<Void> deleteUser(@RequestBody UserVO userVO) {
+        userService.deleteUser(userVO.getId());
+        return ResponseEntity.ok().build();
     }
 
 
@@ -60,16 +64,17 @@ public class UserController extends BaseController {
     @GetMapping(value = "/findByPage")
     @Authorization
     @RoleAccess(roles = {Constant.ROLE_ADMIN})
-    public ResultResponse pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                                   @RequestParam(defaultValue = "6",required = false) Integer pageSize,
-                                   String name){
-        return userService.selectByPage(pageNum, pageSize, name);
+    public ResponseEntity<PageInfo<UserVO>> pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
+                                                     @RequestParam(defaultValue = "6",required = false) Integer pageSize,
+                                                     String name){
+        return ResponseEntity.ok().body(userService.selectByPage(pageNum, pageSize, name));
     }
 
     @ApiOperation(value = "上传头像")
     @RequestMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     @ResponseBody
-    public ResultResponse upload(MultipartFile image) throws IOException {
-        return userService.upload(currentUser().getUid(), image);
+    public ResponseEntity<Void> upload(MultipartFile image) throws IOException {
+        userService.upload(currentUser().getUid(), image);
+        return ResponseEntity.ok().build();
     }
 }

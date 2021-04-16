@@ -5,7 +5,6 @@ import com.example.hos.handle.HosException;
 import com.example.hos.model.entity.Product;
 import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.model.vo.ProductVO;
-import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.service.ProductService;
 import com.example.hos.until.Constant;
 import com.github.pagehelper.PageHelper;
@@ -31,8 +30,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Override
-    public ResultResponse addProduct(ProductVO productVO) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void addProduct(ProductVO productVO) {
         Optional<Product> byPname = productRepository.findByPname(productVO.getPname());
         if (byPname.isPresent()){
             throw new HosException(ErrorInfo.PRODUCT_IS_EXIST.getMessage());
@@ -45,24 +43,18 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productVO.getPrice());
         product.setStatus(Constant.STATUS);
         productRepository.saveAndFlush(product);
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     @Override
-    public ResultResponse delProduct(String pid) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void delProduct(String pid) {
         Product product = productRepository.findByPidAndStatus(pid, Constant.STATUS)
                 .orElseThrow(()->new HosException(ErrorInfo.PRODUCT_NOT_FOUND.getMessage()));
         product.setStatus(Constant.DEL_STATUS);
         productRepository.saveAndFlush(product);
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     @Override
-    public ResultResponse updateProduct(ProductVO productVO) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void updateProduct(ProductVO productVO) {
         Product product = productRepository.findByPidAndStatus(productVO.getPid(), Constant.STATUS)
                 .orElseThrow(()->new HosException(ErrorInfo.PRODUCT_NOT_FOUND.getMessage()));
         Optional.ofNullable(productRepository.findByPname(productVO.getPname())).orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage()));
@@ -74,49 +66,36 @@ public class ProductServiceImpl implements ProductService {
         product.setRemark(productVO.getRemark());
         product.setPrice(productVO.getPrice());
         productRepository.saveAndFlush(product);
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     @Override
-    public ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name) {
+    public PageInfo<ProductVO> selectByPage(Integer pageNum, Integer pageSize, String name) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
         if (StringUtils.isNoneBlank(name)){
-            List<ProductVO> productVOS = productRepository.findLikeProductnameAndStatus(name, Constant.STATUS).stream().map(product -> {
-                ProductVO productVO = new ProductVO();
-                productVO.setPid(product.getPid());
-                productVO.setPname(product.getPname());
-                productVO.setPlace(product.getPlace());
-                productVO.setRemark(product.getRemark());
-                productVO.setSpec(product.getSpec());
-                productVO.setPrice(product.getPrice());
-                return productVO;
-            }).collect(Collectors.toList());
-            PageInfo<ProductVO> pageInfo = new PageInfo<>(productVOS);
-            ResultResponse response = new ResultResponse();
-            response.setReturnData(pageInfo);
-            return response;
+            List<ProductVO> productVOS = productRepository.findLikeProductnameAndStatus(name, Constant.STATUS)
+                    .stream().map(this::makeVO).collect(Collectors.toList());
+            return new PageInfo<>(productVOS);
         }
-        List<ProductVO> products = productRepository.findAllByStatus(Constant.STATUS).stream().map(product -> {
-            ProductVO productVO = new ProductVO();
-            productVO.setPid(product.getPid());
-            productVO.setPname(product.getPname());
-            productVO.setPlace(product.getPlace());
-            productVO.setRemark(product.getRemark());
-            productVO.setSpec(product.getSpec());
-            productVO.setPrice(product.getPrice());
-            return productVO;
-        }).collect(Collectors.toList());
-        PageInfo<ProductVO> pageInfo = new PageInfo<>(products);
-        ResultResponse response = new ResultResponse();
-        response.setReturnData(pageInfo);
-        return response;
+        List<ProductVO> products = productRepository.findAllByStatus(Constant.STATUS)
+                .stream().map(this::makeVO).collect(Collectors.toList());
+        return new PageInfo<>(products);
+    }
+
+    private ProductVO makeVO(Product product) {
+        ProductVO productVO = new ProductVO();
+        productVO.setPid(product.getPid());
+        productVO.setPname(product.getPname());
+        productVO.setPlace(product.getPlace());
+        productVO.setRemark(product.getRemark());
+        productVO.setSpec(product.getSpec());
+        productVO.setPrice(product.getPrice());
+        return productVO;
     }
 
     @Override
-    public ResultResponse findProduct(String name) {
+    public ProductVO findProduct(String name) {
         Product product = productRepository.findByPname(name)
                 .orElseThrow((()-> new HosException(ErrorInfo.PRODUCT_NOT_FOUND.getMessage())));
         ProductVO productVO = new ProductVO();
@@ -125,8 +104,6 @@ public class ProductServiceImpl implements ProductService {
         productVO.setRemark(product.getRemark());
         productVO.setSpec(product.getSpec());
         productVO.setPrice(product.getPrice());
-        ResultResponse response = new ResultResponse();
-        response.setReturnData(productVO);
-        return response;
+        return productVO;
     }
 }

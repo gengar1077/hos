@@ -6,7 +6,6 @@ import com.example.hos.model.entity.Role;
 import com.example.hos.model.entity.User;
 import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.model.vo.LoginInfoVO;
-import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.UserVO;
 import com.example.hos.repository.PermissionRepository;
 import com.example.hos.repository.RoleRepository;
@@ -53,8 +52,7 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
 
     @Override
-    public ResultResponse addUser(UserVO userVO) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void addUser(UserVO userVO) {
         Optional<User> username = userRepository.findByUsername(userVO.getName());
         if (username.isPresent()){
             throw new HosException(ErrorInfo.ACCOUNT_IS_EXIST.getMessage());
@@ -76,13 +74,11 @@ public class UserServiceImpl implements UserService {
         permission.setRname(Constant.ROLE_USER);
         permission.setStatus(Constant.STATUS);
         permissionRepository.saveAndFlush(permission);
-        resultResponse.setSuccess(true);
-        return resultResponse;
+        return ;
     }
 
     @Override
-    public ResultResponse login(String username, String password) {
-        ResultResponse resultResponse = new ResultResponse();
+    public LoginInfoVO login(String username, String password) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
         if (!password.equals(user.getPassword())){
@@ -95,14 +91,11 @@ public class UserServiceImpl implements UserService {
         roleRepository.findById(user.getRoleId()).ifPresent(role -> loginInfoVO.setRoleName(role.getRname()));
         String token = jwtService.sign(user.getUid());
         loginInfoVO.setToken(token);
-        resultResponse.setReturnData(loginInfoVO);
-        resultResponse.setSuccess(true);
-        return resultResponse;
+        return loginInfoVO;
     }
 
     @Override
-    public ResultResponse updateUser(String uid, UserVO userVO) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void updateUser(String uid, UserVO userVO) {
         User user = userRepository.findByUidAndStatus(uid, Constant.STATUS)
                 .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
         if (StringUtils.isNotBlank(userVO.getName())){
@@ -136,13 +129,10 @@ public class UserServiceImpl implements UserService {
             permission.setRname(role.getRname());
         }
         userRepository.saveAndFlush(user);
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     @Override
-    public ResultResponse updateUserByAdmin(UserVO userVO) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void updateUserByAdmin(UserVO userVO) {
         User user = userRepository.findByUsername(userVO.getName())
                 .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
         if (StringUtils.isNotBlank(userVO.getRemark())){
@@ -161,61 +151,45 @@ public class UserServiceImpl implements UserService {
             roleRepository.findRoleByRname(userVO.getRoleName()).ifPresent(role -> user.setRoleId(role.getRid()));
         }
         userRepository.saveAndFlush(user);
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     @Override
-    public ResultResponse deleteUser(String id) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void deleteUser(String id) {
         User user = userRepository.findByUidAndStatus(id, Constant.STATUS)
                 .orElseThrow(()->new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
         user.setStatus(Constant.DEL_STATUS);
         userRepository.saveAndFlush(user);
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     @Override
-    public ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name) {
+    public PageInfo<UserVO> selectByPage(Integer pageNum, Integer pageSize, String name) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
+
         if (StringUtils.isNoneBlank(name)){
-            List<UserVO> userVOS = userRepository.findLikeUsernameAndStatus(name, Constant.STATUS).stream().map(user -> {
-                UserVO userVO = new UserVO();
-                userVO.setName(user.getUsername());
-                userVO.setPassword(user.getPassword());
-                userVO.setPhone(user.getPhone());
-                userVO.setRemark(user.getRemark());
-                userVO.setId(user.getUid());
-                roleRepository.findById(user.getRoleId()).ifPresent(role -> userVO.setRoleName(role.getRname()));
-                return userVO;
-            }).collect(Collectors.toList());
-            PageInfo<UserVO> pageInfo = new PageInfo<>(userVOS);
-            ResultResponse response = new ResultResponse();
-            response.setReturnData(pageInfo);
-            return response;
+            List<UserVO> userVOS = userRepository.findLikeUsernameAndStatus(name, Constant.STATUS)
+                    .stream().map(this::makeVO).collect(Collectors.toList());
+            return new PageInfo<>(userVOS);
         }
-        List<UserVO> users = userRepository.findByStatus(Constant.STATUS).stream().map(user -> {
-            UserVO userVO = new UserVO();
-            userVO.setName(user.getUsername());
-            userVO.setPassword(user.getPassword());
-            userVO.setPhone(user.getPhone());
-            userVO.setRemark(user.getRemark());
-            userVO.setId(user.getUid());
-            roleRepository.findById(user.getRoleId()).ifPresent(role -> userVO.setRoleName(role.getRname()));
-            return userVO;
-        }).collect(Collectors.toList());
-        PageInfo<UserVO> pageInfo = new PageInfo<>(users);
-        ResultResponse response = new ResultResponse();
-        response.setReturnData(pageInfo);
-        return response;
+        List<UserVO> users = userRepository.findByStatus(Constant.STATUS)
+                .stream().map(this::makeVO).collect(Collectors.toList());
+        return new PageInfo<>(users);
+    }
+
+    private UserVO makeVO(User user) {
+        UserVO userVO = new UserVO();
+        userVO.setName(user.getUsername());
+        userVO.setPassword(user.getPassword());
+        userVO.setPhone(user.getPhone());
+        userVO.setRemark(user.getRemark());
+        userVO.setId(user.getUid());
+        roleRepository.findById(user.getRoleId()).ifPresent(role -> userVO.setRoleName(role.getRname()));
+        return userVO;
     }
 
     @Override
-    public ResultResponse selectById(String id) {
-        ResultResponse resultResponse = new ResultResponse();
+    public UserVO selectById(String id) {
         User user = userRepository.findByUidAndStatus(id, Constant.STATUS)
                 .orElseThrow(() -> new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
         UserVO userVO = new UserVO();
@@ -225,8 +199,7 @@ public class UserServiceImpl implements UserService {
         roleRepository.findById(user.getRoleId()).ifPresent(role -> userVO.setRoleName(role.getRname()));
         userVO.setWei(user.getWei());
         userVO.setPhoto(user.getPhoto());
-        resultResponse.setReturnData(userVO);
-        return resultResponse;
+        return userVO;
     }
 
     @Override
@@ -285,8 +258,7 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
-    public ResultResponse upload(String uid, MultipartFile image) throws IOException {
-        ResultResponse resultResponse = new ResultResponse();
+    public void upload(String uid, MultipartFile image) throws IOException {
         if (!image.isEmpty()) {
             String imageStr = getImageStr(image);
             User user = userRepository.findByUidAndStatus(uid, Constant.STATUS)
@@ -296,8 +268,6 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new HosException(ErrorInfo.PHOTO_NOT_FOUND.getMessage());
         }
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     public static String getImageStr(MultipartFile file) throws IOException {

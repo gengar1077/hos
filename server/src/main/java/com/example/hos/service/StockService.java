@@ -1,7 +1,7 @@
 package com.example.hos.service;
 
-import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.StockVO;
+import com.github.pagehelper.PageInfo;
 
 /**
  * 库存操作
@@ -18,7 +18,7 @@ public interface StockService {
      * @author changwei.zhong
      * @date 2021/3/8
      **/
-    ResultResponse inStock(String pid, int num);
+    void inStock(String pid, int num);
 
     /**
      * 分页查询库存
@@ -28,7 +28,7 @@ public interface StockService {
      * @param pageSize
      * @return
      **/
-    ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name);
+    PageInfo<StockVO> selectByPage(Integer pageNum, Integer pageSize, String name);
 
     /**
      * 新增库存单
@@ -37,7 +37,7 @@ public interface StockService {
      * @author changwei.zhong
      * @date 2021/3/8
      **/
-    ResultResponse addStock(StockVO stockVO);
+    void addStock(StockVO stockVO);
 
     /**
      * 删除库存单
@@ -46,5 +46,5 @@ public interface StockService {
      * @author changwei.zhong
      * @date 2021/3/8
      **/
-    ResultResponse delStock(String stockId);
+    void delStock(String stockId);
 }

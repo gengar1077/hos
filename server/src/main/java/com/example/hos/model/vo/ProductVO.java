@@ -1,7 +1,10 @@
 package com.example.hos.model.vo;
 
+import com.example.hos.model.entity.Product;
+import com.example.hos.model.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 
@@ -34,4 +37,22 @@ public class ProductVO implements Serializable {
 
     @ApiModelProperty(value = "药品状态")
     private String status;
+
+    /**
+     * 转vo
+     * @author changwei.zhong
+     * @date 2021/1/11
+     * @param product
+     * @return userVo
+     **/
+    public static ProductVO makeVO(Product product) {
+        ProductVO productVO = new ProductVO();
+        productVO.setPid(product.getPid());
+        productVO.setPname(product.getPname());
+        productVO.setPrice(product.getPrice());
+        productVO.setSpec(product.getSpec());
+        productVO.setRemark(product.getRemark());
+        productVO.setPlace(product.getPlace());
+        return productVO;
+    }
 }

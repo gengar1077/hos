@@ -7,7 +7,6 @@ import com.example.hos.model.entity.Product;
 import com.example.hos.model.entity.Stock;
 import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.model.vo.ProductVO;
-import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.StockVO;
 import com.example.hos.service.StockService;
 import com.example.hos.until.Constant;
@@ -42,7 +41,7 @@ public class StockServiceImpl implements StockService {
     private ProductRepository productRepository;
 
     @Override
-    public ResultResponse addStock(StockVO stockVO) {
+    public void addStock(StockVO stockVO) {
         Optional<Stock> byPnameAndStatus = stockRepository.findByPnameAndStatus(stockVO.getPname(), Constant.STATUS);
         if (byPnameAndStatus.isPresent()){
             throw new HosException(ErrorInfo.DATA_ERROR.getMessage());
@@ -58,24 +57,18 @@ public class StockServiceImpl implements StockService {
         stock.setCreatetime(new Date());
         stock.setStatus(Constant.STATUS);
         stockRepository.saveAndFlush(stock);
-        ResultResponse resultResponse = new ResultResponse();
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     @Override
-    public ResultResponse delStock(String stockId) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void delStock(String stockId) {
         Stock stock = stockRepository.findByStockIdAndStatus(stockId, Constant.STATUS)
                 .orElseThrow(()->new HosException(ErrorInfo.STOCK_NOT_FOUND.getMessage()));
         stock.setStatus(Constant.DEL_STATUS);
         stockRepository.saveAndFlush(stock);
-        resultResponse.setSuccess(true);
-        return null;
     }
 
     @Override
-    public ResultResponse inStock(String pname, int num) {
+    public void inStock(String pname, int num) {
         Product product = productRepository.findByPname(pname)
                 .orElseThrow(() -> new HosException(ErrorInfo.PRODUCT_NOT_FOUND.getMessage()));
         Stock stock = stockRepository.findByPnameAndStatus(product.getPname(), Constant.STATUS)
@@ -83,13 +76,10 @@ public class StockServiceImpl implements StockService {
         stock.setPNum(num);
         stock.setCreatetime(new Date());
         stockRepository.saveAndFlush(stock);
-        ResultResponse resultResponse = new ResultResponse();
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     @Override
-    public ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name) {
+    public PageInfo<StockVO> selectByPage(Integer pageNum, Integer pageSize, String name) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
@@ -100,27 +90,10 @@ public class StockServiceImpl implements StockService {
             tProducts.forEach(product -> {
                 Stock stock = productMap.get(product.getPname());
                 if (ObjectUtils.allNotNull(stock)){
-                    StockVO stockVO = new StockVO();
-                    ProductVO productVO = new ProductVO();
-                    productVO.setPid(product.getPid());
-                    productVO.setPname(product.getPname());
-                    productVO.setPrice(product.getPrice());
-                    productVO.setSpec(product.getSpec());
-                    productVO.setRemark(product.getRemark());
-                    productVO.setPlace(product.getPlace());
-                    stockVO.setStockId(stock.getStockId());
-                    stockVO.setPname(stock.getPname());
-                    stockVO.setPNum(stock.getPNum());
-                    stockVO.setProductVO(productVO);
-                    stockVO.setCreatetime(new Date());
-                    stockVO.setPNum(stock.getPNum());
-                    stockVOList.add(stockVO);
+                    stockVOList.add(makeVO(product, stock));
                 }
             });
-            PageInfo<StockVO> pageInfo = new PageInfo<>(stockVOList);
-            ResultResponse response = new ResultResponse();
-            response.setReturnData(pageInfo);
-            return response;
+            return new PageInfo<>(stockVOList);
         }
         Map<String, Stock> productMap = stockRepository.findAllByStatus(Constant.STATUS).stream().collect(Collectors.toMap(Stock::getPname, Function.identity()));
         List<Product> tProducts = productRepository.findAllByStatus(Constant.STATUS);
@@ -128,26 +101,21 @@ public class StockServiceImpl implements StockService {
         tProducts.forEach(product -> {
             Stock stock = productMap.get(product.getPname());
             if (ObjectUtils.allNotNull(stock)){
-                StockVO stockVO = new StockVO();
-                ProductVO productVO = new ProductVO();
-                productVO.setPid(product.getPid());
-                productVO.setPname(product.getPname());
-                productVO.setPrice(product.getPrice());
-                productVO.setSpec(product.getSpec());
-                productVO.setRemark(product.getRemark());
-                productVO.setPlace(product.getPlace());
-                stockVO.setStockId(stock.getStockId());
-                stockVO.setPname(stock.getPname());
-                stockVO.setPNum(stock.getPNum());
-                stockVO.setProductVO(productVO);
-                stockVO.setCreatetime(new Date());
-                stockVO.setPNum(stock.getPNum());
-                stockVOList.add(stockVO);
+                stockVOList.add(makeVO(product, stock));
             }
         });
-        PageInfo<StockVO> pageInfo = new PageInfo<>(stockVOList);
-        ResultResponse response = new ResultResponse();
-        response.setReturnData(pageInfo);
-        return response;
+        return new PageInfo<>(stockVOList);
+    }
+
+    private StockVO makeVO(Product product, Stock stock) {
+        StockVO stockVO = new StockVO();
+        ProductVO productVO = ProductVO.makeVO(product);
+        stockVO.setStockId(stock.getStockId());
+        stockVO.setPname(stock.getPname());
+        stockVO.setPNum(stock.getPNum());
+        stockVO.setProductVO(productVO);
+        stockVO.setCreatetime(new Date());
+        stockVO.setPNum(stock.getPNum());
+        return stockVO;
     }
 }

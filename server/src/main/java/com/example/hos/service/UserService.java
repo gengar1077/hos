@@ -1,7 +1,8 @@
 package com.example.hos.service;
 
-import com.example.hos.model.vo.ResultResponse;
+import com.example.hos.model.vo.LoginInfoVO;
 import com.example.hos.model.vo.UserVO;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public interface UserService {
      * @param userVO
      * @return
      */
-    ResultResponse addUser(UserVO userVO);
+    void addUser(UserVO userVO);
 
     /**
      * 登录
@@ -30,7 +31,7 @@ public interface UserService {
      * @param password
      * @return
      */
-    ResultResponse login(String username, String password);
+    LoginInfoVO login(String username, String password);
 
     /**
      * 更新用户
@@ -38,7 +39,7 @@ public interface UserService {
      * @param userVo
      * @return
      **/
-    ResultResponse updateUser(String uid, UserVO userVo);
+    void updateUser(String uid, UserVO userVo);
 
     /**
      * 管理员修改用户
@@ -46,7 +47,7 @@ public interface UserService {
      * @param userVo
      * @return
      **/
-    ResultResponse updateUserByAdmin(UserVO userVo);
+    void updateUserByAdmin(UserVO userVo);
 
     /**
      * 删除用户
@@ -55,7 +56,7 @@ public interface UserService {
      * @param id
      * @return
      **/
-    ResultResponse deleteUser(String id);
+    void deleteUser(String id);
 
     /**
      * 分页查询
@@ -65,7 +66,7 @@ public interface UserService {
      * @param pageSize
      * @return
      **/
-    ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name);
+    PageInfo<UserVO> selectByPage(Integer pageNum, Integer pageSize, String name);
 
     /**
      * 根据id查询用户
@@ -74,7 +75,7 @@ public interface UserService {
      * @param id
      * @return
      **/
-    ResultResponse selectById(String id);
+    UserVO selectById(String id);
 
     /**
      * 根据用户获取角色
@@ -93,5 +94,5 @@ public interface UserService {
      * @author changwei.zhong
      * @date 2021/3/31
      **/
-    ResultResponse upload(String uid, MultipartFile image) throws IOException;
+    void upload(String uid, MultipartFile image) throws IOException;
 }

@@ -7,7 +7,6 @@ import com.example.hos.model.entity.Product;
 import com.example.hos.model.entity.Supplier;
 import com.example.hos.model.type.ErrorInfo;
 import com.example.hos.model.vo.ProductVO;
-import com.example.hos.model.vo.ResultResponse;
 import com.example.hos.model.vo.SupplierVO;
 import com.example.hos.service.SupplierService;
 import com.example.hos.until.Constant;
@@ -42,7 +41,7 @@ public class SupplierServiceImpl implements SupplierService {
     private ProductRepository productRepository;
 
     @Override
-    public ResultResponse addSupplier(SupplierVO supplierVO) {
+    public void addSupplier(SupplierVO supplierVO) {
         Optional<Supplier> bySname = supplierRespository.findBySname(supplierVO.getSname());
         if (bySname.isPresent()){
             throw new HosException(ErrorInfo.SUPPLIER_IS_EXIST.getMessage());
@@ -59,13 +58,10 @@ public class SupplierServiceImpl implements SupplierService {
         }
         supplier.setPname(supplierVO.getPname());
         supplierRespository.saveAndFlush(supplier);
-        ResultResponse resultResponse = new ResultResponse();
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 
     @Override
-    public ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name) {
+    public PageInfo<SupplierVO> selectByPage(Integer pageNum, Integer pageSize, String name) {
         PageHelper.startPage(
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
@@ -76,26 +72,10 @@ public class SupplierServiceImpl implements SupplierService {
             tProducts.forEach(product -> {
                 Supplier supplier = productMap.get(product.getPname());
                 if (ObjectUtils.allNotNull(supplier)){
-                    SupplierVO supplierVO = new SupplierVO();
-                    ProductVO productVO = new ProductVO();
-                    productVO.setPid(product.getPid());
-                    productVO.setPname(product.getPname());
-                    productVO.setPrice(product.getPrice());
-                    productVO.setSpec(product.getSpec());
-                    productVO.setRemark(product.getRemark());
-                    productVO.setPlace(product.getPlace());
-                    supplierVO.setProductVO(productVO);
-                    supplierVO.setAddress(supplier.getAddress());
-                    supplierVO.setSname(supplier.getSname());
-                    supplierVO.setTel(supplier.getTel());
-                    supplierVO.setPname(supplier.getPname());
-                    supplierVOList.add(supplierVO);
+                    supplierVOList.add(makeVO(product, supplier));
                 }
             });
-            PageInfo<SupplierVO> pageInfo = new PageInfo<>(supplierVOList);
-            ResultResponse response = new ResultResponse();
-            response.setReturnData(pageInfo);
-            return response;
+            return new PageInfo<>(supplierVOList);
         }
         Map<String, Supplier> productMap = supplierRespository.findAllByStatus(Constant.STATUS).stream().collect(Collectors.toMap(Supplier::getPname, Function.identity()));
         List<Product> tProducts = productRepository.findAllByStatus(Constant.STATUS);
@@ -103,36 +83,28 @@ public class SupplierServiceImpl implements SupplierService {
         tProducts.forEach(product -> {
             Supplier supplier = productMap.get(product.getPname());
             if (ObjectUtils.allNotNull(supplier)){
-                SupplierVO supplierVO = new SupplierVO();
-                ProductVO productVO = new ProductVO();
-                productVO.setPid(product.getPid());
-                productVO.setPname(product.getPname());
-                productVO.setPrice(product.getPrice());
-                productVO.setSpec(product.getSpec());
-                productVO.setRemark(product.getRemark());
-                productVO.setPlace(product.getPlace());
-                supplierVO.setProductVO(productVO);
-                supplierVO.setAddress(supplier.getAddress());
-                supplierVO.setSname(supplier.getSname());
-                supplierVO.setTel(supplier.getTel());
-                supplierVO.setPname(supplier.getPname());
-                supplierVOList.add(supplierVO);
+                supplierVOList.add(makeVO(product, supplier));
             }
         });
-        PageInfo<SupplierVO> pageInfo = new PageInfo<>(supplierVOList);
-        ResultResponse response = new ResultResponse();
-        response.setReturnData(pageInfo);
-        return response;
+        return new PageInfo<>(supplierVOList);
+    }
+
+    private SupplierVO makeVO(Product product, Supplier supplier) {
+        SupplierVO supplierVO = new SupplierVO();
+        ProductVO productVO = ProductVO.makeVO(product);
+        supplierVO.setProductVO(productVO);
+        supplierVO.setAddress(supplier.getAddress());
+        supplierVO.setSname(supplier.getSname());
+        supplierVO.setTel(supplier.getTel());
+        supplierVO.setPname(supplier.getPname());
+        return supplierVO;
     }
 
     @Override
-    public ResultResponse delSupplier(String sid) {
-        ResultResponse resultResponse = new ResultResponse();
+    public void delSupplier(String sid) {
         Supplier supplier = supplierRespository.findBySidAndStatus(sid, Constant.STATUS)
                 .orElseThrow(() -> new HosException(ErrorInfo.SUPPLIER_NOT_FOUND.getMessage()));
         supplier.setStatus(Constant.DEL_STATUS);
         supplierRespository.saveAndFlush(supplier);
-        resultResponse.setSuccess(true);
-        return resultResponse;
     }
 }

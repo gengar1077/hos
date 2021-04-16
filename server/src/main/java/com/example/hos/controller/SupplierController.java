@@ -2,11 +2,13 @@ package com.example.hos.controller;
 
 import com.example.hos.interceptor.Authorization;
 import com.example.hos.interceptor.RoleAccess;
-import com.example.hos.model.vo.ResultResponse;
+import com.example.hos.model.entity.Supplier;
 import com.example.hos.model.vo.SupplierVO;
 import com.example.hos.service.SupplierService;
 import com.example.hos.until.Constant;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,23 +29,25 @@ public class SupplierController {
 
     @ApiOperation(value = "新增供应商", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/addSupplier",method = RequestMethod.POST)
-    public ResultResponse addStock(@RequestBody SupplierVO supplierVO) {
-        return supplierService.addSupplier(supplierVO);
+    public ResponseEntity<Void> addStock(@RequestBody SupplierVO supplierVO) {
+        supplierService.addSupplier(supplierVO);
+        return ResponseEntity.ok().build();
     }
 
 
     @ApiOperation(value = "删除", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/del",method = RequestMethod.POST)
-    public ResultResponse delProduct(@RequestBody SupplierVO supplierVO) {
-        return supplierService.delSupplier(supplierVO.getSid());
+    public ResponseEntity<Void> delProduct(@RequestBody SupplierVO supplierVO) {
+        supplierService.delSupplier(supplierVO.getSid());
+        return ResponseEntity.ok().build();
     }
 
 
     @ApiOperation(value = "查询供应商列表")
     @GetMapping(value = "/findStock")
-    public ResultResponse supplierList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
-                                    @RequestParam(defaultValue = "6",required = false) Integer pageSize,
-                                       String name){
-        return supplierService.selectByPage(pageNum, pageSize, name);
+    public ResponseEntity<PageInfo<SupplierVO>> supplierList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
+                                                           @RequestParam(defaultValue = "6",required = false) Integer pageSize,
+                                                           String name){
+        return ResponseEntity.ok().body(supplierService.selectByPage(pageNum, pageSize, name));
     }
 }

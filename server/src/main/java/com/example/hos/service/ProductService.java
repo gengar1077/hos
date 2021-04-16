@@ -1,7 +1,7 @@
 package com.example.hos.service;
 
 import com.example.hos.model.vo.ProductVO;
-import com.example.hos.model.vo.ResultResponse;
+import com.github.pagehelper.PageInfo;
 
 /**
  * @Author: 吃面龙
@@ -17,7 +17,7 @@ public interface ProductService {
      * @author changwei.zhong
      * @date 2021/3/2
      **/
-    ResultResponse addProduct(ProductVO productVO);
+    void addProduct(ProductVO productVO);
 
     /**
      * 删除药品
@@ -26,7 +26,7 @@ public interface ProductService {
      * @author changwei.zhong
      * @date 2021/3/2
      **/
-    ResultResponse delProduct(String pid);
+    void delProduct(String pid);
 
     /**
      * 修改药品
@@ -35,7 +35,7 @@ public interface ProductService {
      * @author changwei.zhong
      * @date 2021/3/2
      **/
-    ResultResponse updateProduct(ProductVO productVO);
+    void updateProduct(ProductVO productVO);
 
     /**
      * 分页查询
@@ -45,7 +45,7 @@ public interface ProductService {
      * @param pageSize
      * @return
      **/
-    ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name);
+    PageInfo<ProductVO> selectByPage(Integer pageNum, Integer pageSize, String name);
 
     /**
      * 查询药品
@@ -53,5 +53,5 @@ public interface ProductService {
      * @author changwei.zhong
      * @date
      **/
-    ResultResponse findProduct(String name);
+    ProductVO findProduct(String name);
 }

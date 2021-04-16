@@ -1,7 +1,8 @@
 package com.example.hos.service;
 
-import com.example.hos.model.vo.ResultResponse;
+import com.example.hos.model.entity.Supplier;
 import com.example.hos.model.vo.SupplierVO;
+import com.github.pagehelper.PageInfo;
 
 /**
  * @Author: 吃面龙
@@ -17,7 +18,7 @@ public interface SupplierService {
      * @author changwei.zhong
      * @date 2021/3/8
      **/
-    ResultResponse addSupplier(SupplierVO supplierVO);
+    void addSupplier(SupplierVO supplierVO);
 
     /**
      * 分页查询供应商
@@ -27,7 +28,7 @@ public interface SupplierService {
      * @param pageSize
      * @return
      **/
-    ResultResponse selectByPage(Integer pageNum, Integer pageSize, String name);
+    PageInfo<SupplierVO> selectByPage(Integer pageNum, Integer pageSize, String name);
 
     /**
      * @Desc 删除供应商
@@ -35,5 +36,5 @@ public interface SupplierService {
      * @Date 2021/4/5
      * @Params sid
      */
-    ResultResponse delSupplier(String sid);
+    void delSupplier(String sid);
 }
