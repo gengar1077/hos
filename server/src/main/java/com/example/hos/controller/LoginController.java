@@ -36,7 +36,7 @@ public class LoginController {
     @ApiOperation(value = "登录", produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public ResponseEntity<LoginInfoVO> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok().body(userService.login(loginRequest.getUsername(), loginRequest.getPassword()));
+        return ResponseEntity.ok(userService.login(loginRequest.getUsername(), loginRequest.getPassword()));
     }
 
 

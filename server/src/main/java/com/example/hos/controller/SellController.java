@@ -31,7 +31,7 @@ public class SellController {
     public ResponseEntity<PageInfo<SellVO>> pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                                                      @RequestParam(defaultValue = "6",required = false) Integer pageSize,
                                                      String name){
-        return ResponseEntity.ok().body(sellService.selectByPage(pageNum, pageSize, name));
+        return ResponseEntity.ok(sellService.selectByPage(pageNum, pageSize, name));
     }
 
 

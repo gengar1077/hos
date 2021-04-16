@@ -59,7 +59,7 @@ public class ProductController {
     public ResponseEntity<PageInfo<ProductVO>> pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                                                         @RequestParam(defaultValue = "6",required = false) Integer pageSize,
                                                         String name){
-        return ResponseEntity.ok().body(productService.selectByPage(pageNum, pageSize, name));
+        return ResponseEntity.ok(productService.selectByPage(pageNum, pageSize, name));
     }
 
 
@@ -77,7 +77,7 @@ public class ProductController {
     public ResponseEntity<PageInfo<StockVO>> stockList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                                     @RequestParam(defaultValue = "6",required = false) Integer pageSize,
                                     String name){
-        return ResponseEntity.ok().body(stockService.selectByPage(pageNum, pageSize, name));
+        return ResponseEntity.ok(stockService.selectByPage(pageNum, pageSize, name));
     }
 
 

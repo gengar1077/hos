@@ -48,7 +48,7 @@ public class UserController extends BaseController {
     @ApiOperation(value = "获取用户")
     @GetMapping(value = "/getUser")
     public ResponseEntity<UserVO> getUser(){
-        return ResponseEntity.ok().body(userService.selectById(currentUser().getUid()));
+        return ResponseEntity.ok(userService.selectById(currentUser().getUid()));
     }
 
     @ApiOperation(value = "用户删除")
@@ -67,7 +67,7 @@ public class UserController extends BaseController {
     public ResponseEntity<PageInfo<UserVO>> pageList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                                                      @RequestParam(defaultValue = "6",required = false) Integer pageSize,
                                                      String name){
-        return ResponseEntity.ok().body(userService.selectByPage(pageNum, pageSize, name));
+        return ResponseEntity.ok(userService.selectByPage(pageNum, pageSize, name));
     }
 
     @ApiOperation(value = "上传头像")

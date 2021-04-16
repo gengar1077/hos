@@ -48,6 +48,6 @@ public class SupplierController {
     public ResponseEntity<PageInfo<SupplierVO>> supplierList(@RequestParam(defaultValue = "1",required = false) Integer pageNum,
                                                            @RequestParam(defaultValue = "6",required = false) Integer pageSize,
                                                            String name){
-        return ResponseEntity.ok().body(supplierService.selectByPage(pageNum, pageSize, name));
+        return ResponseEntity.ok(supplierService.selectByPage(pageNum, pageSize, name));
     }
 }

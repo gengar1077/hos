@@ -74,7 +74,6 @@ public class UserServiceImpl implements UserService {
         permission.setRname(Constant.ROLE_USER);
         permission.setStatus(Constant.STATUS);
         permissionRepository.saveAndFlush(permission);
-        return ;
     }
 
     @Override
