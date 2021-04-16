@@ -42,7 +42,6 @@ public class RoleAccessInterceptor implements AsyncHandlerInterceptor {
     private UserService userService;
 
     /**
-     * @annotation：Jiahao.Yu
      * @Description：在controller方法处理之前，进行角色信息验证
      * @param request
      * @param response
@@ -73,10 +72,8 @@ public class RoleAccessInterceptor implements AsyncHandlerInterceptor {
     }
 
     /**
-     * @annotation：Jiahao.Yu
      * @Description：获取方法/类上的RoleAccess注解
      * @param handlerMethod
-     * @return：com.dbc.workload.annotation.RoleAccess
      * @Date：2020/11/19
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -96,7 +93,6 @@ public class RoleAccessInterceptor implements AsyncHandlerInterceptor {
 
     /**
      * 角色认证失败信息
-     * @author Qingcheng Wang
      * @date 2020/9/24
      * @param
      * @return

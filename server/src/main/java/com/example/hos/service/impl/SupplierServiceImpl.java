@@ -67,37 +67,29 @@ public class SupplierServiceImpl implements SupplierService {
                 pageSize==null?2:pageSize);
         if (StringUtils.isNoneBlank(name)){
             Map<String, Supplier> productMap = supplierRespository.findLikeProductnameAndStatus(name, Constant.STATUS).stream().collect(Collectors.toMap(Supplier::getPname, Function.identity()));
-            List<Product> tProducts = productRepository.findAllByStatus(Constant.STATUS);
-            List<SupplierVO> supplierVOList = Lists.newArrayList();
-            tProducts.forEach(product -> {
-                Supplier supplier = productMap.get(product.getPname());
-                if (ObjectUtils.allNotNull(supplier)){
-                    supplierVOList.add(makeVO(product, supplier));
-                }
-            });
-            return new PageInfo<>(supplierVOList);
+            return new PageInfo<>(makeListVO(productMap));
         }
         Map<String, Supplier> productMap = supplierRespository.findAllByStatus(Constant.STATUS).stream().collect(Collectors.toMap(Supplier::getPname, Function.identity()));
+        return new PageInfo<>(makeListVO(productMap));
+    }
+
+    private List<SupplierVO> makeListVO(Map<String, Supplier> productMap) {
         List<Product> tProducts = productRepository.findAllByStatus(Constant.STATUS);
         List<SupplierVO> supplierVOList = Lists.newArrayList();
         tProducts.forEach(product -> {
             Supplier supplier = productMap.get(product.getPname());
             if (ObjectUtils.allNotNull(supplier)){
-                supplierVOList.add(makeVO(product, supplier));
+                SupplierVO supplierVO = new SupplierVO();
+                ProductVO productVO = ProductVO.makeVO(product);
+                supplierVO.setProductVO(productVO);
+                supplierVO.setAddress(supplier.getAddress());
+                supplierVO.setSname(supplier.getSname());
+                supplierVO.setTel(supplier.getTel());
+                supplierVO.setPname(supplier.getPname());
+                supplierVOList.add(supplierVO);
             }
         });
-        return new PageInfo<>(supplierVOList);
-    }
-
-    private SupplierVO makeVO(Product product, Supplier supplier) {
-        SupplierVO supplierVO = new SupplierVO();
-        ProductVO productVO = ProductVO.makeVO(product);
-        supplierVO.setProductVO(productVO);
-        supplierVO.setAddress(supplier.getAddress());
-        supplierVO.setSname(supplier.getSname());
-        supplierVO.setTel(supplier.getTel());
-        supplierVO.setPname(supplier.getPname());
-        return supplierVO;
+        return supplierVOList;
     }
 
     @Override

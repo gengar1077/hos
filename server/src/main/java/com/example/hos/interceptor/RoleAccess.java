@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *@description 角色访问控制
- *@author Qingcheng Wang
- *@date 2020/9/29
+ * @author DBC-090
+ * @description 角色访问控制
+ * @date 2020/9/29
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

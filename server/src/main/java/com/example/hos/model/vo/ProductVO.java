@@ -1,10 +1,8 @@
 package com.example.hos.model.vo;
 
 import com.example.hos.model.entity.Product;
-import com.example.hos.model.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 

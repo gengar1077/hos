@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * @date 2018/2/5
+ * @author DBC-090
  */
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -27,10 +27,6 @@ public class JwtServiceImpl implements JwtService {
 
     /**
      * @title 生成token
-     * @discribtion
-     * @author zch
-     * @Date 2020年1月7日 下午4:10:32
-     * @vision V1.0
      */
     @Override
     public String sign(String userId) {
@@ -57,11 +53,6 @@ public class JwtServiceImpl implements JwtService {
 
     /**
      * @title 校验token
-     * @discribtion
-     * @author zch
-     * @Date 2020年1月7日 下午4:10:51
-     * @return 0 校验通过, 1 token已过期, 2 校验不通过
-     * @vision V1.0
      */
     @Override
     public int checkToken(String token) {
@@ -85,10 +76,6 @@ public class JwtServiceImpl implements JwtService {
 
     /**
      * @title 获取token中的用户id
-     * @discribtion
-     * @author zch
-     * @Date 2020年1月7日 下午4:11:52
-     * @vision V1.0
      */
     @Override
     public String unSign(String token) {

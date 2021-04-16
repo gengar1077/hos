@@ -85,37 +85,29 @@ public class StockServiceImpl implements StockService {
                 pageSize==null?2:pageSize);
         if (StringUtils.isNoneBlank(name)){
             Map<String, Stock> productMap = stockRepository.findLikeProductnameAndStatus(name, Constant.STATUS).stream().collect(Collectors.toMap(Stock::getPname, Function.identity()));
-            List<Product> tProducts = productRepository.findAllByStatus(Constant.STATUS);
-            List<StockVO> stockVOList = Lists.newArrayList();
-            tProducts.forEach(product -> {
-                Stock stock = productMap.get(product.getPname());
-                if (ObjectUtils.allNotNull(stock)){
-                    stockVOList.add(makeVO(product, stock));
-                }
-            });
-            return new PageInfo<>(stockVOList);
+            return new PageInfo<>(makeListVO(productMap));
         }
         Map<String, Stock> productMap = stockRepository.findAllByStatus(Constant.STATUS).stream().collect(Collectors.toMap(Stock::getPname, Function.identity()));
+        return new PageInfo<>(makeListVO(productMap));
+    }
+
+    private List<StockVO> makeListVO(Map<String, Stock> productMap) {
         List<Product> tProducts = productRepository.findAllByStatus(Constant.STATUS);
         List<StockVO> stockVOList = Lists.newArrayList();
         tProducts.forEach(product -> {
             Stock stock = productMap.get(product.getPname());
             if (ObjectUtils.allNotNull(stock)){
-                stockVOList.add(makeVO(product, stock));
+                StockVO stockVO = new StockVO();
+                ProductVO productVO = ProductVO.makeVO(product);
+                stockVO.setStockId(stock.getStockId());
+                stockVO.setPname(stock.getPname());
+                stockVO.setPNum(stock.getPNum());
+                stockVO.setProductVO(productVO);
+                stockVO.setCreatetime(new Date());
+                stockVO.setPNum(stock.getPNum());
+                stockVOList.add(stockVO);
             }
         });
-        return new PageInfo<>(stockVOList);
-    }
-
-    private StockVO makeVO(Product product, Stock stock) {
-        StockVO stockVO = new StockVO();
-        ProductVO productVO = ProductVO.makeVO(product);
-        stockVO.setStockId(stock.getStockId());
-        stockVO.setPname(stock.getPname());
-        stockVO.setPNum(stock.getPNum());
-        stockVO.setProductVO(productVO);
-        stockVO.setCreatetime(new Date());
-        stockVO.setPNum(stock.getPNum());
-        return stockVO;
+        return stockVOList;
     }
 }

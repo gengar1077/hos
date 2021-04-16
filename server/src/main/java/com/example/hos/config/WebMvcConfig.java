@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.annotation.Resource;
 
 /**
- * @author Wang Qingcheng
+ * @author DBC-090
  * @date 2021/1/8
  * @description 配置
  */
@@ -33,7 +33,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     /**
      * @description  跨域配置
-     * @author Qingcheng Wang
      * @date 2021/1/8
      * @param registry
      * @return void

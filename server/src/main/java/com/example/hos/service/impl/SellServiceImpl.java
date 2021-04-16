@@ -81,38 +81,30 @@ public class SellServiceImpl implements SellService {
                 pageSize==null?2:pageSize);
         if (StringUtils.isNoneBlank(name)){
             Map<String, Sell> productMap = sellRespository.findLikeProductnameAndStatus(name, Constant.STATUS).stream().collect(Collectors.toMap(Sell::getPname, Function.identity()));
-            List<Product> tProducts = productRepository.findAllByStatus(Constant.STATUS);
-            List<SellVO> sellVOList = Lists.newArrayList();
-            tProducts.forEach(product -> {
-                Sell sell = productMap.get(product.getPname());
-                if (ObjectUtils.allNotNull(sell)){
-                    sellVOList.add(makeVO(product, sell));
-                }
-            });
-            return new PageInfo<>(sellVOList);
+            return new PageInfo<>(makeListVO(productMap));
         }
         Map<String, Sell> productMap = sellRespository.findAllByStatus(Constant.STATUS).stream().collect(Collectors.toMap(Sell::getPname, Function.identity()));
+        return new PageInfo<>(makeListVO(productMap));
+    }
+
+    private List<SellVO> makeListVO(Map<String, Sell> productMap) {
         List<Product> tProducts = productRepository.findAllByStatus(Constant.STATUS);
         List<SellVO> sellVOList = Lists.newArrayList();
         tProducts.forEach(product -> {
             Sell sell = productMap.get(product.getPname());
             if (ObjectUtils.allNotNull(sell)){
-                sellVOList.add(makeVO(product, sell));
+                SellVO sellVO = new SellVO();
+                ProductVO productVO = ProductVO.makeVO(product);
+                sellVO.setProductVO(productVO);
+                sellVO.setCreatetime(new Date());
+                sellVO.setMoney(sell.getMoney());
+                sellVO.setSellId(sell.getSellId());
+                sellVO.setPname(sell.getPname());
+                sellVO.setRemark(sell.getRemark());
+                sellVO.setOperator(sell.getOperator());
+                sellVOList.add(sellVO);
             }
         });
-        return new PageInfo<>(sellVOList);
-    }
-
-    private SellVO makeVO(Product product, Sell sell) {
-        SellVO sellVO = new SellVO();
-        ProductVO productVO = ProductVO.makeVO(product);
-        sellVO.setProductVO(productVO);
-        sellVO.setCreatetime(new Date());
-        sellVO.setMoney(sell.getMoney());
-        sellVO.setSellId(sell.getSellId());
-        sellVO.setPname(sell.getPname());
-        sellVO.setRemark(sell.getRemark());
-        sellVO.setOperator(sell.getOperator());
-        return sellVO;
+        return sellVOList;
     }
 }

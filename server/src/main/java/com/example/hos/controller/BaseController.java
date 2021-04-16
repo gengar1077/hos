@@ -2,7 +2,6 @@ package com.example.hos.controller;
 
 
 import com.example.hos.repository.UserRepository;
-import com.example.hos.log.LogFactory;
 import com.example.hos.model.entity.User;
 import com.example.hos.service.JwtService;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 /**
- * @author Wang Qingcheng
+ * @author DBC-090
  * @date 2021/1/12
  * @description Base Controller
  */
@@ -31,7 +30,6 @@ public abstract class BaseController {
 
     /**
      * @description 获取当前用户
-     * @author Qingcheng Wang
      * @date 2021/1/14
      * @param
      * @return java.lang.String
@@ -39,7 +37,6 @@ public abstract class BaseController {
     public User currentUser() {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String token = request.getHeader(jwtHeader);
-        LogFactory.getDebugLog().debug("token:{}", token);
         int i = jwtService.checkToken(token);
         if(i == 0){
             String uid = jwtService.unSign(token);
