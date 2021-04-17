@@ -55,7 +55,7 @@ async function getUserProfile() {
   try {
     const res = await axios.get(BASE_URL + '/user/getUser');
     console.log('[Dashboard] getUserProfile success:', res);
-    return res.data.returnData;
+    return res.data;
   } catch (e) {
     console.log('[Dashboard] getUserProfile failed:', e);
     message.error('获取用户信息失败');
@@ -91,11 +91,20 @@ export default function Dashboard(props) {
     roleName: RoleType.ROLE_USER,
     remark: '',
   });
+  let errCnt = 0
+  let timer
   useEffect(() => {
-    setInterval(() => {
-      getUserProfile().then((profile) => {
-        setUserProfile(profile);
-      });
+    timer = setInterval(() => {
+      if(errCnt<3){
+        getUserProfile().then((profile) => {
+          setUserProfile(profile);
+        }).catch(err=>{
+          console.log('errCnt', errCnt)
+          errCnt ++
+        });
+      }else{
+        clearInterval(timer)
+      }
     }, 1000);
   }, []);
   const [collapsed, toggleCollapsed] = useReducer((state) => !state, false);

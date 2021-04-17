@@ -13,7 +13,7 @@ export default (props: any) => {
     setSelectLoading(true);
     try {
       const res = await axios.get(BASE_URL + '/product/findByPage');
-      const data = res.data?.returnData?.list || [];
+      const data = res.data?.list || [];
       const pnameList = data?.map((item) => item.pname) || [];
       setDrugList(pnameList);
       console.log(`[Drug] getDrugInfoList:`, pnameList);

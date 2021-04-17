@@ -109,21 +109,19 @@ function useProvideAuth() {
       // TODO: 跳转先写死等，接口完成之后在放开
       // setUser('kongfu-cat');
       const res = await axios.post<{
-        returnData: {
           isAdmin: boolean;
           isLogged: boolean;
           password: string;
           phone: string;
           token: string;
           username: string;
-        };
       }>(BASE_URL + '/login/login', {
         username,
         password,
       });
       console.log(`[AuthContext] sigin success:`, res);
-      const token = res.data.returnData.token;
-      const name = res.data.returnData.username;
+      const token = res.data.token;
+      const name = res.data.username;
       localStorage.setItem(
         'userInfo',
         JSON.stringify({
@@ -133,7 +131,7 @@ function useProvideAuth() {
       );
       // config hosToken to request header
       setAxiosConfig(token);
-      setUser(res.data.returnData.username);
+      setUser(res.data.username);
       return res.data;
     } catch (e) {
       console.log(`[AuthContext] sigin failed:`, e);

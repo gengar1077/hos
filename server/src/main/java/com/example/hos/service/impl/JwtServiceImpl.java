@@ -20,7 +20,7 @@ public class JwtServiceImpl implements JwtService {
 
     private static final long EXPIRE_TIME = 360 * 60 * 1000;
 
-    private static final String JWT_KEY = "testSecret";
+    private static final String JWT_KEY = "testsecret";
 
     /**
      * @title 生成token

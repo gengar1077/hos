@@ -187,13 +187,13 @@ export default function Suplier() {
         },
       });
       const data =
-        res.data?.returnData?.list.map((item: Item) => {
+        res.data?.list.map((item: Item) => {
           return {
             ...item,
             key: item.sid,
           };
         }) || [];
-      const total = res.data?.returnData?.total || 0;
+      const total = res.data?.total || 0;
       setTotal(total);
       setData(data);
       console.log(`[Supplier] update list success:`, res);
