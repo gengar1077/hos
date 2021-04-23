@@ -66,10 +66,12 @@ public class SupplierServiceImpl implements SupplierService {
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
         if (StringUtils.isNoneBlank(name)){
-            Map<String, Supplier> productMap = supplierRespository.findLikeProductnameAndStatus(name, Constant.STATUS).stream().collect(Collectors.toMap(Supplier::getPname, Function.identity()));
+            Map<String, Supplier> productMap = supplierRespository.findLikeProductnameAndStatus(name, Constant.STATUS)
+                    .stream().collect(Collectors.toMap(Supplier::getPname, Function.identity()));
             return new PageInfo<>(makeListVO(productMap));
         }
-        Map<String, Supplier> productMap = supplierRespository.findAllByStatus(Constant.STATUS).stream().collect(Collectors.toMap(Supplier::getPname, Function.identity()));
+        Map<String, Supplier> productMap = supplierRespository.findAllByStatus(Constant.STATUS)
+                .stream().collect(Collectors.toMap(Supplier::getPname, Function.identity()));
         return new PageInfo<>(makeListVO(productMap));
     }
 

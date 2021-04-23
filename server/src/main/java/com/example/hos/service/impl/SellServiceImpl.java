@@ -80,10 +80,12 @@ public class SellServiceImpl implements SellService {
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
         if (StringUtils.isNoneBlank(name)){
-            Map<String, Sell> productMap = sellRespository.findLikeProductnameAndStatus(name, Constant.STATUS).stream().collect(Collectors.toMap(Sell::getPname, Function.identity()));
+            Map<String, Sell> productMap = sellRespository.findLikeProductnameAndStatus(name, Constant.STATUS)
+                    .stream().collect(Collectors.toMap(Sell::getPname, Function.identity()));
             return new PageInfo<>(makeListVO(productMap));
         }
-        Map<String, Sell> productMap = sellRespository.findAllByStatus(Constant.STATUS).stream().collect(Collectors.toMap(Sell::getPname, Function.identity()));
+        Map<String, Sell> productMap = sellRespository.findAllByStatus(Constant.STATUS)
+                .stream().collect(Collectors.toMap(Sell::getPname, Function.identity()));
         return new PageInfo<>(makeListVO(productMap));
     }
 

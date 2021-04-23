@@ -61,13 +61,20 @@ export default function AuthExample() {
     </ProvideAuth>
   );
 }
-
-function setAxiosConfig(token: string) {
+let interceptorsFunc
+let globalToken
+const setAxiosConfig = (token: string) => {
+  console.log('[App] set axios config, token:', token)
+  if(interceptorsFunc){
+    axios.interceptors.request.eject(interceptorsFunc)
+  }
+  globalToken = token
+  interceptorsFunc = (config) => {
+    config.headers.hosToken = globalToken;
+    return config;
+  }
   axios.interceptors.request.use(
-    function (config) {
-      config.headers.hosToken = token;
-      return config;
-    },
+    interceptorsFunc,
     function (error) {
       return Promise.reject(error);
     },
@@ -185,7 +192,7 @@ function AuthSignin() {
 function AuthDashboard() {
   const auth = useAuth();
   const history = useHistory();
-  const onLogout = async () => {
+  const onLogout = async (cb) => {
     try {
       const res = await auth.signout();
       history.push('/signin');
@@ -195,6 +202,8 @@ function AuthDashboard() {
         return ErrorType.NETWORK_ERROR;
       }
       return ErrorType.PWD_ERROR;
+    } finally {
+      cb()
     }
   };
   return <Dashboard onLogout={onLogout} user={auth.user} />;
