@@ -6,9 +6,8 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @description:
- * @author: KEANU
- * @date: 2021/1/29
+ * @author changwei.zhong
+ * @date 2021/1/29
  **/
 @Data
 public class LoginInfoVO implements Serializable {

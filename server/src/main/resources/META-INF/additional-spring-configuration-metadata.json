@@ -9,5 +9,10 @@
       "name": "spring.http.multipart.maxFileSize",
       "type": "java.lang.String",
       "description": "Description for spring.http.multipart.maxFileSize."
+    },
+    {
+      "name": "jwt.token.name",
+      "type": "java.lang.String",
+      "description": "Description for jwt.token.name."
     }
   ] }

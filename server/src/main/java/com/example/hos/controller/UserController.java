@@ -20,7 +20,7 @@ import java.io.IOException;
  * @Description:
  * @Date: 2021/2/13
  */
-@Authorization
+//@Authorization
 @RestController
 @RequestMapping("/user")
 public class UserController extends BaseController {

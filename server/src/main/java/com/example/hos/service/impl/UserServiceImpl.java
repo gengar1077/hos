@@ -16,17 +16,21 @@ import com.example.hos.until.Constant;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import jodd.util.StringPool;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.DateUtils;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -208,70 +212,34 @@ public class UserServiceImpl implements UserService {
     }
 
 //    @Override
-//    public ResultResponse upload(String uid, MultipartFile image) {
-//        ResultResponse resultResponse = new ResultResponse();
-//        String filesPath = Constant.FILES_PATH;
+//    public void upload(String uid, MultipartFile image) throws IOException {
 //        if (!image.isEmpty()) {
-//            // 当前用户
+//            String imageStr = getImageStr(image);
 //            User user = userRepository.findByUidAndStatus(uid, Constant.STATUS)
 //                    .orElseThrow(() -> new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
-//            String photo = user.getPhoto();
-//            // 默认以原来的头像名称为新头像的名称，这样可以直接替换掉文件夹中对应的旧头像
-//            String imageName = photo;
-//            // 若头像名称不存在
-//            if (photo == null || StringPool.EMPTY.equals(photo)) {
-//                imageName = filesPath + System.currentTimeMillis()+ image.getOriginalFilename();
-//                // 路径存库
-//                user.setPhoto(imageName);
-//                userRepository.saveAndFlush(user);
-//            }
-//            // 磁盘保存
-//            BufferedOutputStream out = null;
-//            try {
-//                File folder = new File(filesPath);
-//                if (!folder.exists()) {
-//                    boolean mkdirs = folder.mkdirs();
-//                    if (!mkdirs){
-//                        throw new HosException(ErrorInfo.PHOTO_NOT_FOUND.getMessage());
-//                    }
-//                }
-//                out = new BufferedOutputStream(new FileOutputStream(imageName));
-//                // 写入新文件
-//                out.write(image.getBytes());
-//                out.flush();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return resultResponse;
-//            } finally {
-//                try {
-//                    assert out != null;
-//                    out.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            return resultResponse;
+//            user.setPhoto(imageStr);
+//            userRepository.saveAndFlush(user);
 //        } else {
 //            throw new HosException(ErrorInfo.PHOTO_NOT_FOUND.getMessage());
 //        }
 //    }
+//
+//    public static String getImageStr(MultipartFile file) throws IOException {
+//        return Base64.getEncoder().encodeToString(file.getBytes());
+//    }
 
     @Override
-    public void upload(String uid, MultipartFile image) throws IOException {
-        if (!image.isEmpty()) {
-            String imageStr = getImageStr(image);
-            User user = userRepository.findByUidAndStatus(uid, Constant.STATUS)
-                    .orElseThrow(() -> new HosException(ErrorInfo.ACCOUNT_NOT_FOUND.getMessage()));
-            user.setPhoto(imageStr);
-            userRepository.saveAndFlush(user);
-        } else {
-            throw new HosException(ErrorInfo.PHOTO_NOT_FOUND.getMessage());
-        }
+    public void upload(String accountId, MultipartFile image) throws IOException {
+        String base64 = Base64Utils.encodeToString(image.getBytes());
+        String assetCode = UUID.randomUUID().toString();
+        File dir = new File(dirPath());
+        dir.mkdirs();
+        File file = new File(dir, assetCode);
+        byte[] fileBytes = Base64Utils.decodeFromString(base64);
+        FileUtils.writeByteArrayToFile(file, fileBytes);
     }
 
-    public static String getImageStr(MultipartFile file) throws IOException {
-        byte[] fileByte = null;
-        fileByte = file.getBytes();
-        return Base64.getEncoder().encodeToString(fileByte);
+    private String dirPath() {
+        return StringUtils.join(new String[] {"/home/econtract/appdata", new SimpleDateFormat("yyyyMMdd").format(new Date()), "containerName", StringUtils.EMPTY}, StringPool.SLASH);
     }
 }
