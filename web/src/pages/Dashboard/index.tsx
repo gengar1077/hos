@@ -55,7 +55,7 @@ async function getUserProfile() {
   try {
     const res = await axios.get(BASE_URL + '/user/getUser');
     console.log('[Dashboard] getUserProfile success:', res);
-    return res.data.returnData;
+    return res.data;
   } catch (e) {
     console.log('[Dashboard] getUserProfile failed:', e);
     message.error('获取用户信息失败');
@@ -91,13 +91,24 @@ export default function Dashboard(props) {
     roleName: RoleType.ROLE_USER,
     remark: '',
   });
-  useEffect(() => {
-    setInterval(() => {
+  let errCnt = 0
+  let timer
+  const refreshUserProfile = () => {
+    if(errCnt<3){
       getUserProfile().then((profile) => {
         setUserProfile(profile);
+      }).catch(err=>{
+        console.log('errCnt', errCnt)
+        errCnt ++
+      }).finally(()=>{
+        clearTimeout(timer)
+        timer = setTimeout(refreshUserProfile, 3000)
       });
-    }, 1000);
-  }, []);
+    }else{
+      clearTimeout(timer)
+    }
+  }
+  useEffect(refreshUserProfile, []);
   const [collapsed, toggleCollapsed] = useReducer((state) => !state, false);
   const { path, url } = useRouteMatch();
   const PathIndex = [
@@ -113,7 +124,7 @@ export default function Dashboard(props) {
   const defaultSelectedKeys = [index];
   const [userForm] = Form.useForm();
   const handleLogout = () => {
-    props.onLogout();
+    props.onLogout(()=>{clearTimeout(timer)});
   };
   const handleProfileEdit = () => {
     userForm.setFieldsValue({ ...userProfile });

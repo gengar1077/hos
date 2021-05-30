@@ -159,10 +159,10 @@ export default function User() {
         },
       });
       const data =
-        res.data?.returnData?.list.map((item: Item) => {
+        res.data?.list.map((item: Item) => {
           return { ...item, key: item.id };
         }) || [];
-      const total = res.data?.returnData?.total || 0;
+      const total = res.data?.total || 0;
       setTotal(total);
       setData(data);
       console.log(`[User] update user list success:`, res);

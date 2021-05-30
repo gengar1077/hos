@@ -84,10 +84,12 @@ public class StockServiceImpl implements StockService {
                 pageNum==null?1:pageNum,
                 pageSize==null?2:pageSize);
         if (StringUtils.isNoneBlank(name)){
-            Map<String, Stock> productMap = stockRepository.findLikeProductnameAndStatus(name, Constant.STATUS).stream().collect(Collectors.toMap(Stock::getPname, Function.identity()));
+            Map<String, Stock> productMap = stockRepository.findLikeProductnameAndStatus(name, Constant.STATUS)
+                    .stream().collect(Collectors.toMap(Stock::getPname, Function.identity()));
             return new PageInfo<>(makeListVO(productMap));
         }
-        Map<String, Stock> productMap = stockRepository.findAllByStatus(Constant.STATUS).stream().collect(Collectors.toMap(Stock::getPname, Function.identity()));
+        Map<String, Stock> productMap = stockRepository.findAllByStatus(Constant.STATUS)
+                .stream().collect(Collectors.toMap(Stock::getPname, Function.identity()));
         return new PageInfo<>(makeListVO(productMap));
     }
 

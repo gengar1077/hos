@@ -61,13 +61,20 @@ export default function AuthExample() {
     </ProvideAuth>
   );
 }
-
-function setAxiosConfig(token: string) {
+let interceptorsFunc
+let globalToken
+const setAxiosConfig = (token: string) => {
+  console.log('[App] set axios config, token:', token)
+  if(interceptorsFunc){
+    axios.interceptors.request.eject(interceptorsFunc)
+  }
+  globalToken = token
+  interceptorsFunc = (config) => {
+    config.headers.hosToken = globalToken;
+    return config;
+  }
   axios.interceptors.request.use(
-    function (config) {
-      config.headers.hosToken = token;
-      return config;
-    },
+    interceptorsFunc,
     function (error) {
       return Promise.reject(error);
     },
@@ -109,21 +116,19 @@ function useProvideAuth() {
       // TODO: 跳转先写死等，接口完成之后在放开
       // setUser('kongfu-cat');
       const res = await axios.post<{
-        returnData: {
           isAdmin: boolean;
           isLogged: boolean;
           password: string;
           phone: string;
           token: string;
           username: string;
-        };
       }>(BASE_URL + '/login/login', {
         username,
         password,
       });
       console.log(`[AuthContext] sigin success:`, res);
-      const token = res.data.returnData.token;
-      const name = res.data.returnData.username;
+      const token = res.data.token;
+      const name = res.data.username;
       localStorage.setItem(
         'userInfo',
         JSON.stringify({
@@ -133,7 +138,7 @@ function useProvideAuth() {
       );
       // config hosToken to request header
       setAxiosConfig(token);
-      setUser(res.data.returnData.username);
+      setUser(res.data.username);
       return res.data;
     } catch (e) {
       console.log(`[AuthContext] sigin failed:`, e);
@@ -187,7 +192,7 @@ function AuthSignin() {
 function AuthDashboard() {
   const auth = useAuth();
   const history = useHistory();
-  const onLogout = async () => {
+  const onLogout = async (cb) => {
     try {
       const res = await auth.signout();
       history.push('/signin');
@@ -197,6 +202,8 @@ function AuthDashboard() {
         return ErrorType.NETWORK_ERROR;
       }
       return ErrorType.PWD_ERROR;
+    } finally {
+      cb()
     }
   };
   return <Dashboard onLogout={onLogout} user={auth.user} />;

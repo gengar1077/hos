@@ -189,13 +189,13 @@ export default function Sell() {
         },
       });
       const data =
-        res.data?.returnData?.list.map((item: Item) => {
+        res.data?.list.map((item: Item) => {
           return {
             ...item,
             key: item.sellId,
           };
         }) || [];
-      const total = res.data?.returnData?.total || 0;
+      const total = res.data?.total || 0;
       setTotal(total);
       setData(data);
       console.log(`[Stock] update list success:`, res);
